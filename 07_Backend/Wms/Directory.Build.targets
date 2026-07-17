@@ -1,0 +1,28 @@
+<Project>
+  <PropertyGroup>
+    <Authors>ManufacturingWMS Team</Authors>
+    <Company>ManufacturingWMS</Company>
+    <Product>WMS Platform</Product>
+    <Copyright>Copyright © ManufacturingWMS 2025</Copyright>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <!-- Ensure all projects use the same build settings -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <!-- Code analysis -->
+  <PropertyGroup>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+</Project>

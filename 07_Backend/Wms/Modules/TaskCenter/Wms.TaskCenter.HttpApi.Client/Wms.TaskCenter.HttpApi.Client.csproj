@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.TaskCenter.HttpApi.Client</AssemblyName>
+    <RootNamespace>Wms.TaskCenter.HttpApi.Client</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Http.Client" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.TaskCenter.Application.Contracts\Wms.TaskCenter.Application.Contracts.csproj" />
+  </ItemGroup>
+</Project>

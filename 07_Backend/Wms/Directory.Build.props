@@ -1,0 +1,160 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Wms</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS8019;CS0105</NoWarn>
+    <AbpVersion>8.3.0</AbpVersion>
+    <EfCoreVersion>8.0.4</EfCoreVersion>
+    <NetVersion>8.0.0</NetVersion>
+    <!-- Third-party library versions (referenced by csproj via $(...)) -->
+    <MediatRVersion>12.4.0</MediatRVersion>
+    <FluentValidationVersion>11.9.0</FluentValidationVersion>
+    <MapsterVersion>7.4.0</MapsterVersion>
+    <NewtonsoftJsonVersion>13.0.3</NewtonsoftJsonVersion>
+    <SerilogVersion>4.0.0</SerilogVersion>
+    <SerilogSinksFileVersion>6.0.0</SerilogSinksFileVersion>
+    <SerilogExtensionsLoggingVersion>8.0.0</SerilogExtensionsLoggingVersion>
+    <!-- Test framework versions -->
+    <xunitVersion>2.8.0</xunitVersion>
+    <xunitrunnervisualstudioVersion>2.8.0</xunitrunnervisualstudioVersion>
+    <FluentAssertionsVersion>6.12.0</FluentAssertionsVersion>
+    <MoqVersion>4.20.0</MoqVersion>
+    <MicrosoftNETTestSdkVersion>17.10.0</MicrosoftNETTestSdkVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- ABP Core Framework -->
+    <PackageReference Update="Volo.Abp.Core" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.Data" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.EventBus" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.EventBus.RabbitMQ" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.Identity" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.PermissionManagement" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.SettingManagement" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.AuditLogging" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.BackgroundJobs" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.AutoHttpApi" Version="$(AbpVersion)" />
+
+    <!-- ABP EF Core + Database -->
+    <PackageReference Update="Volo.Abp.EntityFrameworkCore" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.EntityFrameworkCore.SqlServer" Version="$(AbpVersion)" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore" Version="$(EfCoreVersion)" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.Tools" Version="$(EfCoreVersion)" />
+    <PackageReference Update="Microsoft.Data.SqlClient" Version="5.2.0" />
+
+    <!-- ABP ASP.NET Core + Web -->
+    <PackageReference Update="Volo.Abp.AspNetCore" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.AspNetCore.Serilog" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.Swashbuckle" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.AspNetCore.Mvc" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.HttpApi" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.HttpApi.Client" Version="$(AbpVersion)" />
+
+    <!-- ABP DDD Application (open-source equivalents for Volo.Abp.Application / Volo.Abp.Application.Contracts) -->
+    <PackageReference Update="Volo.Abp.Ddd.Application" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.Ddd.Application.Contracts" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.Ddd.Domain" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.Http.Client" Version="$(AbpVersion)" />
+
+    <!-- ABP Identity Module Packages -->
+    <PackageReference Update="Volo.Abp.Identity.EntityFrameworkCore" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.Identity.HttpApi" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.Identity.HttpApi.Client" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.PermissionManagement.EntityFrameworkCore" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.PermissionManagement.HttpApi" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.SettingManagement.EntityFrameworkCore" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.AuditLogging.EntityFrameworkCore" Version="$(AbpVersion)" />
+
+    <!-- ABP UI Modules -->
+    <PackageReference Update="Volo.Abp.AspNetCore.Mvc.UI" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy" Version="$(AbpVersion)" />
+
+    <!-- ABP Autofac + Test -->
+    <PackageReference Update="Volo.Abp.Autofac" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.TestBase" Version="$(AbpVersion)" />
+
+    <!-- ABP Caching -->
+    <PackageReference Update="Volo.Abp.Caching" Version="$(AbpVersion)" />
+    <PackageReference Update="Volo.Abp.Caching.StackExchangeRedis" Version="$(AbpVersion)" />
+    <PackageReference Update="StackExchange.Redis" Version="2.7.0" />
+
+    <!-- Logging + Serialization + Tools -->
+    <PackageReference Update="Serilog" Version="4.0.0" />
+    <PackageReference Update="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageReference Update="Serilog.Sinks.Seq" Version="6.0.0" />
+    <PackageReference Update="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Update="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Update="Mapster" Version="7.4.0" />
+    <PackageReference Update="Mapster.DependencyInjection" Version="7.4.0" />
+    <PackageReference Update="FluentValidation" Version="11.9.0" />
+    <PackageReference Update="AutoMapper" Version="13.0.1" />
+    <PackageReference Update="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="13.0.1" />
+    <PackageReference Update="Polly" Version="8.4.0" />
+    <PackageReference Update="Polly.Extensions.Http" Version="3.0.0" />
+    <PackageReference Update="Quartz" Version="3.8.0" />
+    <PackageReference Update="Quartz.Extensions.Hosting" Version="3.8.0" />
+    <PackageReference Update="ClosedXML" Version="0.102.0" />
+    <PackageReference Update="NetBarcode" Version="4.0.0" />
+
+    <!-- SignalR -->
+    <PackageReference Update="Microsoft.AspNetCore.SignalR.Client" Version="8.0.0" />
+
+    <!-- MediatR -->
+    <PackageReference Update="MediatR" Version="12.4.0" />
+
+    <!-- xUnit + Test -->
+    <PackageReference Update="xunit" Version="2.8.0" />
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.8.0" />
+    <PackageReference Update="Moq" Version="4.20.0" />
+    <PackageReference Update="FluentAssertions" Version="6.12.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+    <PackageReference Update="coverlet.collector" Version="6.0.0" />
+  </ItemGroup>
+
+  <!-- Global usings for all module projects -->
+  <ItemGroup>
+    <!-- Wms.Shared namespaces -->
+    <Using Include="Wms.Shared.Domain.Enums" />
+    <Using Include="Wms.Shared.Domain.Events" />
+    <!-- Wms.Shared.Domain.Entities namespace not yet created; remove from global usings -->
+    <Using Include="Wms.Shared.Domain.Interfaces" />
+    <!-- ABP DDD namespaces -->
+    <Using Include="Volo.Abp.Domain.Repositories" />
+    <Using Include="Volo.Abp.Domain.Entities.Auditing" />
+    <Using Include="Volo.Abp.Domain.Entities" />
+    <Using Include="Volo.Abp.Domain.Services" />
+    <Using Include="Volo.Abp.Domain.Values" />
+    <Using Include="Volo.Abp.Application.Dtos" />
+    <Using Include="Volo.Abp.Application.Services" />
+    <Using Include="Volo.Abp.Application" />
+    <!-- ABP Core namespaces -->
+    <Using Include="Volo.Abp" />
+    <Using Include="Volo.Abp.Authorization" />
+    <Using Include="Volo.Abp.Modularity" />
+    <Using Include="Volo.Abp.DependencyInjection" />
+    <Using Include="Volo.Abp.Http.Client" />
+    <Using Include="Volo.Abp.MultiTenancy" />
+    <Using Include="Volo.Abp.Threading" />
+    <Using Include="Volo.Abp.Validation" />
+    <Using Include="Volo.Abp.EventBus" />
+    <Using Include="Volo.Abp.Auditing" />
+    <Using Include="Volo.Abp.ObjectMapping" />
+    <Using Include="AutoMapper" />
+    <Using Include="Volo.Abp.Uow" />
+    <Using Include="Volo.Abp.Guids" />
+    <!-- Localization -->
+    <Using Include="Microsoft.Extensions.Localization" />
+    <Using Include="Microsoft.AspNetCore.Authorization" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="Microsoft.Extensions.Logging" />
+  </ItemGroup>
+
+  <!-- Xunit global using for test projects only -->
+  <ItemGroup Condition="$(MSBuildProjectName.Contains('Tests'))">
+    <Using Include="Xunit" />
+  </ItemGroup>
+</Project>

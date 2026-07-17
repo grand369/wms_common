@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.BarcodeLabel.Application</AssemblyName>
+    <RootNamespace>Wms.BarcodeLabel.Application</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Core" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Ddd.Application" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Authorization" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.EventBus" Version="$(AbpVersion)" />
+    <PackageReference Include="MediatR" Version="$(MediatRVersion)" />
+    <PackageReference Include="FluentValidation" Version="$(FluentValidationVersion)" />
+    <PackageReference Include="Mapster" Version="$(MapsterVersion)" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.BarcodeLabel.Domain\Wms.BarcodeLabel.Domain.csproj" />
+    <ProjectReference Include="..\Wms.BarcodeLabel.Application.Contracts\Wms.BarcodeLabel.Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\Warehouse\Wms.Warehouse.Application.Contracts\Wms.Warehouse.Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\Material\Wms.Material.Application.Contracts\Wms.Material.Application.Contracts.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.RuleEngine.HttpApi</AssemblyName>
+    <RootNamespace>Wms.RuleEngine.HttpApi</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.RuleEngine.Application\Wms.RuleEngine.Application.csproj" />
+    <ProjectReference Include="..\Wms.RuleEngine.Application.Contracts\Wms.RuleEngine.Application.Contracts.csproj" />
+  </ItemGroup>
+</Project>

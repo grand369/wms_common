@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.Inventory.HttpApi</AssemblyName>
+    <RootNamespace>Wms.Inventory.HttpApi</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.Inventory.Application\Wms.Inventory.Application.csproj" />
+    <ProjectReference Include="..\Wms.Inventory.Application.Contracts\Wms.Inventory.Application.Contracts.csproj" />
+  </ItemGroup>
+</Project>

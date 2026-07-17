@@ -1,0 +1,68 @@
+# ===========================
+# Visual Studio
+# ===========================
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build Results
+bin/
+obj/
+Debug/
+Release/
+
+# Rider
+.idea/
+
+# ReSharper
+_ReSharper*/
+*.DotSettings.user
+
+# ===========================
+# .NET
+# ===========================
+TestResults/
+artifacts/
+
+# NuGet
+*.nupkg
+packages/
+!packages/build/
+
+# ===========================
+# Node
+# ===========================
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===========================
+# VS Code
+# ===========================
+.vscode/
+
+# ===========================
+# AI Tools
+# ===========================
+.workbuddy/
+
+# ===========================
+# Logs
+# ===========================
+*.log
+
+# ===========================
+# OS Files
+# ===========================
+.DS_Store
+Thumbs.db
+
+# ===========================
+# Temporary
+# ===========================
+*.tmp
+*.temp

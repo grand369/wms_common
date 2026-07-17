@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.Inventory.HttpApi.Client</AssemblyName>
+    <RootNamespace>Wms.Inventory.HttpApi.Client</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Http.Client" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.Inventory.Application.Contracts\Wms.Inventory.Application.Contracts.csproj" />
+  </ItemGroup>
+</Project>

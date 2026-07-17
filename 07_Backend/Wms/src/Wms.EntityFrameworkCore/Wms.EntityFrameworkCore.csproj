@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.EntityFrameworkCore</AssemblyName>
+    <RootNamespace>Wms.EntityFrameworkCore</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Identity.EntityFrameworkCore" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.EntityFrameworkCore" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.BackgroundJobs.EntityFrameworkCore" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.SettingManagement.EntityFrameworkCore" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.FeatureManagement.EntityFrameworkCore" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.AuditLogging.EntityFrameworkCore" Version="$(AbpVersion)" />
+    
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Wms.Shared\Wms.Shared.csproj" />
+    <ProjectReference Include="..\..\Modules\Warehouse\Wms.Warehouse.EntityFrameworkCore\Wms.Warehouse.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Material\Wms.Material.EntityFrameworkCore\Wms.Material.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Inventory\Wms.Inventory.EntityFrameworkCore\Wms.Inventory.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Inbound\Wms.Inbound.EntityFrameworkCore\Wms.Inbound.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Outbound\Wms.Outbound.EntityFrameworkCore\Wms.Outbound.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Transfer\Wms.Transfer.EntityFrameworkCore\Wms.Transfer.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\CycleCount\Wms.CycleCount.EntityFrameworkCore\Wms.CycleCount.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\LineSide\Wms.LineSide.EntityFrameworkCore\Wms.LineSide.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Production\Wms.Production.EntityFrameworkCore\Wms.Production.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\TaskCenter\Wms.TaskCenter.EntityFrameworkCore\Wms.TaskCenter.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\BarcodeLabel\Wms.BarcodeLabel.EntityFrameworkCore\Wms.BarcodeLabel.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Workflow\Wms.Workflow.EntityFrameworkCore\Wms.Workflow.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\RuleEngine\Wms.RuleEngine.EntityFrameworkCore\Wms.RuleEngine.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Notification\Wms.Notification.EntityFrameworkCore\Wms.Notification.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.Workflow.HttpApi.Client</AssemblyName>
+    <RootNamespace>Wms.Workflow.HttpApi.Client</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Http.Client" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.Workflow.Application.Contracts\Wms.Workflow.Application.Contracts.csproj" />
+  </ItemGroup>
+</Project>

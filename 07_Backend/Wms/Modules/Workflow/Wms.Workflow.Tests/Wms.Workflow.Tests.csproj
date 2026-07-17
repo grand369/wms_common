@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.Workflow.Tests</AssemblyName>
+    <RootNamespace>Wms.Workflow.Tests</RootNamespace>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.TestBase" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Autofac" Version="$(AbpVersion)" />
+    <PackageReference Include="xunit" Version="$(xunitVersion)" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="$(xunitrunnervisualstudioVersion)" />
+    <PackageReference Include="FluentAssertions" Version="$(FluentAssertionsVersion)" />
+    <PackageReference Include="Moq" Version="$(MoqVersion)" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\TestBase\Wms.TestBase\Wms.TestBase.csproj" />
+    <ProjectReference Include="..\Wms.Workflow.Domain\Wms.Workflow.Domain.csproj" />
+    <ProjectReference Include="..\Wms.Workflow.Application\Wms.Workflow.Application.csproj" />
+    <ProjectReference Include="..\Wms.Workflow.Application.Contracts\Wms.Workflow.Application.Contracts.csproj" />
+  </ItemGroup>
+</Project>

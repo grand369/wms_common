@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.Notification.HttpApi</AssemblyName>
+    <RootNamespace>Wms.Notification.HttpApi</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.Notification.Application\Wms.Notification.Application.csproj" />
+    <ProjectReference Include="..\Wms.Notification.Application.Contracts\Wms.Notification.Application.Contracts.csproj" />
+  </ItemGroup>
+</Project>

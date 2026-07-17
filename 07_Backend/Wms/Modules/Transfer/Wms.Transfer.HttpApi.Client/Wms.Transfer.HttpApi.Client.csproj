@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.Transfer.HttpApi.Client</AssemblyName>
+    <RootNamespace>Wms.Transfer.HttpApi.Client</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Http.Client" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.Transfer.Application.Contracts\Wms.Transfer.Application.Contracts.csproj" />
+  </ItemGroup>
+</Project>

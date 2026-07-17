@@ -1,0 +1,208 @@
+// =================================================================
+// WMS Global Styles — Phase 7 UI Design alignment
+// =================================================================
+
+@use "@/styles/mixins.scss" as *;
+
+// CSS Custom Properties (root variables for runtime theming & dark mode reservation)
+:root {
+  // ── Element Plus Theme Override (DS-004) ────────────────────
+  --el-color-primary: #2563EB;
+  --el-color-primary-light-3: #5B8DEF;
+  --el-color-primary-light-5: #93BBFD;
+  --el-color-primary-light-9: #EBF2FE;
+  --el-color-primary-dark-2: #1D4ED8;
+
+  --el-color-success: #16A34A;
+  --el-color-warning: #D97706;
+  --el-color-danger: #DC2626;
+  --el-color-info: #0EA5E9;
+
+  --el-bg-color: #F8FAFC;
+  --el-text-color-primary: #1E293B;
+  --el-text-color-regular: #475569;
+  --el-text-color-secondary: #94A3B8;
+  --el-border-color: #E2E8F0;
+
+  // ── WMS Extension Variables ─────────────────────────────────
+  --wms-color-primary: #2563EB;
+  --wms-color-secondary: #475569;
+  --wms-color-success: #16A34A;
+  --wms-color-warning: #D97706;
+  --wms-color-danger: #DC2626;
+  --wms-color-info: #0EA5E9;
+
+  --wms-bg-base: #F8FAFC;
+  --wms-bg-content: #FFFFFF;
+  --wms-bg-sidebar: #1E293B;
+  --wms-bg-sidebar-active: #2563EB;
+
+  --wms-text-primary: #1E293B;
+  --wms-text-regular: #475569;
+  --wms-text-secondary: #94A3B8;
+
+  --wms-border-base: #E2E8F0;
+
+  --wms-sidebar-width: 220px;
+  --wms-sidebar-collapsed-width: 64px;
+  --wms-header-height: 56px;
+  --wms-breadcrumb-height: 40px;
+
+  // ── Font System (DS-005) ────────────────────────────────────
+  --wms-font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --wms-font-family-number: 'Roboto Mono', 'Inter', monospace;
+  --wms-font-size-h1: 20px;
+  --wms-font-size-h2: 16px;
+  --wms-font-size-h3: 14px;
+  --wms-font-size-body: 14px;
+  --wms-font-size-small: 12px;
+  --wms-font-size-number-lg: 24px;
+  --wms-font-size-number-xl: 36px;
+
+  // ── Spacing (DS-014~016) ────────────────────────────────────
+  --wms-spacing-xxs: 4px;
+  --wms-spacing-xs: 8px;
+  --wms-spacing-sm: 12px;
+  --wms-spacing-md: 16px;
+  --wms-spacing-lg: 24px;
+  --wms-spacing-xl: 32px;
+  --wms-spacing-xxl: 48px;
+}
+
+// ── Dark mode reservation (v1.1) ────────────────────────────────
+// [data-theme="dark"] {
+//   --el-color-primary: ...
+//   --wms-bg-base: ...
+// }
+
+// ── Reset & Base ─────────────────────────────────────────────────
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--wms-font-family);
+  font-size: var(--wms-font-size-body);
+  color: var(--wms-text-primary);
+  background-color: var(--wms-bg-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  height: 100%;
+}
+
+// ── Number font override ─────────────────────────────────────────
+.wms-number {
+  font-family: var(--wms-font-family-number);
+}
+.wms-number-lg {
+  font-family: var(--wms-font-family-number);
+  font-size: var(--wms-font-size-number-lg);
+  line-height: 32px;
+}
+.wms-number-xl {
+  font-family: var(--wms-font-family-number);
+  font-size: var(--wms-font-size-number-xl);
+  line-height: 44px;
+}
+
+// ── Element Plus Overrides ────────────────────────────────────────
+.el-table {
+  font-size: var(--wms-font-size-body);
+}
+.el-form-item__label {
+  font-weight: 500;
+}
+.el-dialog {
+  border-radius: $wms-radius-lg;
+}
+
+// ── Utility Classes ──────────────────────────────────────────────
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.flex-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--wms-spacing-sm);
+}
+
+.mb-8 { margin-bottom: var(--wms-spacing-xs); }
+.mb-12 { margin-bottom: var(--wms-spacing-sm); }
+.mb-16 { margin-bottom: var(--wms-spacing-md); }
+.mb-24 { margin-bottom: var(--wms-spacing-lg); }
+.mt-16 { margin-top: var(--wms-spacing-md); }
+.p-16 { padding: var(--wms-spacing-md); }
+.p-24 { padding: var(--wms-spacing-lg); }
+
+// ── Inventory Status Colors (DS-002) ────────────────────────────
+.status-available { color: var(--wms-color-success); }
+.status-frozen { color: var(--wms-color-danger); }
+.status-pending-inspection { color: var(--wms-color-warning); }
+.status-quarantined { color: var(--wms-color-danger); }
+.status-in-transit { color: var(--wms-color-info); }
+.status-outsourced { color: var(--wms-color-secondary); }
+
+// ── Document Status Colors (DS-003) ──────────────────────────────
+.status-draft { color: var(--wms-text-secondary); }
+.status-confirmed { color: var(--wms-color-primary); }
+.status-in-progress { color: var(--wms-color-warning); }
+.status-completed { color: var(--wms-color-success); }
+.status-cancelled { color: var(--wms-text-secondary); }
+
+// ── Page Layout Patterns (NAV-004) ──────────────────────────────
+.page-container {
+  background: var(--wms-bg-content);
+  padding: var(--wms-spacing-lg);
+  border-radius: $wms-radius-lg;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--wms-spacing-md);
+  .page-title {
+    font-size: var(--wms-font-size-h1);
+    font-weight: 600;
+    color: var(--wms-text-primary);
+  }
+  .page-actions {
+    display: flex;
+    gap: var(--wms-spacing-sm);
+  }
+}
+
+// ── SignalR Flash Animation (INTER-008) ──────────────────────────
+@keyframes signalr-flash {
+  0% { background-color: transparent; }
+  50% { background-color: var(--wms-color-primary-light-9); }
+  100% { background-color: transparent; }
+}
+.signalr-flash {
+  animation: signalr-flash 1.5s ease-in-out;
+}
+
+// ── Scrollbar Styling ────────────────────────────────────────────
+@include custom-scrollbar;

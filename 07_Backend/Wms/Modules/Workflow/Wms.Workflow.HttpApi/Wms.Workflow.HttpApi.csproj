@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.Workflow.HttpApi</AssemblyName>
+    <RootNamespace>Wms.Workflow.HttpApi</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.Workflow.Application\Wms.Workflow.Application.csproj" />
+    <ProjectReference Include="..\Wms.Workflow.Application.Contracts\Wms.Workflow.Application.Contracts.csproj" />
+  </ItemGroup>
+</Project>

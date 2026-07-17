@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.Production.Application</AssemblyName>
+    <RootNamespace>Wms.Production.Application</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Core" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Ddd.Application" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Authorization" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.EventBus" Version="$(AbpVersion)" />
+    <PackageReference Include="MediatR" Version="$(MediatRVersion)" />
+    <PackageReference Include="FluentValidation" Version="$(FluentValidationVersion)" />
+    <PackageReference Include="Mapster" Version="$(MapsterVersion)" />
+    <PackageReference Include="AutoMapper" Version="13.0.0" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.Production.Domain\Wms.Production.Domain.csproj" />
+    <ProjectReference Include="..\Wms.Production.Application.Contracts\Wms.Production.Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\Inbound\Wms.Inbound.Application.Contracts\Wms.Inbound.Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\Outbound\Wms.Outbound.Application.Contracts\Wms.Outbound.Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\Material\Wms.Material.Application.Contracts\Wms.Material.Application.Contracts.csproj" />
+  </ItemGroup>
+</Project>

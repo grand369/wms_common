@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.CycleCount.HttpApi.Client</AssemblyName>
+    <RootNamespace>Wms.CycleCount.HttpApi.Client</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Http.Client" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.CycleCount.Application.Contracts\Wms.CycleCount.Application.Contracts.csproj" />
+  </ItemGroup>
+</Project>

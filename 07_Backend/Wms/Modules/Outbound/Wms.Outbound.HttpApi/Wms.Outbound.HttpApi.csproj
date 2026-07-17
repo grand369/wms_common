@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.Outbound.HttpApi</AssemblyName>
+    <RootNamespace>Wms.Outbound.HttpApi</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.Outbound.Application\Wms.Outbound.Application.csproj" />
+    <ProjectReference Include="..\Wms.Outbound.Application.Contracts\Wms.Outbound.Application.Contracts.csproj" />
+  </ItemGroup>
+</Project>

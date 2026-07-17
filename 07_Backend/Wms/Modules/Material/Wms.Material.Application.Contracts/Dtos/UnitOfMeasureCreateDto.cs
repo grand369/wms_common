@@ -1,0 +1,16 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace Wms.Material.Application.Contracts.Dtos;
+
+/// <summary>
+/// Unit of Measure Create DTO.
+/// (API-MT-022, Phase 6 API Design)
+/// </summary>
+public class UnitOfMeasureCreateDto
+{
+    [Required] [StringLength(50)] public string UnitCode { get; set; } = string.Empty;
+    [Required] [StringLength(100)] public string UnitName { get; set; } = string.Empty;
+    [Required] [StringLength(20)] public string UnitSymbol { get; set; } = string.Empty;
+    [Required] [Range(0, 6)] public int UnitType { get; set; }
+    public bool IsActive { get; set; } = true;
+}

@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.TaskCenter.HttpApi</AssemblyName>
+    <RootNamespace>Wms.TaskCenter.HttpApi</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.TaskCenter.Application\Wms.TaskCenter.Application.csproj" />
+    <ProjectReference Include="..\Wms.TaskCenter.Application.Contracts\Wms.TaskCenter.Application.Contracts.csproj" />
+  </ItemGroup>
+</Project>

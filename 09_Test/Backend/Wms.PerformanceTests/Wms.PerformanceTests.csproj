@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.PerformanceTests</AssemblyName>
+    <RootNamespace>Wms.PerformanceTests</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
+    <PackageReference Include="Shouldly" Version="4.2.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Inventory\Wms.Inventory.Domain\Wms.Inventory.Domain.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\BarcodeLabel\Wms.BarcodeLabel.Domain\Wms.BarcodeLabel.Domain.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Workflow\Wms.Workflow.Domain\Wms.Workflow.Domain.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Notification\Wms.Notification.Domain\Wms.Notification.Domain.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Shared\Wms.Shared\Wms.Shared.csproj" />
+  </ItemGroup>
+</Project>

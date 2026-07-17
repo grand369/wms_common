@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.IntegrationTests</AssemblyName>
+    <RootNamespace>Wms.IntegrationTests</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+    <PackageReference Include="xunit" Version="2.8.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.0" />
+    <PackageReference Include="Shouldly" Version="4.2.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore" Version="8.3.0" />
+    <PackageReference Include="Volo.Abp.TestBase" Version="8.3.0" />
+    <PackageReference Include="Volo.Abp.Autofac" Version="8.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Shared kernel -->
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Shared\Wms.Shared\Wms.Shared.csproj" />
+    <!-- Domain modules — for aggregate types and domain services -->
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Warehouse\Wms.Warehouse.Domain\Wms.Warehouse.Domain.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Material\Wms.Material.Domain\Wms.Material.Domain.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Inventory\Wms.Inventory.Domain\Wms.Inventory.Domain.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Inbound\Wms.Inbound.Domain\Wms.Inbound.Domain.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Outbound\Wms.Outbound.Domain\Wms.Outbound.Domain.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Transfer\Wms.Transfer.Domain\Wms.Transfer.Domain.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\CycleCount\Wms.CycleCount.Domain\Wms.CycleCount.Domain.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Workflow\Wms.Workflow.Domain\Wms.Workflow.Domain.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\TaskCenter\Wms.TaskCenter.Domain\Wms.TaskCenter.Domain.csproj" />
+    <!-- EF Core projects — for DbContext types (module classes NOT loaded via DependsOn) -->
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Warehouse\Wms.Warehouse.EntityFrameworkCore\Wms.Warehouse.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Material\Wms.Material.EntityFrameworkCore\Wms.Material.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Inventory\Wms.Inventory.EntityFrameworkCore\Wms.Inventory.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Inbound\Wms.Inbound.EntityFrameworkCore\Wms.Inbound.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Outbound\Wms.Outbound.EntityFrameworkCore\Wms.Outbound.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Transfer\Wms.Transfer.EntityFrameworkCore\Wms.Transfer.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\CycleCount\Wms.CycleCount.EntityFrameworkCore\Wms.CycleCount.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\Workflow\Wms.Workflow.EntityFrameworkCore\Wms.Workflow.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\..\07_Backend\Wms\Modules\TaskCenter\Wms.TaskCenter.EntityFrameworkCore\Wms.TaskCenter.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+</Project>

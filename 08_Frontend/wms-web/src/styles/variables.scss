@@ -1,0 +1,144 @@
+// =================================================================
+// WMS Design System CSS Variables — Phase 7 UI Design alignment
+// Based on: 06_UI/Phase7_UI_Design.md Section 1.4~1.10
+// =================================================================
+
+// ── Primary Colors (DS-001) ──────────────────────────────────────
+$wms-color-primary: #2563EB;           // Blue 600 — 主按钮、选中态、链接、Tab 活态
+$wms-color-primary-light-3: #5B8DEF;   // 悬停态
+$wms-color-primary-light-5: #93BBFD;   // 禁用态背景
+$wms-color-primary-light-9: #EBF2FE;   // 背景高亮
+$wms-color-primary-dark-2: #1D4ED8;    // Active态
+
+// ── Secondary Colors ─────────────────────────────────────────────
+$wms-color-secondary: #475569;         // Slate 600 — 辅按钮、标签、次要信息
+$wms-color-secondary-light-9: #E2E8F0; // 背景底色
+
+// ── Functional Colors (DS-001) ───────────────────────────────────
+$wms-color-success: #16A34A;           // Green 600 — 成功提示、合格、已完成
+$wms-color-warning: #D97706;           // Amber 600 — 警告、临期、待处理
+$wms-color-danger: #DC2626;            // Red 600 — 错误、不合格、缺料、冻结
+$wms-color-info: #0EA5E9;              // Sky 500 — 信息、在途、辅助
+
+// ── Background Colors (DS-001) ───────────────────────────────────
+$wms-bg-base: #F8FAFC;                // 页面背景
+$wms-bg-content: #FFFFFF;             // 内容区背景
+$wms-bg-sidebar: #1E293B;             // Slate 800 — 左侧菜单背景
+$wms-bg-sidebar-active: #2563EB;      // 菜单选中态背景
+
+// ── Text Colors (DS-001) ────────────────────────────────────────
+$wms-text-primary: #1E293B;           // 正文主文字
+$wms-text-regular: #475569;           // 正文常规文字
+$wms-text-secondary: #94A3B8;         // 辅助文字、标签、占位文字
+
+// ── Border Colors (DS-001) ──────────────────────────────────────
+$wms-border-base: #E2E8F0;            // 默认边框
+
+// ── Element Plus Theme Override (DS-004) ─────────────────────────
+$el-color-primary: $wms-color-primary;
+$el-color-primary-light-3: $wms-color-primary-light-3;
+$el-color-primary-light-5: $wms-color-primary-light-5;
+$el-color-primary-light-9: $wms-color-primary-light-9;
+$el-color-primary-dark-2: $wms-color-primary-dark-2;
+$el-color-success: $wms-color-success;
+$el-color-warning: $wms-color-warning;
+$el-color-danger: $wms-color-danger;
+$el-color-info: $wms-color-info;
+$el-bg-color: $wms-bg-base;
+$el-text-color-primary: $wms-text-primary;
+$el-text-color-regular: $wms-text-regular;
+$el-text-color-secondary: $wms-text-secondary;
+$el-border-color: $wms-border-base;
+
+// ── Spacing System (DS-014~016) ──────────────────────────────────
+$wms-spacing-xxs: 4px;   // 标签间距
+$wms-spacing-xs: 8px;    // 行内间距
+$wms-spacing-sm: 12px;   // 同组间距
+$wms-spacing-md: 16px;   // 区域内间距
+$wms-spacing-lg: 24px;   // 区域间距/页面内边距
+$wms-spacing-xl: 32px;   // 模块间距
+$wms-spacing-xxl: 48px;  // 页面级间距
+
+// ── Font System (DS-005) ─────────────────────────────────────────
+$wms-font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+$wms-font-family-number: 'Roboto Mono', 'Inter', monospace;
+$wms-font-size-h1: 20px;       // 页面标题 — line-height: 28px
+$wms-font-size-h2: 16px;       // 区域标题 — line-height: 24px
+$wms-font-size-h3: 14px;       // 模块内标题 — line-height: 22px
+$wms-font-size-body: 14px;     // 正文、表格 — line-height: 22px
+$wms-font-size-small: 12px;    // 辅助文字 — line-height: 18px
+$wms-font-size-number: 14px;   // 统计数字 — line-height: 22px
+$wms-font-size-number-lg: 24px; // 仪表盘统计 — line-height: 32px
+$wms-font-size-number-xl: 36px; // 首页核心指标 — line-height: 44px
+
+// ── Layout Constants ─────────────────────────────────────────────
+$wms-sidebar-width: 220px;
+$wms-sidebar-collapsed-width: 64px;
+$wms-header-height: 56px;
+$wms-breadcrumb-height: 40px;
+
+// ── Border Radius ────────────────────────────────────────────────
+$wms-radius-sm: 2px;
+$wms-radius-md: 4px;
+$wms-radius-lg: 8px;
+$wms-radius-round: 20px;
+
+// ── Shadows ──────────────────────────────────────────────────────
+$wms-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.12);
+$wms-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.16);
+$wms-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.2);
+
+// ── Z-Index Layers ───────────────────────────────────────────────
+$wms-z-sidebar: 1000;
+$wms-z-header: 999;
+$wms-z-dialog: 2000;
+$wms-z-notification: 3000;
+
+// ── Animation (DS 动效规范) ──────────────────────────────────────
+$wms-transition-expand: 300ms ease-in-out;  // 展开/折叠
+$wms-transition-dialog: 200ms ease-out;     // 弹窗出现
+$wms-transition-hover: 100ms ease;          // 悬停反馈
+
+// ── Compatibility aliases (existing code references) ──────────────
+$primary-color: $wms-color-primary;
+$primary-light: $wms-color-primary-light-3;
+$primary-dark: $wms-color-primary-dark-2;
+$success-color: $wms-color-success;
+$warning-color: $wms-color-warning;
+$danger-color: $wms-color-danger;
+$info-color: $wms-color-info;
+$bg-color: $wms-bg-base;
+$bg-white: $wms-bg-content;
+$bg-dark: $wms-bg-sidebar;
+$text-primary: $wms-text-primary;
+$text-regular: $wms-text-regular;
+$text-secondary: $wms-text-secondary;
+$text-placeholder: #C0C4CC;
+$border-color: $wms-border-base;
+$border-light: $wms-color-secondary-light-9;
+$border-dark: #D0D3DA;
+$spacing-xs: $wms-spacing-xs;
+$spacing-sm: $wms-spacing-sm;
+$spacing-md: $wms-spacing-md;
+$spacing-lg: $wms-spacing-lg;
+$spacing-xl: $wms-spacing-xl;
+$font-size-xs: $wms-font-size-small;
+$font-size-sm: 13px;
+$font-size-md: $wms-font-size-body;
+$font-size-lg: $wms-font-size-h2;
+$font-size-xl: $wms-font-size-h1;
+$font-size-xxl: 20px;
+$radius-sm: $wms-radius-sm;
+$radius-md: $wms-radius-md;
+$radius-lg: $wms-radius-lg;
+$radius-round: $wms-radius-round;
+$shadow-sm: $wms-shadow-sm;
+$shadow-md: $wms-shadow-md;
+$shadow-lg: $wms-shadow-lg;
+$sidebar-width: $wms-sidebar-width;
+$sidebar-collapsed-width: $wms-sidebar-collapsed-width;
+$header-height: $wms-header-height;
+$z-sidebar: $wms-z-sidebar;
+$z-header: $wms-z-header;
+$z-dialog: $wms-z-dialog;
+$z-notification: $wms-z-notification;

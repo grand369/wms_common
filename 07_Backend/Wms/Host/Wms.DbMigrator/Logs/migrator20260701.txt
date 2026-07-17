@@ -1,0 +1,440 @@
+2026-07-01 16:50:11.928 +08:00 [INF] Starting WMS DbMigrator...
+2026-07-01 16:50:12.434 +08:00 [FTL] WMS DbMigrator terminated unexpectedly!
+Volo.Abp.AbpInitializationException: An error occurred during ConfigureServices phase of the module Wms.EntityFrameworkCore.WmsEntityFrameworkCoreModule, Wms.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null. See the inner exception for details.
+ ---> Volo.Abp.AbpException: Wms.EntityFrameworkCore.WmsDbContext, Wms.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null should inherit/implement Wms.Warehouse.EntityFrameworkCore.WmsWarehouseDbContext, Wms.Warehouse.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null!
+   at Volo.Abp.DependencyInjection.AbpCommonDbContextRegistrationOptions.ReplaceDbContext(Type otherDbContextType, Type targetDbContextType, MultiTenancySides multiTenancySides)
+   at Volo.Abp.DependencyInjection.AbpCommonDbContextRegistrationOptions.ReplaceDbContext[TOtherDbContext](MultiTenancySides multiTenancySides)
+   at Wms.EntityFrameworkCore.WmsEntityFrameworkCoreModule.<>c.<ConfigureServices>b__0_0(IAbpDbContextRegistrationOptionsBuilder options) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\src\Wms.EntityFrameworkCore\WmsEntityFrameworkCoreModule.cs:line 58
+   at Microsoft.Extensions.DependencyInjection.AbpEfCoreServiceCollectionExtensions.AddAbpDbContext[TDbContext](IServiceCollection services, Action`1 optionsBuilder)
+   at Wms.EntityFrameworkCore.WmsEntityFrameworkCoreModule.ConfigureServices(ServiceConfigurationContext context) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\src\Wms.EntityFrameworkCore\WmsEntityFrameworkCoreModule.cs:line 55
+   at Volo.Abp.AbpApplicationBase.ConfigureServices()
+   --- End of inner exception stack trace ---
+   at Volo.Abp.AbpApplicationBase.ConfigureServices()
+   at Volo.Abp.AbpApplicationBase..ctor(Type startupModuleType, IServiceCollection services, Action`1 optionsAction)
+   at Volo.Abp.AbpApplicationWithExternalServiceProvider..ctor(Type startupModuleType, IServiceCollection services, Action`1 optionsAction)
+   at Volo.Abp.AbpApplicationFactory.Create(Type startupModuleType, IServiceCollection services, Action`1 optionsAction)
+   at Volo.Abp.AbpApplicationFactory.Create[TStartupModule](IServiceCollection services, Action`1 optionsAction)
+   at Microsoft.Extensions.DependencyInjection.ServiceCollectionApplicationExtensions.AddApplication[TStartupModule](IServiceCollection services, Action`1 optionsAction)
+   at Wms.DbMigrator.Program.<>c.<Main>b__0_0(IServiceCollection services) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\Host\Wms.DbMigrator\Program.cs:line 25
+   at Microsoft.Extensions.Hosting.HostingHostBuilderExtensions.<>c__DisplayClass9_0.<ConfigureServices>b__0(HostBuilderContext context, IServiceCollection collection)
+   at Microsoft.Extensions.Hosting.HostBuilder.InitializeServiceProvider()
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at Wms.DbMigrator.Program.Main(String[] args) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\Host\Wms.DbMigrator\Program.cs:line 30
+2026-07-01 16:51:10.094 +08:00 [INF] Starting WMS DbMigrator...
+2026-07-01 16:51:10.459 +08:00 [FTL] WMS DbMigrator terminated unexpectedly!
+Volo.Abp.AbpInitializationException: An error occurred during ConfigureServices phase of the module Wms.EntityFrameworkCore.WmsEntityFrameworkCoreModule, Wms.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null. See the inner exception for details.
+ ---> Volo.Abp.AbpException: Wms.EntityFrameworkCore.WmsDbContext, Wms.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null should inherit/implement Wms.Warehouse.EntityFrameworkCore.WmsWarehouseDbContext, Wms.Warehouse.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null!
+   at Volo.Abp.DependencyInjection.AbpCommonDbContextRegistrationOptions.ReplaceDbContext(Type otherDbContextType, Type targetDbContextType, MultiTenancySides multiTenancySides)
+   at Volo.Abp.DependencyInjection.AbpCommonDbContextRegistrationOptions.ReplaceDbContext[TOtherDbContext](MultiTenancySides multiTenancySides)
+   at Wms.EntityFrameworkCore.WmsEntityFrameworkCoreModule.<>c.<ConfigureServices>b__0_0(IAbpDbContextRegistrationOptionsBuilder options) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\src\Wms.EntityFrameworkCore\WmsEntityFrameworkCoreModule.cs:line 58
+   at Microsoft.Extensions.DependencyInjection.AbpEfCoreServiceCollectionExtensions.AddAbpDbContext[TDbContext](IServiceCollection services, Action`1 optionsBuilder)
+   at Wms.EntityFrameworkCore.WmsEntityFrameworkCoreModule.ConfigureServices(ServiceConfigurationContext context) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\src\Wms.EntityFrameworkCore\WmsEntityFrameworkCoreModule.cs:line 55
+   at Volo.Abp.AbpApplicationBase.ConfigureServices()
+   --- End of inner exception stack trace ---
+   at Volo.Abp.AbpApplicationBase.ConfigureServices()
+   at Volo.Abp.AbpApplicationBase..ctor(Type startupModuleType, IServiceCollection services, Action`1 optionsAction)
+   at Volo.Abp.AbpApplicationWithExternalServiceProvider..ctor(Type startupModuleType, IServiceCollection services, Action`1 optionsAction)
+   at Volo.Abp.AbpApplicationFactory.Create(Type startupModuleType, IServiceCollection services, Action`1 optionsAction)
+   at Volo.Abp.AbpApplicationFactory.Create[TStartupModule](IServiceCollection services, Action`1 optionsAction)
+   at Microsoft.Extensions.DependencyInjection.ServiceCollectionApplicationExtensions.AddApplication[TStartupModule](IServiceCollection services, Action`1 optionsAction)
+   at Wms.DbMigrator.Program.<>c.<Main>b__0_0(IServiceCollection services) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\Host\Wms.DbMigrator\Program.cs:line 25
+   at Microsoft.Extensions.Hosting.HostingHostBuilderExtensions.<>c__DisplayClass9_0.<ConfigureServices>b__0(HostBuilderContext context, IServiceCollection collection)
+   at Microsoft.Extensions.Hosting.HostBuilder.InitializeServiceProvider()
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at Wms.DbMigrator.Program.Main(String[] args) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\Host\Wms.DbMigrator\Program.cs:line 30
+2026-07-01 17:18:27.559 +08:00 [INF] Starting WMS DbMigrator...
+2026-07-01 17:18:28.207 +08:00 [FTL] WMS DbMigrator terminated unexpectedly!
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at Microsoft.Extensions.Hosting.HostBuilder.Write[T](DiagnosticListener diagnosticSource, String name, T value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at Wms.DbMigrator.Program.Main(String[] args) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\Host\Wms.DbMigrator\Program.cs:line 30
+2026-07-01 17:19:11.405 +08:00 [INF] Starting WMS DbMigrator...
+2026-07-01 17:19:12.074 +08:00 [FTL] WMS DbMigrator terminated unexpectedly!
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at Microsoft.Extensions.Hosting.HostBuilder.Write[T](DiagnosticListener diagnosticSource, String name, T value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at Wms.DbMigrator.Program.Main(String[] args) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\Host\Wms.DbMigrator\Program.cs:line 30
+2026-07-01 17:19:36.927 +08:00 [INF] Starting WMS DbMigrator...
+2026-07-01 17:19:37.481 +08:00 [FTL] WMS DbMigrator terminated unexpectedly!
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at Microsoft.Extensions.Hosting.HostBuilder.Write[T](DiagnosticListener diagnosticSource, String name, T value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at Wms.DbMigrator.Program.Main(String[] args) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\Host\Wms.DbMigrator\Program.cs:line 30
+2026-07-01 17:21:49.763 +08:00 [INF] Starting WMS DbMigrator...
+2026-07-01 17:21:50.382 +08:00 [FTL] WMS DbMigrator terminated unexpectedly!
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at Microsoft.Extensions.Hosting.HostBuilder.Write[T](DiagnosticListener diagnosticSource, String name, T value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at Wms.DbMigrator.Program.Main(String[] args) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\Host\Wms.DbMigrator\Program.cs:line 30
+2026-07-01 17:22:15.687 +08:00 [INF] Starting WMS DbMigrator...
+2026-07-01 17:22:16.293 +08:00 [FTL] WMS DbMigrator terminated unexpectedly!
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at Microsoft.Extensions.Hosting.HostBuilder.Write[T](DiagnosticListener diagnosticSource, String name, T value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at Wms.DbMigrator.Program.Main(String[] args) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\Host\Wms.DbMigrator\Program.cs:line 30
+2026-07-01 17:23:03.780 +08:00 [INF] Starting WMS DbMigrator...
+2026-07-01 17:23:04.429 +08:00 [FTL] WMS DbMigrator terminated unexpectedly!
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at Microsoft.Extensions.Hosting.HostBuilder.Write[T](DiagnosticListener diagnosticSource, String name, T value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at Wms.DbMigrator.Program.Main(String[] args) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\Host\Wms.DbMigrator\Program.cs:line 30
+2026-07-01 17:23:49.542 +08:00 [INF] Starting WMS DbMigrator...
+2026-07-01 17:23:50.095 +08:00 [FTL] WMS DbMigrator terminated unexpectedly!
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at Microsoft.Extensions.Hosting.HostBuilder.Write[T](DiagnosticListener diagnosticSource, String name, T value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at Wms.DbMigrator.Program.Main(String[] args) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\Host\Wms.DbMigrator\Program.cs:line 30
+2026-07-01 17:24:22.743 +08:00 [INF] Starting WMS DbMigrator...
+2026-07-01 17:24:23.312 +08:00 [FTL] WMS DbMigrator terminated unexpectedly!
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at Microsoft.Extensions.Hosting.HostBuilder.Write[T](DiagnosticListener diagnosticSource, String name, T value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at Wms.DbMigrator.Program.Main(String[] args) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\Host\Wms.DbMigrator\Program.cs:line 30
+2026-07-01 17:25:06.283 +08:00 [INF] Starting WMS DbMigrator...
+2026-07-01 17:25:06.851 +08:00 [FTL] WMS DbMigrator terminated unexpectedly!
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at Microsoft.Extensions.Hosting.HostBuilder.Write[T](DiagnosticListener diagnosticSource, String name, T value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at Wms.DbMigrator.Program.Main(String[] args) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\Host\Wms.DbMigrator\Program.cs:line 30
+2026-07-01 17:39:09.634 +08:00 [INF] Starting WMS DbMigrator...
+2026-07-01 17:39:10.236 +08:00 [FTL] WMS DbMigrator terminated unexpectedly!
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at Microsoft.Extensions.Hosting.HostBuilder.Write[T](DiagnosticListener diagnosticSource, String name, T value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at Wms.DbMigrator.Program.Main(String[] args) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\Host\Wms.DbMigrator\Program.cs:line 30
+2026-07-01 17:40:02.891 +08:00 [INF] Starting WMS DbMigrator...
+2026-07-01 17:40:03.571 +08:00 [FTL] WMS DbMigrator terminated unexpectedly!
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at Microsoft.Extensions.Hosting.HostBuilder.Write[T](DiagnosticListener diagnosticSource, String name, T value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at Wms.DbMigrator.Program.Main(String[] args) in E:\AI_Root\CommonWms\ManufacturingWMS\07_Backend\Wms\Host\Wms.DbMigrator\Program.cs:line 30
+2026-07-01 18:50:56.901 +08:00 [INF] Starting WMS DbMigrator...
+2026-07-01 18:50:57.601 +08:00 [INF] Loaded ABP modules:
+2026-07-01 18:50:57.602 +08:00 [INF] - Wms.DbMigrator.WmsDbMigratorModule
+2026-07-01 18:50:57.602 +08:00 [INF]   - Wms.EntityFrameworkCore.WmsEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Wms.Shared.WmsSharedModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Volo.Abp.EventBus.AbpEventBusModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.EventBus.Abstractions.AbpEventBusAbstractionsModule
+2026-07-01 18:50:57.602 +08:00 [INF]           - Volo.Abp.ObjectExtending.AbpObjectExtendingModule
+2026-07-01 18:50:57.602 +08:00 [INF]             - Volo.Abp.Localization.AbpLocalizationAbstractionsModule
+2026-07-01 18:50:57.602 +08:00 [INF]             - Volo.Abp.Validation.AbpValidationAbstractionsModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.MultiTenancy.AbpMultiTenancyModule
+2026-07-01 18:50:57.602 +08:00 [INF]           - Volo.Abp.Data.AbpDataModule
+2026-07-01 18:50:57.602 +08:00 [INF]             - Volo.Abp.Uow.AbpUnitOfWorkModule
+2026-07-01 18:50:57.602 +08:00 [INF]           - Volo.Abp.Security.AbpSecurityModule
+2026-07-01 18:50:57.602 +08:00 [INF]           - Volo.Abp.Settings.AbpSettingsModule
+2026-07-01 18:50:57.602 +08:00 [INF]           - Volo.Abp.MultiTenancy.AbpMultiTenancyAbstractionsModule
+2026-07-01 18:50:57.602 +08:00 [INF]             - Volo.Abp.VirtualFileSystem.AbpVirtualFileSystemModule
+2026-07-01 18:50:57.602 +08:00 [INF]             - Volo.Abp.Localization.AbpLocalizationModule
+2026-07-01 18:50:57.602 +08:00 [INF]               - Volo.Abp.Threading.AbpThreadingModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.Json.AbpJsonModule
+2026-07-01 18:50:57.602 +08:00 [INF]           - Volo.Abp.Json.SystemTextJson.AbpJsonSystemTextJsonModule
+2026-07-01 18:50:57.602 +08:00 [INF]             - Volo.Abp.Json.AbpJsonAbstractionsModule
+2026-07-01 18:50:57.602 +08:00 [INF]             - Volo.Abp.Timing.AbpTimingModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.Guids.AbpGuidsModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.BackgroundWorkers.AbpBackgroundWorkersModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.DistributedLocking.AbpDistributedLockingAbstractionsModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Volo.Abp.EntityFrameworkCore.AbpEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Volo.Abp.Domain.AbpDddDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.Auditing.AbpAuditingModule
+2026-07-01 18:50:57.602 +08:00 [INF]           - Volo.Abp.Auditing.AbpAuditingContractsModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.ObjectMapping.AbpObjectMappingModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.ExceptionHandling.AbpExceptionHandlingModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.Specifications.AbpSpecificationsModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.Caching.AbpCachingModule
+2026-07-01 18:50:57.602 +08:00 [INF]           - Volo.Abp.Serialization.AbpSerializationModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.Domain.AbpDddDomainSharedModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Volo.Abp.Identity.EntityFrameworkCore.AbpIdentityEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Volo.Abp.Identity.AbpIdentityDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.Identity.AbpIdentityDomainSharedModule
+2026-07-01 18:50:57.602 +08:00 [INF]           - Volo.Abp.Users.AbpUsersDomainSharedModule
+2026-07-01 18:50:57.602 +08:00 [INF]           - Volo.Abp.Validation.AbpValidationModule
+2026-07-01 18:50:57.602 +08:00 [INF]           - Volo.Abp.Features.AbpFeaturesModule
+2026-07-01 18:50:57.602 +08:00 [INF]             - Volo.Abp.Authorization.AbpAuthorizationAbstractionsModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.Users.AbpUsersDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]           - Volo.Abp.Users.AbpUsersAbstractionModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.AutoMapper.AbpAutoMapperModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Volo.Abp.Users.EntityFrameworkCore.AbpUsersEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Volo.Abp.PermissionManagement.EntityFrameworkCore.AbpPermissionManagementEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Volo.Abp.PermissionManagement.AbpPermissionManagementDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.Authorization.AbpAuthorizationModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.PermissionManagement.AbpPermissionManagementDomainSharedModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Volo.Abp.BackgroundJobs.EntityFrameworkCore.AbpBackgroundJobsEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Volo.Abp.BackgroundJobs.AbpBackgroundJobsDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.BackgroundJobs.AbpBackgroundJobsDomainSharedModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.BackgroundJobs.AbpBackgroundJobsModule
+2026-07-01 18:50:57.602 +08:00 [INF]           - Volo.Abp.BackgroundJobs.AbpBackgroundJobsAbstractionsModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Volo.Abp.SettingManagement.EntityFrameworkCore.AbpSettingManagementEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Volo.Abp.SettingManagement.AbpSettingManagementDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.SettingManagement.AbpSettingManagementDomainSharedModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Volo.Abp.FeatureManagement.EntityFrameworkCore.AbpFeatureManagementEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Volo.Abp.FeatureManagement.AbpFeatureManagementDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.FeatureManagement.AbpFeatureManagementDomainSharedModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Volo.Abp.AuditLogging.EntityFrameworkCore.AbpAuditLoggingEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Volo.Abp.AuditLogging.AbpAuditLoggingDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]         - Volo.Abp.AuditLogging.AbpAuditLoggingDomainSharedModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Wms.Warehouse.EntityFrameworkCore.WmsWarehouseEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Wms.Warehouse.Domain.WmsWarehouseDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Volo.Abp.EntityFrameworkCore.SqlServer.AbpEntityFrameworkCoreSqlServerModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Wms.Material.EntityFrameworkCore.WmsMaterialEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Wms.Material.Domain.WmsMaterialDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Wms.Inventory.EntityFrameworkCore.WmsInventoryEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Wms.Inventory.Domain.WmsInventoryDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Wms.Inbound.EntityFrameworkCore.WmsInboundEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Wms.Inbound.Domain.WmsInboundDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Wms.Outbound.EntityFrameworkCore.WmsOutboundEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Wms.Outbound.Domain.WmsOutboundDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Wms.BarcodeLabel.EntityFrameworkCore.WmsBarcodeLabelEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Wms.BarcodeLabel.Domain.WmsBarcodeLabelDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Wms.LineSide.EntityFrameworkCore.WmsLineSideEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Wms.LineSide.Domain.WmsLineSideDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Wms.RuleEngine.EntityFrameworkCore.WmsRuleEngineEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Wms.RuleEngine.Domain.WmsRuleEngineDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Wms.Transfer.EntityFrameworkCore.WmsTransferEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Wms.Transfer.Domain.WmsTransferDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Wms.Production.EntityFrameworkCore.WmsProductionEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Wms.Production.Domain.WmsProductionDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Wms.CycleCount.EntityFrameworkCore.WmsCycleCountEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Wms.CycleCount.Domain.WmsCycleCountDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Wms.Workflow.EntityFrameworkCore.WmsWorkflowEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Wms.Workflow.Domain.WmsWorkflowDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Wms.TaskCenter.EntityFrameworkCore.WmsTaskCenterEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Wms.TaskCenter.Domain.WmsTaskCenterDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Wms.Notification.EntityFrameworkCore.WmsNotificationEntityFrameworkCoreModule
+2026-07-01 18:50:57.602 +08:00 [INF]       - Wms.Notification.Domain.WmsNotificationDomainModule
+2026-07-01 18:50:57.602 +08:00 [INF]   - Wms.EntityFrameworkCore.SqlServer.WmsEntityFrameworkCoreSqlServerModule
+2026-07-01 18:50:57.602 +08:00 [INF]   - Volo.Abp.Autofac.AbpAutofacModule
+2026-07-01 18:50:57.602 +08:00 [INF]     - Volo.Abp.Castle.AbpCastleCoreModule
+2026-07-01 18:50:57.635 +08:00 [INF] Initialized all ABP modules.
+2026-07-01 18:50:57.635 +08:00 [INF] Seeding initial data...
+2026-07-01 18:50:58.747 +08:00 [INF] Executed DbCommand (22ms) [Parameters=[@__providerName_0='?' (Size = 64)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[Id], [a].[Name], [a].[ProviderKey], [a].[ProviderName], [a].[Value]
+FROM [AbpSettings] AS [a]
+WHERE [a].[ProviderName] = @__providerName_0 AND [a].[ProviderKey] IS NULL
+2026-07-01 18:50:58.747 +08:00 [INF] Executed DbCommand (23ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[Id], [a].[DisplayName], [a].[ExtraProperties], [a].[Name]
+FROM [AbpPermissionGroups] AS [a]
+2026-07-01 18:50:58.747 +08:00 [INF] Executed DbCommand (23ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[Id], [a].[DefaultValue], [a].[Description], [a].[DisplayName], [a].[ExtraProperties], [a].[IsEncrypted], [a].[IsInherited], [a].[IsVisibleToClients], [a].[Name], [a].[Providers]
+FROM [AbpSettingDefinitions] AS [a]
+2026-07-01 18:50:58.747 +08:00 [INF] Executed DbCommand (23ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[Id], [a].[DisplayName], [a].[ExtraProperties], [a].[Name]
+FROM [AbpFeatureGroups] AS [a]
+2026-07-01 18:50:58.774 +08:00 [INF] Executed DbCommand (2ms) [Parameters=[@__providerName_0='?' (Size = 64)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[Id], [a].[Name], [a].[ProviderKey], [a].[ProviderName], [a].[Value]
+FROM [AbpSettings] AS [a]
+WHERE [a].[ProviderName] = @__providerName_0 AND [a].[ProviderKey] IS NULL
+2026-07-01 18:50:58.775 +08:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[Id], [a].[DisplayName], [a].[ExtraProperties], [a].[GroupName], [a].[IsEnabled], [a].[MultiTenancySide], [a].[Name], [a].[ParentName], [a].[Providers], [a].[StateCheckers]
+FROM [AbpPermissions] AS [a]
+2026-07-01 18:50:58.815 +08:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[Id], [a].[AllowedProviders], [a].[DefaultValue], [a].[Description], [a].[DisplayName], [a].[ExtraProperties], [a].[GroupName], [a].[IsAvailableToHost], [a].[IsVisibleToClients], [a].[Name], [a].[ParentName], [a].[ValueType]
+FROM [AbpFeatures] AS [a]
+2026-07-01 18:50:59.095 +08:00 [INF] Executed DbCommand (4ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[CreationTime], [a].[CreatorId], [a].[DeleterId], [a].[DeletionTime], [a].[Email], [a].[EmailConfirmed], [a].[EntityVersion], [a].[ExtraProperties], [a].[IsActive], [a].[IsDeleted], [a].[IsExternal], [a].[LastModificationTime], [a].[LastModifierId], [a].[LastPasswordChangeTime], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[Name], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[ShouldChangePasswordOnNextLogin], [a].[Surname], [a].[TenantId], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AbpUsers] AS [a]
+WHERE [a].[IsDeleted] = CAST(0 AS bit) AND [a].[TenantId] IS NULL AND [a].[NormalizedUserName] = @__normalizedUserName_0
+ORDER BY [a].[Id]
+2026-07-01 18:50:59.177 +08:00 [INF] Executed DbCommand (13ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t0].[UserId], [t0].[RoleId], [t0].[TenantId], [t].[Id]
+FROM (
+    SELECT TOP(1) [a].[Id]
+    FROM [AbpUsers] AS [a]
+    WHERE [a].[IsDeleted] = CAST(0 AS bit) AND [a].[TenantId] IS NULL AND [a].[NormalizedUserName] = @__normalizedUserName_0
+    ORDER BY [a].[Id]
+) AS [t]
+INNER JOIN (
+    SELECT [a0].[UserId], [a0].[RoleId], [a0].[TenantId]
+    FROM [AbpUserRoles] AS [a0]
+    WHERE [a0].[TenantId] IS NULL
+) AS [t0] ON [t].[Id] = [t0].[UserId]
+ORDER BY [t].[Id]
+2026-07-01 18:50:59.197 +08:00 [INF] Executed DbCommand (4ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t0].[UserId], [t0].[LoginProvider], [t0].[ProviderDisplayName], [t0].[ProviderKey], [t0].[TenantId], [t].[Id]
+FROM (
+    SELECT TOP(1) [a].[Id]
+    FROM [AbpUsers] AS [a]
+    WHERE [a].[IsDeleted] = CAST(0 AS bit) AND [a].[TenantId] IS NULL AND [a].[NormalizedUserName] = @__normalizedUserName_0
+    ORDER BY [a].[Id]
+) AS [t]
+INNER JOIN (
+    SELECT [a0].[UserId], [a0].[LoginProvider], [a0].[ProviderDisplayName], [a0].[ProviderKey], [a0].[TenantId]
+    FROM [AbpUserLogins] AS [a0]
+    WHERE [a0].[TenantId] IS NULL
+) AS [t0] ON [t].[Id] = [t0].[UserId]
+ORDER BY [t].[Id]
+2026-07-01 18:50:59.202 +08:00 [INF] Executed DbCommand (4ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t0].[Id], [t0].[ClaimType], [t0].[ClaimValue], [t0].[TenantId], [t0].[UserId], [t].[Id]
+FROM (
+    SELECT TOP(1) [a].[Id]
+    FROM [AbpUsers] AS [a]
+    WHERE [a].[IsDeleted] = CAST(0 AS bit) AND [a].[TenantId] IS NULL AND [a].[NormalizedUserName] = @__normalizedUserName_0
+    ORDER BY [a].[Id]
+) AS [t]
+INNER JOIN (
+    SELECT [a0].[Id], [a0].[ClaimType], [a0].[ClaimValue], [a0].[TenantId], [a0].[UserId]
+    FROM [AbpUserClaims] AS [a0]
+    WHERE [a0].[TenantId] IS NULL
+) AS [t0] ON [t].[Id] = [t0].[UserId]
+ORDER BY [t].[Id]
+2026-07-01 18:50:59.206 +08:00 [INF] Executed DbCommand (3ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t0].[UserId], [t0].[LoginProvider], [t0].[Name], [t0].[TenantId], [t0].[Value], [t].[Id]
+FROM (
+    SELECT TOP(1) [a].[Id]
+    FROM [AbpUsers] AS [a]
+    WHERE [a].[IsDeleted] = CAST(0 AS bit) AND [a].[TenantId] IS NULL AND [a].[NormalizedUserName] = @__normalizedUserName_0
+    ORDER BY [a].[Id]
+) AS [t]
+INNER JOIN (
+    SELECT [a0].[UserId], [a0].[LoginProvider], [a0].[Name], [a0].[TenantId], [a0].[Value]
+    FROM [AbpUserTokens] AS [a0]
+    WHERE [a0].[TenantId] IS NULL
+) AS [t0] ON [t].[Id] = [t0].[UserId]
+ORDER BY [t].[Id]
+2026-07-01 18:50:59.211 +08:00 [INF] Executed DbCommand (5ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t0].[OrganizationUnitId], [t0].[UserId], [t0].[CreationTime], [t0].[CreatorId], [t0].[TenantId], [t].[Id]
+FROM (
+    SELECT TOP(1) [a].[Id]
+    FROM [AbpUsers] AS [a]
+    WHERE [a].[IsDeleted] = CAST(0 AS bit) AND [a].[TenantId] IS NULL AND [a].[NormalizedUserName] = @__normalizedUserName_0
+    ORDER BY [a].[Id]
+) AS [t]
+INNER JOIN (
+    SELECT [a0].[OrganizationUnitId], [a0].[UserId], [a0].[CreationTime], [a0].[CreatorId], [a0].[TenantId]
+    FROM [AbpUserOrganizationUnits] AS [a0]
+    WHERE [a0].[TenantId] IS NULL
+) AS [t0] ON [t].[Id] = [t0].[UserId]
+ORDER BY [t].[Id]
+2026-07-01 18:50:59.292 +08:00 [INF] Executed DbCommand (4ms) [Parameters=[@__names_0='?' (Size = 4000), @__providerName_1='?' (Size = 64), @__providerKey_2='?' (Size = 64)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[Id], [a].[Name], [a].[ProviderKey], [a].[ProviderName], [a].[TenantId]
+FROM [AbpPermissionGrants] AS [a]
+WHERE [a].[TenantId] IS NULL AND [a].[Name] IN (
+    SELECT [n].[value]
+    FROM OPENJSON(@__names_0) WITH ([value] nvarchar(128) '$') AS [n]
+) AND [a].[ProviderName] = @__providerName_1 AND [a].[ProviderKey] = @__providerKey_2
+2026-07-01 18:50:59.317 +08:00 [INF] Executed DbCommand (4ms) [Parameters=[@__normalizedRoleName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[EntityVersion], [a].[ExtraProperties], [a].[IsDefault], [a].[IsPublic], [a].[IsStatic], [a].[Name], [a].[NormalizedName], [a].[TenantId]
+FROM [AbpRoles] AS [a]
+WHERE [a].[TenantId] IS NULL AND [a].[NormalizedName] = @__normalizedRoleName_0
+ORDER BY [a].[Id]
+2026-07-01 18:50:59.356 +08:00 [INF] Executed DbCommand (6ms) [Parameters=[@__normalizedRoleName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t0].[Id], [t0].[ClaimType], [t0].[ClaimValue], [t0].[RoleId], [t0].[TenantId], [t].[Id]
+FROM (
+    SELECT TOP(1) [a].[Id]
+    FROM [AbpRoles] AS [a]
+    WHERE [a].[TenantId] IS NULL AND [a].[NormalizedName] = @__normalizedRoleName_0
+    ORDER BY [a].[Id]
+) AS [t]
+INNER JOIN (
+    SELECT [a0].[Id], [a0].[ClaimType], [a0].[ClaimValue], [a0].[RoleId], [a0].[TenantId]
+    FROM [AbpRoleClaims] AS [a0]
+    WHERE [a0].[TenantId] IS NULL
+) AS [t0] ON [t].[Id] = [t0].[RoleId]
+ORDER BY [t].[Id]
+2026-07-01 18:50:59.360 +08:00 [INF] Executed DbCommand (1ms) [Parameters=[@__normalizedRoleName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[EntityVersion], [a].[ExtraProperties], [a].[IsDefault], [a].[IsPublic], [a].[IsStatic], [a].[Name], [a].[NormalizedName], [a].[TenantId]
+FROM [AbpRoles] AS [a]
+WHERE [a].[TenantId] IS NULL AND [a].[NormalizedName] = @__normalizedRoleName_0
+ORDER BY [a].[Id]
+2026-07-01 18:50:59.361 +08:00 [INF] Executed DbCommand (0ms) [Parameters=[@__normalizedRoleName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t0].[Id], [t0].[ClaimType], [t0].[ClaimValue], [t0].[RoleId], [t0].[TenantId], [t].[Id]
+FROM (
+    SELECT TOP(1) [a].[Id]
+    FROM [AbpRoles] AS [a]
+    WHERE [a].[TenantId] IS NULL AND [a].[NormalizedName] = @__normalizedRoleName_0
+    ORDER BY [a].[Id]
+) AS [t]
+INNER JOIN (
+    SELECT [a0].[Id], [a0].[ClaimType], [a0].[ClaimValue], [a0].[RoleId], [a0].[TenantId]
+    FROM [AbpRoleClaims] AS [a0]
+    WHERE [a0].[TenantId] IS NULL
+) AS [t0] ON [t].[Id] = [t0].[RoleId]
+ORDER BY [t].[Id]
+2026-07-01 18:50:59.362 +08:00 [INF] Executed DbCommand (0ms) [Parameters=[@__normalizedRoleName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[EntityVersion], [a].[ExtraProperties], [a].[IsDefault], [a].[IsPublic], [a].[IsStatic], [a].[Name], [a].[NormalizedName], [a].[TenantId]
+FROM [AbpRoles] AS [a]
+WHERE [a].[TenantId] IS NULL AND [a].[NormalizedName] = @__normalizedRoleName_0
+ORDER BY [a].[Id]
+2026-07-01 18:50:59.363 +08:00 [INF] Executed DbCommand (1ms) [Parameters=[@__normalizedRoleName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t0].[Id], [t0].[ClaimType], [t0].[ClaimValue], [t0].[RoleId], [t0].[TenantId], [t].[Id]
+FROM (
+    SELECT TOP(1) [a].[Id]
+    FROM [AbpRoles] AS [a]
+    WHERE [a].[TenantId] IS NULL AND [a].[NormalizedName] = @__normalizedRoleName_0
+    ORDER BY [a].[Id]
+) AS [t]
+INNER JOIN (
+    SELECT [a0].[Id], [a0].[ClaimType], [a0].[ClaimValue], [a0].[RoleId], [a0].[TenantId]
+    FROM [AbpRoleClaims] AS [a0]
+    WHERE [a0].[TenantId] IS NULL
+) AS [t0] ON [t].[Id] = [t0].[RoleId]
+ORDER BY [t].[Id]
+2026-07-01 18:50:59.364 +08:00 [INF] Executed DbCommand (0ms) [Parameters=[@__normalizedRoleName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[EntityVersion], [a].[ExtraProperties], [a].[IsDefault], [a].[IsPublic], [a].[IsStatic], [a].[Name], [a].[NormalizedName], [a].[TenantId]
+FROM [AbpRoles] AS [a]
+WHERE [a].[TenantId] IS NULL AND [a].[NormalizedName] = @__normalizedRoleName_0
+ORDER BY [a].[Id]
+2026-07-01 18:50:59.365 +08:00 [INF] Executed DbCommand (0ms) [Parameters=[@__normalizedRoleName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t0].[Id], [t0].[ClaimType], [t0].[ClaimValue], [t0].[RoleId], [t0].[TenantId], [t].[Id]
+FROM (
+    SELECT TOP(1) [a].[Id]
+    FROM [AbpRoles] AS [a]
+    WHERE [a].[TenantId] IS NULL AND [a].[NormalizedName] = @__normalizedRoleName_0
+    ORDER BY [a].[Id]
+) AS [t]
+INNER JOIN (
+    SELECT [a0].[Id], [a0].[ClaimType], [a0].[ClaimValue], [a0].[RoleId], [a0].[TenantId]
+    FROM [AbpRoleClaims] AS [a0]
+    WHERE [a0].[TenantId] IS NULL
+) AS [t0] ON [t].[Id] = [t0].[RoleId]
+ORDER BY [t].[Id]
+2026-07-01 18:50:59.379 +08:00 [INF] Executed DbCommand (1ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[CreationTime], [a].[CreatorId], [a].[DeleterId], [a].[DeletionTime], [a].[Email], [a].[EmailConfirmed], [a].[EntityVersion], [a].[ExtraProperties], [a].[IsActive], [a].[IsDeleted], [a].[IsExternal], [a].[LastModificationTime], [a].[LastModifierId], [a].[LastPasswordChangeTime], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[Name], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[ShouldChangePasswordOnNextLogin], [a].[Surname], [a].[TenantId], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AbpUsers] AS [a]
+WHERE [a].[IsDeleted] = CAST(0 AS bit) AND [a].[TenantId] IS NULL AND [a].[NormalizedUserName] = @__normalizedUserName_0
+ORDER BY [a].[Id]
+2026-07-01 18:50:59.420 +08:00 [INF] WMS DbMigrator completed successfully!

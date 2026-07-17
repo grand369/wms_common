@@ -1,0 +1,64 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.HttpApi.Host</AssemblyName>
+    <RootNamespace>Wms.HttpApi.Host</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.AspNetCore" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Serilog" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Swashbuckle" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Identity.Application" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Identity.HttpApi" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.HttpApi" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Autofac" Version="$(AbpVersion)" />
+    <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
+    <PackageReference Include="Serilog.Sinks.File" Version="$(SerilogSinksFileVersion)" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="$(SerilogExtensionsLoggingVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Modules\Warehouse\Wms.Warehouse.HttpApi\Wms.Warehouse.HttpApi.csproj" />
+    <ProjectReference Include="..\..\Modules\Warehouse\Wms.Warehouse.Application\Wms.Warehouse.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Warehouse\Wms.Warehouse.EntityFrameworkCore\Wms.Warehouse.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Material\Wms.Material.HttpApi\Wms.Material.HttpApi.csproj" />
+    <ProjectReference Include="..\..\Modules\Material\Wms.Material.Application\Wms.Material.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Material\Wms.Material.EntityFrameworkCore\Wms.Material.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Inventory\Wms.Inventory.HttpApi\Wms.Inventory.HttpApi.csproj" />
+    <ProjectReference Include="..\..\Modules\Inventory\Wms.Inventory.Application\Wms.Inventory.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Inventory\Wms.Inventory.EntityFrameworkCore\Wms.Inventory.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Inbound\Wms.Inbound.HttpApi\Wms.Inbound.HttpApi.csproj" />
+    <ProjectReference Include="..\..\Modules\Inbound\Wms.Inbound.Application\Wms.Inbound.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Inbound\Wms.Inbound.EntityFrameworkCore\Wms.Inbound.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Outbound\Wms.Outbound.HttpApi\Wms.Outbound.HttpApi.csproj" />
+    <ProjectReference Include="..\..\Modules\Outbound\Wms.Outbound.Application\Wms.Outbound.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Outbound\Wms.Outbound.EntityFrameworkCore\Wms.Outbound.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Transfer\Wms.Transfer.HttpApi\Wms.Transfer.HttpApi.csproj" />
+    <ProjectReference Include="..\..\Modules\Transfer\Wms.Transfer.Application\Wms.Transfer.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Transfer\Wms.Transfer.EntityFrameworkCore\Wms.Transfer.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\CycleCount\Wms.CycleCount.HttpApi\Wms.CycleCount.HttpApi.csproj" />
+    <ProjectReference Include="..\..\Modules\CycleCount\Wms.CycleCount.Application\Wms.CycleCount.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\CycleCount\Wms.CycleCount.EntityFrameworkCore\Wms.CycleCount.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\LineSide\Wms.LineSide.HttpApi\Wms.LineSide.HttpApi.csproj" />
+    <ProjectReference Include="..\..\Modules\LineSide\Wms.LineSide.Application\Wms.LineSide.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\LineSide\Wms.LineSide.EntityFrameworkCore\Wms.LineSide.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Production\Wms.Production.HttpApi\Wms.Production.HttpApi.csproj" />
+    <ProjectReference Include="..\..\Modules\Production\Wms.Production.Application\Wms.Production.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Production\Wms.Production.EntityFrameworkCore\Wms.Production.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\TaskCenter\Wms.TaskCenter.HttpApi\Wms.TaskCenter.HttpApi.csproj" />
+    <ProjectReference Include="..\..\Modules\TaskCenter\Wms.TaskCenter.Application\Wms.TaskCenter.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\TaskCenter\Wms.TaskCenter.EntityFrameworkCore\Wms.TaskCenter.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\BarcodeLabel\Wms.BarcodeLabel.HttpApi\Wms.BarcodeLabel.HttpApi.csproj" />
+    <ProjectReference Include="..\..\Modules\BarcodeLabel\Wms.BarcodeLabel.Application\Wms.BarcodeLabel.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\BarcodeLabel\Wms.BarcodeLabel.EntityFrameworkCore\Wms.BarcodeLabel.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Workflow\Wms.Workflow.HttpApi\Wms.Workflow.HttpApi.csproj" />
+    <ProjectReference Include="..\..\Modules\Workflow\Wms.Workflow.Application\Wms.Workflow.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Workflow\Wms.Workflow.EntityFrameworkCore\Wms.Workflow.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\RuleEngine\Wms.RuleEngine.HttpApi\Wms.RuleEngine.HttpApi.csproj" />
+    <ProjectReference Include="..\..\Modules\RuleEngine\Wms.RuleEngine.Application\Wms.RuleEngine.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\RuleEngine\Wms.RuleEngine.EntityFrameworkCore\Wms.RuleEngine.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Notification\Wms.Notification.HttpApi\Wms.Notification.HttpApi.csproj" />
+    <ProjectReference Include="..\..\Modules\Notification\Wms.Notification.Application\Wms.Notification.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Notification\Wms.Notification.EntityFrameworkCore\Wms.Notification.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+</Project>

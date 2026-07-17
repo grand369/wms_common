@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.Transfer.Application</AssemblyName>
+    <RootNamespace>Wms.Transfer.Application</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Core" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Ddd.Application" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Authorization" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.EventBus" Version="$(AbpVersion)" />
+    <PackageReference Include="MediatR" Version="$(MediatRVersion)" />
+    <PackageReference Include="FluentValidation" Version="$(FluentValidationVersion)" />
+    <PackageReference Include="Mapster" Version="$(MapsterVersion)" />
+    <PackageReference Include="AutoMapper" Version="13.0.0" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.Transfer.Domain\Wms.Transfer.Domain.csproj" />
+    <ProjectReference Include="..\Wms.Transfer.Application.Contracts\Wms.Transfer.Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\Inventory\Wms.Inventory.Application.Contracts\Wms.Inventory.Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\Warehouse\Wms.Warehouse.Application.Contracts\Wms.Warehouse.Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\Workflow\Wms.Workflow.Application.Contracts\Wms.Workflow.Application.Contracts.csproj" />
+  </ItemGroup>
+</Project>
