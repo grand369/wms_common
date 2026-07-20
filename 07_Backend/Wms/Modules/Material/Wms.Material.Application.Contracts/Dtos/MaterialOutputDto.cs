@@ -19,6 +19,14 @@ public class MaterialOutputDto
     public Guid? SecondaryUnitId { get; set; }
     public string? SecondaryUnitName { get; set; }
     public decimal? ConversionRate { get; set; }
+    
+    public string? PurchaseUnitCode { get; set; }
+    public string? PurchaseUnitName { get; set; }
+    public string? InventoryUnitCode { get; set; }
+    public string? InventoryUnitName { get; set; }
+    public string? SalesUnitCode { get; set; }
+    public string? SalesUnitName { get; set; }
+    
     public int MaterialType { get; set; }
     public string MaterialTypeDescription { get; set; } = string.Empty;
 

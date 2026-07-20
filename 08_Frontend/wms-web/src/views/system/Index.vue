@@ -414,7 +414,7 @@ import { ElMessage, ElMessageBox } from 'element-plus';
 import WmsTable from '@/components/common/WmsTable.vue';
 import WmsDialog from '@/components/common/WmsDialog.vue';
 import { useTable } from '@/hooks/useTable';
-import { get, put } from '@/api';
+import { get, post, put, del } from '@/api';
 
 const route = useRoute();
 
@@ -493,7 +493,9 @@ async function handleToggleUserStatus(row: UserDto) {
       '提示',
       { type: 'warning' }
     );
-    // API call would go here
+    await put(`/api/identity/users/${row.id}`, {
+      isActive: !row.isActive,
+    });
     ElMessage.success('操作成功');
     handleUserSearch();
   } catch {
@@ -508,7 +510,21 @@ function closeUserDialog() {
 async function handleUserSubmit() {
   userSubmitting.value = true;
   try {
-    // API call would go here
+    const data = {
+      userName: userFormData.userName,
+      name: userFormData.name,
+      email: userFormData.email,
+      phoneNumber: userFormData.phoneNumber,
+      isActive: userFormData.isActive,
+    };
+    if (userFormData.password) {
+      (data as any).password = userFormData.password;
+    }
+    if (userFormData.id) {
+      await put(`/api/identity/users/${userFormData.id}`, data);
+    } else {
+      await post('/api/identity/users', data);
+    }
     ElMessage.success(userFormData.id ? '更新成功' : '创建成功');
     closeUserDialog();
     handleUserSearch();
@@ -727,7 +743,17 @@ function closeRoleDialog() {
 async function handleRoleSubmit() {
   roleSubmitting.value = true;
   try {
-    // API call would go here
+    const data = {
+      name: roleFormData.name,
+      displayName: roleFormData.displayName,
+      isDefault: roleFormData.isDefault,
+      isPublic: roleFormData.isPublic,
+    };
+    if (roleFormData.id) {
+      await put(`/api/identity/roles/${roleFormData.id}`, data);
+    } else {
+      await post('/api/identity/roles', data);
+    }
     ElMessage.success(roleFormData.id ? '更新成功' : '创建成功');
     closeRoleDialog();
     handleRoleSearch();
@@ -844,7 +870,16 @@ function closeOrgDialog() {
 async function handleOrgSubmit() {
   orgSubmitting.value = true;
   try {
-    // API call would go here
+    const data = {
+      displayName: orgFormData.displayName,
+      parentId: orgFormData.parentId || null,
+      code: orgFormData.code,
+    };
+    if (orgFormData.id) {
+      await put(`/api/organization/units/${orgFormData.id}`, data);
+    } else {
+      await post('/api/organization/units', data);
+    }
     ElMessage.success(orgFormData.id ? '更新成功' : '创建成功');
     closeOrgDialog();
     loadOrganization();

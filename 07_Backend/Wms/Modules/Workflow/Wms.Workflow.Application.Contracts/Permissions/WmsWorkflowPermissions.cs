@@ -18,12 +18,12 @@ public class WmsWorkflowPermissions : PermissionDefinitionProvider
 
     public override void Define(IPermissionDefinitionContext context)
     {
-        var group = context.AddGroup(GroupName, L("Permission:Workflow"));
-        group.AddPermission(Read, L("Permission:Workflow.Read"));
-        group.AddPermission(Create, L("Permission:Workflow.Create"));
-        group.AddPermission(Update, L("Permission:Workflow.Update"));
-        group.AddPermission(Execute, L("Permission:Workflow.Execute"));
-        group.AddPermission(Approve, L("Permission:Workflow.Approve"));
+        var group = context.AddGroup(GroupName, L("工作流管理"));
+        group.AddPermission(Read, L("工作流管理"));
+        group.AddPermission(Create, L("创建工作流"));
+        group.AddPermission(Update, L("更新工作流"));
+        group.AddPermission(Execute, L("执行工作流"));
+        group.AddPermission(Approve, L("审批工作流"));
     }
 
     private static LocalizableString L(string name) => LocalizableString.Create(name);

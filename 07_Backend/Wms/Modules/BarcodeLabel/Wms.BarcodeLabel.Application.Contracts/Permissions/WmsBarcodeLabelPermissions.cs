@@ -24,12 +24,12 @@ public class WmsBarcodeLabelPermissionDefinitionProvider : PermissionDefinitionP
 {
     public override void Define(IPermissionDefinitionContext context)
     {
-        var group = context.AddGroup(WmsBarcodeLabelPermissions.GroupName, L("BarcodeLabel"));
+        var group = context.AddGroup(WmsBarcodeLabelPermissions.GroupName, L("条码标签"));
 
-        group.AddPermission(WmsBarcodeLabelPermissions.Read, L("Read BarcodeLabel"));
-        group.AddPermission(WmsBarcodeLabelPermissions.Create, L("Create BarcodeLabel"));
-        group.AddPermission(WmsBarcodeLabelPermissions.Generate, L("Generate Barcode"));
-        group.AddPermission(WmsBarcodeLabelPermissions.Print, L("Print Barcode"));
+        group.AddPermission(WmsBarcodeLabelPermissions.Read, L("条码标签管理"));
+        group.AddPermission(WmsBarcodeLabelPermissions.Create, L("创建标签"));
+        group.AddPermission(WmsBarcodeLabelPermissions.Generate, L("生成条码"));
+        group.AddPermission(WmsBarcodeLabelPermissions.Print, L("打印标签"));
     }
 
     private static LocalizableString L(string name) => LocalizableString.Create(name);

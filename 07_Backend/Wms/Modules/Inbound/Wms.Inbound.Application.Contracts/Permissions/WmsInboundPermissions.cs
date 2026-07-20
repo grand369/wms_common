@@ -32,17 +32,17 @@ public class WmsInboundPermissionDefinitionProvider : PermissionDefinitionProvid
 {
     public override void Define(IPermissionDefinitionContext context)
     {
-        var group = context.AddGroup(WmsInboundPermissions.GroupName, L("Inbound"));
+        var group = context.AddGroup(WmsInboundPermissions.GroupName, L("入库管理"));
 
-        var order = group.AddPermission(WmsInboundPermissions.Order.Read, L("Read Inbound Order"));
-        order.AddChild(WmsInboundPermissions.Order.Create, L("Create Inbound Order"));
-        order.AddChild(WmsInboundPermissions.Order.Update, L("Update Inbound Order"));
-        order.AddChild(WmsInboundPermissions.Order.Delete, L("Delete Inbound Order"));
-        order.AddChild(WmsInboundPermissions.Order.Confirm, L("Confirm Receipt"));
-        order.AddChild(WmsInboundPermissions.Order.QualityInspect, L("Quality Inspect"));
-        order.AddChild(WmsInboundPermissions.Order.Putaway, L("Putaway"));
-        order.AddChild(WmsInboundPermissions.Order.Complete, L("Complete Inbound"));
-        order.AddChild(WmsInboundPermissions.Order.Cancel, L("Cancel Inbound"));
+        var order = group.AddPermission(WmsInboundPermissions.Order.Read, L("入库管理"));
+        order.AddChild(WmsInboundPermissions.Order.Create, L("创建入库单"));
+        order.AddChild(WmsInboundPermissions.Order.Update, L("更新入库单"));
+        order.AddChild(WmsInboundPermissions.Order.Delete, L("删除入库单"));
+        order.AddChild(WmsInboundPermissions.Order.Confirm, L("确认收货"));
+        order.AddChild(WmsInboundPermissions.Order.QualityInspect, L("质检"));
+        order.AddChild(WmsInboundPermissions.Order.Putaway, L("上架"));
+        order.AddChild(WmsInboundPermissions.Order.Complete, L("完成入库"));
+        order.AddChild(WmsInboundPermissions.Order.Cancel, L("取消入库"));
     }
 
     private static LocalizableString L(string name) => LocalizableString.Create(name);

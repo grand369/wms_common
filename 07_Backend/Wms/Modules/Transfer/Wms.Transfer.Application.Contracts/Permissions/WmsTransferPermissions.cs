@@ -22,16 +22,16 @@ public class WmsTransferPermissions : PermissionDefinitionProvider
 
     public override void Define(IPermissionDefinitionContext context)
     {
-        var group = context.AddGroup(GroupName, L("Permission:Transfer"));
-        group.AddPermission(Read, L("Permission:Transfer.Read"));
-        group.AddPermission(Create, L("Permission:Transfer.Create"));
-        group.AddPermission(Update, L("Permission:Transfer.Update"));
-        group.AddPermission(Delete, L("Permission:Transfer.Delete"));
-        group.AddPermission(Submit, L("Permission:Transfer.Submit"));
-        group.AddPermission(Approve, L("Permission:Transfer.Approve"));
-        group.AddPermission(Outbound, L("Permission:Transfer.Outbound"));
-        group.AddPermission(Inbound, L("Permission:Transfer.Inbound"));
-        group.AddPermission(Complete, L("Permission:Transfer.Complete"));
+        var group = context.AddGroup(GroupName, L("移库管理"));
+        group.AddPermission(Read, L("移库管理"));
+        group.AddPermission(Create, L("创建移库单"));
+        group.AddPermission(Update, L("更新移库单"));
+        group.AddPermission(Delete, L("删除移库单"));
+        group.AddPermission(Submit, L("提交移库单"));
+        group.AddPermission(Approve, L("审批移库单"));
+        group.AddPermission(Outbound, L("移库出库"));
+        group.AddPermission(Inbound, L("移库入库"));
+        group.AddPermission(Complete, L("完成移库"));
     }
 
     private static LocalizableString L(string name) => LocalizableString.Create(name);

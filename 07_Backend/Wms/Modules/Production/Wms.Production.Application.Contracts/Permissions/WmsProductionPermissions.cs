@@ -13,10 +13,10 @@ public class WmsProductionPermissions : PermissionDefinitionProvider
 
     public override void Define(IPermissionDefinitionContext context)
     {
-        var group = context.AddGroup(GroupName, L("Permission:Production"));
-        group.AddPermission(Read, L("Permission:Production.Read"));
-        group.AddPermission(Create, L("Permission:Production.Create"));
-        group.AddPermission(Complete, L("Permission:Production.Complete"));
+        var group = context.AddGroup(GroupName, L("生产管理"));
+        group.AddPermission(Read, L("生产管理"));
+        group.AddPermission(Create, L("创建生产工单"));
+        group.AddPermission(Complete, L("完成生产"));
     }
     private static LocalizableString L(string name) => LocalizableString.Create(name);
 }

@@ -49,6 +49,12 @@ public class MaterialConfiguration : IEntityTypeConfiguration<MaterialAgg>
         builder.Property(e => e.PrimaryUnitId).IsRequired();
         builder.Property(e => e.PrimaryUnitName).IsRequired().HasMaxLength(50);
         builder.Property(e => e.ConversionRate).HasColumnType("decimal(18,6)").IsRequired(false);
+        builder.Property(e => e.PurchaseUnitCode).HasMaxLength(50).IsRequired(false);
+        builder.Property(e => e.PurchaseUnitName).HasMaxLength(50).IsRequired(false);
+        builder.Property(e => e.InventoryUnitCode).HasMaxLength(50).IsRequired(false);
+        builder.Property(e => e.InventoryUnitName).HasMaxLength(50).IsRequired(false);
+        builder.Property(e => e.SalesUnitCode).HasMaxLength(50).IsRequired(false);
+        builder.Property(e => e.SalesUnitName).HasMaxLength(50).IsRequired(false);
         builder.Property(e => e.MaterialType).IsRequired();
         builder.Property(e => e.IsActive).IsRequired().HasDefaultValue(true);
         builder.Property(e => e.ErpSyncStatus).IsRequired().HasDefaultValue(0);

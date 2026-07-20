@@ -23,12 +23,12 @@ public class WmsNotificationPermissionDefinitionProvider : PermissionDefinitionP
 {
     public override void Define(IPermissionDefinitionContext context)
     {
-        var group = context.AddGroup(WmsNotificationPermissions.GroupName, L("Notification"));
+        var group = context.AddGroup(WmsNotificationPermissions.GroupName, L("通知管理"));
 
-        group.AddPermission(WmsNotificationPermissions.Read, L("Read Notifications"));
-        group.AddPermission(WmsNotificationPermissions.Create, L("Create Notifications/Templates/Rules"));
-        group.AddPermission(WmsNotificationPermissions.Update, L("Update Notifications/Templates/Rules"));
-        group.AddPermission(WmsNotificationPermissions.Delete, L("Delete Notifications/Templates/Rules"));
+        group.AddPermission(WmsNotificationPermissions.Read, L("通知管理"));
+        group.AddPermission(WmsNotificationPermissions.Create, L("创建通知/模板/规则"));
+        group.AddPermission(WmsNotificationPermissions.Update, L("更新通知/模板/规则"));
+        group.AddPermission(WmsNotificationPermissions.Delete, L("删除通知/模板/规则"));
     }
 
     private static LocalizableString L(string name) => LocalizableString.Create(name);

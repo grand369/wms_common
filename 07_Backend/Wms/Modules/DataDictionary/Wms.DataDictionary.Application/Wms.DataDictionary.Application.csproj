@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <RootNamespace>Wms.DataDictionary.Application</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.Ddd.Application" Version="8.3.0" />
+        <PackageReference Include="Volo.Abp.AutoMapper" Version="8.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Wms.DataDictionary.Application.Contracts\Wms.DataDictionary.Application.Contracts.csproj" />
+        <ProjectReference Include="..\Wms.DataDictionary.Domain\Wms.DataDictionary.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

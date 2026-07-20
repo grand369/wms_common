@@ -98,6 +98,7 @@ import {
   Operation,
   Bell,
   Setting,
+  Notebook,
 } from '@element-plus/icons-vue';
 import type { Component } from 'vue';
 
@@ -275,6 +276,15 @@ const menuGroups: MenuGroup[] = [
     children: [
       { label: '通知列表', path: '/notification/logs' },
       { label: '通知配置', path: '/notification/config' },
+    ],
+  },
+  {
+    moduleKey: 'data-dictionary',
+    label: '数据字典',
+    icon: Notebook,
+    permission: 'Wms.DataDictionary',
+    children: [
+      { label: '数据字典', path: '/data-dictionary/list' },
     ],
   },
 ];

@@ -48,37 +48,37 @@ public class WmsTaskCenterPermissionDefinitionProvider : PermissionDefinitionPro
     {
         var group = context.AddGroup(
             WmsTaskCenterPermissions.GroupName,
-            L("Permission:TaskCenter"));
+            L("任务中心"));
 
         // Read
-        var read = group.AddPermission(WmsTaskCenterPermissions.Read, L("Permission:TaskCenter.Read"));
-        read.AddChild(WmsTaskCenterPermissions.ReadList, L("Permission:TaskCenter.Read.List"));
-        read.AddChild(WmsTaskCenterPermissions.ReadDetail, L("Permission:TaskCenter.Read.Detail"));
-        read.AddChild(WmsTaskCenterPermissions.ReadMyTasks, L("Permission:TaskCenter.Read.MyTasks"));
-        read.AddChild(WmsTaskCenterPermissions.ReadBySourceOrder, L("Permission:TaskCenter.Read.BySourceOrder"));
+        var read = group.AddPermission(WmsTaskCenterPermissions.Read, L("任务中心"));
+        read.AddChild(WmsTaskCenterPermissions.ReadList, L("任务列表"));
+        read.AddChild(WmsTaskCenterPermissions.ReadDetail, L("任务详情"));
+        read.AddChild(WmsTaskCenterPermissions.ReadMyTasks, L("我的任务"));
+        read.AddChild(WmsTaskCenterPermissions.ReadBySourceOrder, L("按来源单查询"));
 
         // Create
-        group.AddPermission(WmsTaskCenterPermissions.Create, L("Permission:TaskCenter.Create"));
+        group.AddPermission(WmsTaskCenterPermissions.Create, L("创建任务"));
 
         // Assign
-        var assign = group.AddPermission(WmsTaskCenterPermissions.Assign, L("Permission:TaskCenter.Assign"));
-        assign.AddChild(WmsTaskCenterPermissions.AssignSingle, L("Permission:TaskCenter.Assign.Single"));
-        assign.AddChild(WmsTaskCenterPermissions.AssignBatch, L("Permission:TaskCenter.Assign.Batch"));
-        assign.AddChild(WmsTaskCenterPermissions.AssignAuto, L("Permission:TaskCenter.Assign.Auto"));
+        var assign = group.AddPermission(WmsTaskCenterPermissions.Assign, L("任务分配"));
+        assign.AddChild(WmsTaskCenterPermissions.AssignSingle, L("单人分配"));
+        assign.AddChild(WmsTaskCenterPermissions.AssignBatch, L("批量分配"));
+        assign.AddChild(WmsTaskCenterPermissions.AssignAuto, L("自动分配"));
 
         // Execute
-        var execute = group.AddPermission(WmsTaskCenterPermissions.Execute, L("Permission:TaskCenter.Execute"));
-        execute.AddChild(WmsTaskCenterPermissions.ExecuteStart, L("Permission:TaskCenter.Execute.Start"));
-        execute.AddChild(WmsTaskCenterPermissions.ExecuteComplete, L("Permission:TaskCenter.Execute.Complete"));
-        execute.AddChild(WmsTaskCenterPermissions.ExecuteUpdateProgress, L("Permission:TaskCenter.Execute.UpdateProgress"));
+        var execute = group.AddPermission(WmsTaskCenterPermissions.Execute, L("任务执行"));
+        execute.AddChild(WmsTaskCenterPermissions.ExecuteStart, L("开始任务"));
+        execute.AddChild(WmsTaskCenterPermissions.ExecuteComplete, L("完成任务"));
+        execute.AddChild(WmsTaskCenterPermissions.ExecuteUpdateProgress, L("更新进度"));
 
         // Suspend
-        var suspend = group.AddPermission(WmsTaskCenterPermissions.Suspend, L("Permission:TaskCenter.Suspend"));
-        suspend.AddChild(WmsTaskCenterPermissions.SuspendTask, L("Permission:TaskCenter.Suspend.Task"));
-        suspend.AddChild(WmsTaskCenterPermissions.ResumeTask, L("Permission:TaskCenter.Suspend.Resume"));
+        var suspend = group.AddPermission(WmsTaskCenterPermissions.Suspend, L("任务挂起"));
+        suspend.AddChild(WmsTaskCenterPermissions.SuspendTask, L("挂起任务"));
+        suspend.AddChild(WmsTaskCenterPermissions.ResumeTask, L("恢复任务"));
 
         // Cancel
-        group.AddPermission(WmsTaskCenterPermissions.Cancel, L("Permission:TaskCenter.Cancel"));
+        group.AddPermission(WmsTaskCenterPermissions.Cancel, L("取消任务"));
     }
 
     private static LocalizableString L(string name)

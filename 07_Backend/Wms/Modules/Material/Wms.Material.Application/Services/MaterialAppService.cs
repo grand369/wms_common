@@ -3,6 +3,7 @@ using Wms.Material.Application.Contracts.Dtos;
 using Wms.Material.Application.Contracts.Permissions;
 using Wms.Material.Application.Contracts.Services;
 using MaterialAgg = Wms.Material.Domain.Aggregates.Material;
+using Wms.Material.Domain.Aggregates;
 using Wms.Material.Domain.Enums;
 using Wms.Material.Domain.Repositories;
 using Wms.Material.Domain.ValueObjects;
@@ -17,10 +18,14 @@ namespace Wms.Material.Application.Services;
 public class MaterialAppService : ApplicationService, IMaterialAppService
 {
     private readonly IMaterialRepository _materialRepository;
+    private readonly IMaterialClassificationRepository _classificationRepository;
 
-    public MaterialAppService(IMaterialRepository materialRepository)
+    public MaterialAppService(
+        IMaterialRepository materialRepository,
+        IMaterialClassificationRepository classificationRepository)
     {
         _materialRepository = materialRepository;
+        _classificationRepository = classificationRepository;
     }
 
     public async Task<MaterialOutputDto> GetAsync(Guid id)
@@ -40,20 +45,26 @@ public class MaterialAppService : ApplicationService, IMaterialAppService
     public async Task<PagedResultDto<MaterialOutputDto>> GetListAsync(MaterialQueryDto query)
     {
         var queryable = await _materialRepository.GetQueryableAsync();
+        var classificationQueryable = await _classificationRepository.GetQueryableAsync();
 
-        queryable = queryable
-            .WhereIf(!string.IsNullOrWhiteSpace(query.MaterialCode), m => m.MaterialCode.Contains(query.MaterialCode!))
-            .WhereIf(!string.IsNullOrWhiteSpace(query.MaterialName), m => m.MaterialName.Contains(query.MaterialName!))
-            .WhereIf(query.MaterialType.HasValue, m => m.MaterialType == query.MaterialType.Value)
-            .WhereIf(query.ClassificationId.HasValue, m => m.ClassificationId == query.ClassificationId.Value)
-            .WhereIf(query.IsActive.HasValue, m => m.IsActive == query.IsActive.Value)
-            .WhereIf(query.ErpSyncStatus.HasValue, m => m.ErpSyncStatus == query.ErpSyncStatus.Value);
+        var joinedQuery = from m in queryable
+                          join c in classificationQueryable on m.ClassificationId equals c.Id into classificationGroup
+                          from c in classificationGroup.DefaultIfEmpty()
+                          select new { Material = m, Classification = c };
 
-        var totalCount = await AsyncExecuter.LongCountAsync(queryable);
+        joinedQuery = joinedQuery
+            .WhereIf(!string.IsNullOrWhiteSpace(query.MaterialCode), x => x.Material.MaterialCode.Contains(query.MaterialCode!))
+            .WhereIf(!string.IsNullOrWhiteSpace(query.MaterialName), x => x.Material.MaterialName.Contains(query.MaterialName!))
+            .WhereIf(query.MaterialType.HasValue, x => x.Material.MaterialType == query.MaterialType.Value)
+            .WhereIf(query.ClassificationId.HasValue, x => x.Material.ClassificationId == query.ClassificationId.Value)
+            .WhereIf(query.IsActive.HasValue, x => x.Material.IsActive == query.IsActive.Value)
+            .WhereIf(query.ErpSyncStatus.HasValue, x => x.Material.ErpSyncStatus == query.ErpSyncStatus.Value);
+
+        var totalCount = await AsyncExecuter.LongCountAsync(joinedQuery);
         var items = await AsyncExecuter.ToListAsync(
-            queryable.OrderByDescending(m => m.CreationTime).PageBy(query.PageIndex, query.PageSize));
+            joinedQuery.OrderByDescending(x => x.Material.CreationTime).PageBy(query.PageIndex, query.PageSize));
 
-        return new PagedResultDto<MaterialOutputDto>(totalCount, items.Select(MapToOutputDto).ToList());
+        return new PagedResultDto<MaterialOutputDto>(totalCount, items.Select(x => MapToOutputDto(x.Material, x.Classification)).ToList());
     }
 
     [Authorize(WmsMaterialPermissions.Materials.Create)]
@@ -80,6 +91,9 @@ public class MaterialAppService : ApplicationService, IMaterialAppService
         material.SetClassificationId(input.ClassificationId);
         material.SetSpecification(input.Specification);
         material.SetSecondaryUnit(input.SecondaryUnitId, input.ConversionRate);
+        material.SetPurchaseUnit(input.PurchaseUnitCode, input.PurchaseUnitName);
+        material.SetInventoryUnit(input.InventoryUnitCode, input.InventoryUnitName);
+        material.SetSalesUnit(input.SalesUnitCode, input.SalesUnitName);
 
         if (input.DangerLevel > 0 || !string.IsNullOrWhiteSpace(input.MSDSNumber))
         {
@@ -102,6 +116,9 @@ public class MaterialAppService : ApplicationService, IMaterialAppService
         material.SetSpecification(input.Specification);
         material.SetPrimaryUnitName(input.PrimaryUnitName);
         material.SetSecondaryUnit(input.SecondaryUnitId, input.ConversionRate);
+        material.SetPurchaseUnit(input.PurchaseUnitCode, input.PurchaseUnitName);
+        material.SetInventoryUnit(input.InventoryUnitCode, input.InventoryUnitName);
+        material.SetSalesUnit(input.SalesUnitCode, input.SalesUnitName);
         material.UpdateStorageAttribute(new StorageAttribute(input.StorageConditionType, input.MaxStackingLayers, input.PackageSpec, input.WeightPerUnit));
         material.UpdateQualityAttribute(new QualityAttribute(input.BatchManagementEnabled, input.SerialManagementEnabled, input.ExpiryManagementEnabled, input.ShelfLifeDays, input.QualityInspectionMode));
         material.UpdateInventoryAttribute(new InventoryAttribute(input.SafetyStockQuantity, input.MinOrderQuantity, input.ABCClassification, input.AllowNegativeInventory));
@@ -180,6 +197,11 @@ public class MaterialAppService : ApplicationService, IMaterialAppService
 
     private MaterialOutputDto MapToOutputDto(MaterialAgg material)
     {
+        return MapToOutputDto(material, null);
+    }
+
+    private MaterialOutputDto MapToOutputDto(MaterialAgg material, MaterialClassification? classification)
+    {
         var typeEnum = Domain.Enums.MaterialType.FromValue(material.MaterialType);
         var storageEnum = Domain.Enums.StorageConditionType.FromValue(material.StorageAttribute.StorageConditionType);
         var inspectionEnum = Domain.Enums.QualityInspectionMode.FromValue(material.QualityAttribute.QualityInspectionMode);
@@ -199,11 +221,18 @@ public class MaterialAppService : ApplicationService, IMaterialAppService
             MaterialName = material.MaterialName,
             MaterialNameEn = material.MaterialNameEn,
             ClassificationId = material.ClassificationId,
+            ClassificationName = classification?.ClassificationName,
             Specification = material.Specification,
             PrimaryUnitId = material.PrimaryUnitId,
             PrimaryUnitName = material.PrimaryUnitName,
             SecondaryUnitId = material.SecondaryUnitId,
             ConversionRate = material.ConversionRate,
+            PurchaseUnitCode = material.PurchaseUnitCode,
+            PurchaseUnitName = material.PurchaseUnitName,
+            InventoryUnitCode = material.InventoryUnitCode,
+            InventoryUnitName = material.InventoryUnitName,
+            SalesUnitCode = material.SalesUnitCode,
+            SalesUnitName = material.SalesUnitName,
             MaterialType = material.MaterialType,
             MaterialTypeDescription = typeEnum.Description,
             StorageConditionType = material.StorageAttribute.StorageConditionType,

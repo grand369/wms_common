@@ -15,12 +15,12 @@ public class WmsLineSidePermissions : PermissionDefinitionProvider
 
     public override void Define(IPermissionDefinitionContext context)
     {
-        var group = context.AddGroup(GroupName, L("Permission:LineSide"));
-        group.AddPermission(Read, L("Permission:LineSide.Read"));
-        group.AddPermission(Create, L("Permission:LineSide.Create"));
-        group.AddPermission(Update, L("Permission:LineSide.Update"));
-        group.AddPermission(Replenish, L("Permission:LineSide.Replenish"));
-        group.AddPermission(Backflush, L("Permission:LineSide.Backflush"));
+        var group = context.AddGroup(GroupName, L("线边管理"));
+        group.AddPermission(Read, L("线边管理"));
+        group.AddPermission(Create, L("创建线边仓"));
+        group.AddPermission(Update, L("更新线边仓"));
+        group.AddPermission(Replenish, L("线边补货"));
+        group.AddPermission(Backflush, L("线边倒扣"));
     }
     private static LocalizableString L(string name) => LocalizableString.Create(name);
 }

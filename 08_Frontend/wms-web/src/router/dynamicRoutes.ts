@@ -237,6 +237,16 @@ export const asyncRoutes: RouteRecordRaw[] = [
     { title: '通知配置', icon: 'Bell', permission: 'Wms.Notification.Create' }),
 
   // ========================
+  // BC-16 DataDictionary (2 pages)
+  // ========================
+  createRoute('data-dictionary/list', 'DataDictionaryList',
+    () => import('@/views/data-dictionary/List.vue'),
+    { title: '数据字典', icon: 'Notebook', permission: 'Wms.DataDictionary.Dictionaries' }),
+  createRoute('data-dictionary/items/:id', 'DataDictionaryItems',
+    () => import('@/views/data-dictionary/Items.vue'),
+    { title: '字典项管理', icon: 'Notebook', permission: 'Wms.DataDictionary.Items', hidden: true }),
+
+  // ========================
   // BC-15 Dashboard (5 pages - P1 仪表盘)
   // ========================
   createRoute('dashboard/index', 'DashboardIndex',

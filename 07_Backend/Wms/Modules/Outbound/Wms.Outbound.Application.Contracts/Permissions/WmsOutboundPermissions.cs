@@ -33,18 +33,18 @@ public class WmsOutboundPermissionDefinitionProvider : PermissionDefinitionProvi
 {
     public override void Define(IPermissionDefinitionContext context)
     {
-        var group = context.AddGroup(WmsOutboundPermissions.GroupName, L("Outbound"));
+        var group = context.AddGroup(WmsOutboundPermissions.GroupName, L("出库管理"));
 
-        var order = group.AddPermission(WmsOutboundPermissions.Order.Read, L("Read Outbound Order"));
-        order.AddChild(WmsOutboundPermissions.Order.Create, L("Create Outbound Order"));
-        order.AddChild(WmsOutboundPermissions.Order.Update, L("Update Outbound Order"));
-        order.AddChild(WmsOutboundPermissions.Order.Delete, L("Delete Outbound Order"));
-        order.AddChild(WmsOutboundPermissions.Order.Allocate, L("Allocate Inventory"));
-        order.AddChild(WmsOutboundPermissions.Order.Picking, L("Confirm Picking"));
-        order.AddChild(WmsOutboundPermissions.Order.Shipping, L("Confirm Shipping"));
-        order.AddChild(WmsOutboundPermissions.Order.Complete, L("Complete Outbound"));
-        order.AddChild(WmsOutboundPermissions.Order.Cancel, L("Cancel Outbound"));
-        order.AddChild(WmsOutboundPermissions.Order.ReleaseAllocation, L("Release Allocation"));
+        var order = group.AddPermission(WmsOutboundPermissions.Order.Read, L("出库管理"));
+        order.AddChild(WmsOutboundPermissions.Order.Create, L("创建出库单"));
+        order.AddChild(WmsOutboundPermissions.Order.Update, L("更新出库单"));
+        order.AddChild(WmsOutboundPermissions.Order.Delete, L("删除出库单"));
+        order.AddChild(WmsOutboundPermissions.Order.Allocate, L("分配库存"));
+        order.AddChild(WmsOutboundPermissions.Order.Picking, L("确认拣货"));
+        order.AddChild(WmsOutboundPermissions.Order.Shipping, L("确认发货"));
+        order.AddChild(WmsOutboundPermissions.Order.Complete, L("完成出库"));
+        order.AddChild(WmsOutboundPermissions.Order.Cancel, L("取消出库"));
+        order.AddChild(WmsOutboundPermissions.Order.ReleaseAllocation, L("释放分配"));
     }
 
     private static LocalizableString L(string name) => LocalizableString.Create(name);

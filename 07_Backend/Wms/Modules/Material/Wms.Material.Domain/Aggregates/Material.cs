@@ -42,6 +42,24 @@ public class Material : FullAuditedAggregateRoot<Guid>
     /// <summary>主辅换算率</summary>
     public decimal? ConversionRate { get; private set; }
 
+    /// <summary>采购单位编码（来自SysUnit字典）</summary>
+    public string? PurchaseUnitCode { get; private set; }
+
+    /// <summary>采购单位名称（冗余）</summary>
+    public string? PurchaseUnitName { get; private set; }
+
+    /// <summary>库存单位编码（来自SysUnit字典）</summary>
+    public string? InventoryUnitCode { get; private set; }
+
+    /// <summary>库存单位名称（冗余）</summary>
+    public string? InventoryUnitName { get; private set; }
+
+    /// <summary>销售单位编码（来自SysUnit字典）</summary>
+    public string? SalesUnitCode { get; private set; }
+
+    /// <summary>销售单位名称（冗余）</summary>
+    public string? SalesUnitName { get; private set; }
+
     /// <summary>物料类型枚举值</summary>
     public int MaterialType { get; private set; }
 
@@ -160,6 +178,30 @@ public class Material : FullAuditedAggregateRoot<Guid>
     {
         SecondaryUnitId = secondaryUnitId;
         ConversionRate = conversionRate;
+        return this;
+    }
+
+    /// <summary>Sets the purchase unit.</summary>
+    public Material SetPurchaseUnit(string? unitCode, string? unitName)
+    {
+        PurchaseUnitCode = unitCode?.Trim();
+        PurchaseUnitName = unitName?.Trim();
+        return this;
+    }
+
+    /// <summary>Sets the inventory unit.</summary>
+    public Material SetInventoryUnit(string? unitCode, string? unitName)
+    {
+        InventoryUnitCode = unitCode?.Trim();
+        InventoryUnitName = unitName?.Trim();
+        return this;
+    }
+
+    /// <summary>Sets the sales unit.</summary>
+    public Material SetSalesUnit(string? unitCode, string? unitName)
+    {
+        SalesUnitCode = unitCode?.Trim();
+        SalesUnitName = unitName?.Trim();
         return this;
     }
 

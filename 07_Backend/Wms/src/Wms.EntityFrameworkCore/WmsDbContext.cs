@@ -17,6 +17,7 @@ using Wms.Outbound.EntityFrameworkCore.Configurations;
 using Wms.BarcodeLabel.EntityFrameworkCore.Configurations;
 using Wms.RuleEngine.EntityFrameworkCore.Configurations;
 using Wms.Notification.EntityFrameworkCore.Configurations;
+using Wms.DataDictionary.EntityFrameworkCore.Configurations;
 using Wms.LineSide.Domain.Aggregates;
 using Wms.RuleEngine.Domain.Aggregates;
 using Wms.Transfer.Domain.Aggregates;
@@ -53,6 +54,8 @@ public class WmsDbContext : AbpDbContext<WmsDbContext>
     public DbSet<NotificationEntity> Notifications { get; set; }
     public DbSet<Wms.Notification.Domain.Aggregates.NotificationTemplate> NotificationTemplates { get; set; }
     public DbSet<Wms.Notification.Domain.Aggregates.NotificationRule> NotificationRules { get; set; }
+    public DbSet<Wms.DataDictionary.Domain.Entities.Dictionary> DataDictionaries { get; set; }
+    public DbSet<Wms.DataDictionary.Domain.Entities.DataDictionaryItem> DataDictionaryItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -89,6 +92,8 @@ public class WmsDbContext : AbpDbContext<WmsDbContext>
         builder.ApplyConfiguration(new NotificationConfiguration());
         builder.ApplyConfiguration(new NotificationTemplateConfiguration());
         builder.ApplyConfiguration(new NotificationRuleConfiguration());
+        builder.ApplyConfiguration(new DataDictionaryConfiguration());
+        builder.ApplyConfiguration(new DataDictionaryItemConfiguration());
 
         ConfigureLineSide(builder);
         ConfigureTransfer(builder);

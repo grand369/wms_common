@@ -24,13 +24,13 @@ public class WmsRuleEnginePermissionDefinitionProvider : PermissionDefinitionPro
 {
     public override void Define(IPermissionDefinitionContext context)
     {
-        var group = context.AddGroup(WmsRuleEnginePermissions.GroupName, L("Rule Engine"));
+        var group = context.AddGroup(WmsRuleEnginePermissions.GroupName, L("规则引擎"));
 
-        group.AddPermission(WmsRuleEnginePermissions.Read, L("Read Business Rules"));
-        group.AddPermission(WmsRuleEnginePermissions.Create, L("Create Business Rules"));
-        group.AddPermission(WmsRuleEnginePermissions.Update, L("Update Business Rules"));
-        group.AddPermission(WmsRuleEnginePermissions.Execute, L("Execute Business Rules"));
-        group.AddPermission(WmsRuleEnginePermissions.Import, L("Import Industry Packages"));
+        group.AddPermission(WmsRuleEnginePermissions.Read, L("规则引擎管理"));
+        group.AddPermission(WmsRuleEnginePermissions.Create, L("创建规则"));
+        group.AddPermission(WmsRuleEnginePermissions.Update, L("更新规则"));
+        group.AddPermission(WmsRuleEnginePermissions.Execute, L("执行规则"));
+        group.AddPermission(WmsRuleEnginePermissions.Import, L("导入行业包"));
     }
 
     private static LocalizableString L(string name) => LocalizableString.Create(name);

@@ -3,27 +3,108 @@ import type { PagedParams, PagedResult, ListResultDto } from '@/api/types';
 
 export interface MaterialDto {
   id: string;
-  code: string;
-  name: string;
+  materialCode: string;
+  materialName: string;
+  materialNameEn?: string;
   specification?: string;
-  unit: string;
+  primaryUnitId: string;
+  primaryUnitName: string;
+  secondaryUnitId?: string;
+  secondaryUnitName?: string;
   classificationId?: string;
   classificationName?: string;
-  issueStrategyId?: string;
-  status: number;
-  isBatchEnabled?: boolean;
-  isSerialEnabled?: boolean;
+  purchaseUnitCode?: string;
+  purchaseUnitName?: string;
+  inventoryUnitCode?: string;
+  inventoryUnitName?: string;
+  salesUnitCode?: string;
+  salesUnitName?: string;
+  materialType: number;
+  materialTypeDescription?: string;
+  storageConditionType: number;
+  batchManagementEnabled: boolean;
+  serialManagementEnabled: boolean;
+  expiryManagementEnabled: boolean;
+  issueStrategyType: number;
+  issueStrategyTypeDescription?: string;
+  isActive: boolean;
+  erpSyncStatus: number;
+  creationTime: string;
 }
 
-export interface CreateOrUpdateMaterialDto {
-  code: string;
-  name: string;
-  specification?: string;
-  unit: string;
+export interface CreateMaterialDto {
+  materialCode: string;
+  materialName: string;
+  materialNameEn?: string;
   classificationId?: string;
-  issueStrategyId?: string;
-  isBatchEnabled?: boolean;
-  isSerialEnabled?: boolean;
+  specification?: string;
+  primaryUnitId: string;
+  primaryUnitName: string;
+  secondaryUnitId?: string;
+  conversionRate?: number;
+  purchaseUnitCode?: string;
+  purchaseUnitName?: string;
+  inventoryUnitCode?: string;
+  inventoryUnitName?: string;
+  salesUnitCode?: string;
+  salesUnitName?: string;
+  materialType: number;
+  storageConditionType?: number;
+  maxStackingLayers?: number;
+  packageSpec?: string;
+  weightPerUnit?: number;
+  batchManagementEnabled?: boolean;
+  serialManagementEnabled?: boolean;
+  expiryManagementEnabled?: boolean;
+  shelfLifeDays?: number;
+  qualityInspectionMode?: number;
+  safetyStockQuantity?: number;
+  minOrderQuantity?: number;
+  abcClassification?: number;
+  allowNegativeInventory?: boolean;
+  issueStrategyType?: number;
+  strategyScope?: number;
+  dangerLevel?: number;
+  msdsNumber?: string;
+  specialMark?: string;
+  erpSyncStatus?: number;
+  isActive?: boolean;
+}
+
+export interface UpdateMaterialDto {
+  materialName: string;
+  materialNameEn?: string;
+  classificationId?: string;
+  specification?: string;
+  primaryUnitName: string;
+  secondaryUnitId?: string;
+  conversionRate?: number;
+  purchaseUnitCode?: string;
+  purchaseUnitName?: string;
+  inventoryUnitCode?: string;
+  inventoryUnitName?: string;
+  salesUnitCode?: string;
+  salesUnitName?: string;
+  materialType: number;
+  storageConditionType?: number;
+  maxStackingLayers?: number;
+  packageSpec?: string;
+  weightPerUnit?: number;
+  batchManagementEnabled?: boolean;
+  serialManagementEnabled?: boolean;
+  expiryManagementEnabled?: boolean;
+  shelfLifeDays?: number;
+  qualityInspectionMode?: number;
+  safetyStockQuantity?: number;
+  minOrderQuantity?: number;
+  abcClassification?: number;
+  allowNegativeInventory?: boolean;
+  issueStrategyType?: number;
+  strategyScope?: number;
+  dangerLevel?: number;
+  msdsNumber?: string;
+  specialMark?: string;
+  isActive?: boolean;
 }
 
 export interface MaterialClassificationDto {
@@ -85,11 +166,11 @@ export function getMaterial(id: string) {
   return get<MaterialDto>(`/api/v1/material/materials/${id}`);
 }
 
-export function createMaterial(data: CreateOrUpdateMaterialDto) {
+export function createMaterial(data: CreateMaterialDto) {
   return post<MaterialDto>('/api/v1/material/materials', data);
 }
 
-export function updateMaterial(id: string, data: CreateOrUpdateMaterialDto) {
+export function updateMaterial(id: string, data: UpdateMaterialDto) {
   return put<MaterialDto>(`/api/v1/material/materials/${id}`, data);
 }
 

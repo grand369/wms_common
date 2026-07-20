@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <RootNamespace>Wms.DataDictionary.HttpApi</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="8.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Wms.DataDictionary.Application.Contracts\Wms.DataDictionary.Application.Contracts.csproj" />
+        <ProjectReference Include="..\Wms.DataDictionary.Application\Wms.DataDictionary.Application.csproj" />
+    </ItemGroup>
+
+</Project>

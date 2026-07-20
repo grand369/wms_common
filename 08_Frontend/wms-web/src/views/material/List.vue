@@ -32,31 +32,32 @@
       </template>
 
       <WmsTable
-        :data="tableData"
-        :loading="loading"
-        :total="total"
-        v-model:current-page="pagination.currentPage"
-        v-model:page-size="pagination.pageSize"
-        :page-sizes="pagination.pageSizes"
-        @page-change="handlePageChange"
-        @size-change="handleSizeChange"
-      >
-        <el-table-column prop="code" label="物料编码" sortable />
-        <el-table-column prop="name" label="物料名称" show-overflow-tooltip />
-        <el-table-column prop="specification" label="规格" show-overflow-tooltip />
-        <el-table-column prop="classificationName" label="分类" />
-        <el-table-column prop="unit" label="单位" />
-        <el-table-column prop="status" label="状态" align="center" width="90">
-          <template #default="{ row }">
-            <WmsStatusTag :status="row.status === 1 ? 'Available' : 'Outsourced'" type="inventory" />
-          </template>
-        </el-table-column>
+          :data="tableData"
+          :loading="loading"
+          :total="total"
+          v-model:current-page="pagination.currentPage"
+          v-model:page-size="pagination.pageSize"
+          :page-sizes="pagination.pageSizes"
+          @page-change="handlePageChange"
+          @size-change="handleSizeChange"
+        >
+          <el-table-column prop="materialCode" label="物料编码" sortable />
+          <el-table-column prop="materialName" label="物料名称" show-overflow-tooltip />
+          <el-table-column prop="specification" label="规格" show-overflow-tooltip />
+          <el-table-column prop="classificationName" label="分类" />
+          <el-table-column prop="primaryUnitName" label="单位" />
+          <el-table-column prop="materialTypeDescription" label="类型" />
+          <el-table-column prop="isActive" label="状态" align="center" width="90">
+            <template #default="{ row }">
+              <WmsStatusTag :status="row.isActive ? 'Available' : 'Outsourced'" type="inventory" />
+            </template>
+          </el-table-column>
         <el-table-column label="操作" width="240" fixed="right">
           <template #default="{ row }">
             <el-button link type="primary" @click="handleDetail(row as MaterialDto)">详情</el-button>
             <el-button link type="primary" @click="handleEdit(row as MaterialDto)">编辑</el-button>
-            <el-button link :type="(row as MaterialDto).status === 1 ? 'danger' : 'success'" @click="handleToggleStatus(row as MaterialDto)">
-              {{ (row as MaterialDto).status === 1 ? '停用' : '启用' }}
+            <el-button link :type="(row as MaterialDto).isActive ? 'danger' : 'success'" @click="handleToggleStatus(row as MaterialDto)">
+              {{ (row as MaterialDto).isActive ? '停用' : '启用' }}
             </el-button>
             <el-button link type="danger" @click="handleDelete(row as MaterialDto)">删除</el-button>
           </template>
@@ -77,13 +78,13 @@
       <el-form ref="formRef" :model="formData" :rules="formRules" label-width="100px">
         <el-row :gutter="16">
           <el-col :span="12">
-            <el-form-item label="物料编码" prop="code">
-              <el-input v-model="formData.code" placeholder="请输入物料编码" />
+            <el-form-item label="物料编码" prop="materialCode">
+              <el-input v-model="formData.materialCode" placeholder="请输入物料编码" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="物料名称" prop="name">
-              <el-input v-model="formData.name" placeholder="请输入物料名称" />
+            <el-form-item label="物料名称" prop="materialName">
+              <el-input v-model="formData.materialName" placeholder="请输入物料名称" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -101,24 +102,85 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="基本单位" prop="unit">
-              <el-input v-model="formData.unit" placeholder="如：件、KG、米" />
+            <el-form-item label="物料类型" prop="materialType">
+              <el-select v-model="formData.materialType" placeholder="请选择物料类型" style="width: 100%">
+                <el-option label="原材料" :value="0" />
+                <el-option label="半成品" :value="1" />
+                <el-option label="成品" :value="2" />
+                <el-option label="包装材料" :value="3" />
+                <el-option label="辅料" :value="4" />
+                <el-option label="工具" :value="5" />
+                <el-option label="设备备件" :value="6" />
+                <el-option label="其他" :value="7" />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="16">
           <el-col :span="12">
-            <el-form-item label="发料策略">
-              <el-select v-model="formData.issueStrategyId" placeholder="请选择发料策略" clearable style="width: 100%">
+            <el-form-item label="基本单位" prop="primaryUnitId">
+              <el-select v-model="formData.primaryUnitId" placeholder="请选择基本单位" style="width: 100%" @change="handlePrimaryUnitChange">
                 <el-option
-                  v-for="item in strategyList"
+                  v-for="item in unitOptions"
                   :key="item.id"
-                  :label="item.name"
+                  :label="item.itemName"
                   :value="item.id"
                 />
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="16">
+          <el-col :span="12">
+            <el-form-item label="采购单位">
+              <el-select v-model="formData.purchaseUnitCode" placeholder="请选择采购单位" clearable style="width: 100%" @change="handleUnitChange('purchase')">
+                <el-option
+                  v-for="item in unitOptions"
+                  :key="item.itemCode"
+                  :label="item.itemName"
+                  :value="item.itemCode"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="库存单位">
+              <el-select v-model="formData.inventoryUnitCode" placeholder="请选择库存单位" clearable style="width: 100%" @change="handleUnitChange('inventory')">
+                <el-option
+                  v-for="item in unitOptions"
+                  :key="item.itemCode"
+                  :label="item.itemName"
+                  :value="item.itemCode"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="16">
+          <el-col :span="12">
+            <el-form-item label="销售单位">
+              <el-select v-model="formData.salesUnitCode" placeholder="请选择销售单位" clearable style="width: 100%" @change="handleUnitChange('sales')">
+                <el-option
+                  v-for="item in unitOptions"
+                  :key="item.itemCode"
+                  :label="item.itemName"
+                  :value="item.itemCode"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="发料策略">
+              <el-select v-model="formData.issueStrategyType" placeholder="请选择发料策略" clearable style="width: 100%">
+                <el-option label="先进先出" :value="0" />
+                <el-option label="后进先出" :value="1" />
+                <el-option label="FEFO" :value="2" />
+                <el-option label="指定批次" :value="3" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="16">
           <el-col :span="12">
             <el-form-item label="规格">
               <el-input v-model="formData.specification" placeholder="请输入规格" />
@@ -128,19 +190,19 @@
         <el-row :gutter="16">
           <el-col :span="12">
             <el-form-item label="批次管理">
-              <el-switch v-model="formData.isBatchEnabled" active-text="启用" inactive-text="关闭" />
+              <el-switch v-model="formData.batchManagementEnabled" active-text="启用" inactive-text="关闭" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="序列号管理">
-              <el-switch v-model="formData.isSerialEnabled" active-text="启用" inactive-text="关闭" />
+              <el-switch v-model="formData.serialManagementEnabled" active-text="启用" inactive-text="关闭" />
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="formData.status">
-            <el-radio :label="1">启用</el-radio>
-            <el-radio :label="0">停用</el-radio>
+        <el-form-item label="状态" prop="isActive">
+          <el-radio-group v-model="formData.isActive">
+            <el-radio :label="true">启用</el-radio>
+            <el-radio :label="false">停用</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -169,47 +231,62 @@ import {
   getClassifications,
   getIssueStrategies,
 } from '@/api/material';
+import { getDictionaryItemsByCode } from '@/api/dataDictionary';
 import type {
   MaterialDto,
-  CreateOrUpdateMaterialDto,
+  CreateMaterialDto,
+  UpdateMaterialDto,
   MaterialClassificationDto,
   MaterialIssueStrategyDto,
 } from '@/api/material';
+import type { DictionaryItemDto } from '@/api/dataDictionary';
 
 const router = useRouter();
 const classificationList = ref<MaterialClassificationDto[]>([]);
 const strategyList = ref<MaterialIssueStrategyDto[]>([]);
+const unitOptions = ref<DictionaryItemDto[]>([]);
 
 const { loading, tableData, total, pagination, filters, handlePageChange, handleSizeChange, handleSearch, resetFilters } =
   useTable<MaterialDto>('/api/v1/material/materials');
 
 const { formRef, formData, formRules, submitting, visible, openForm, closeForm, submitForm } = useForm<Partial<MaterialDto>>({
-  code: '',
-  name: '',
+  materialCode: '',
+  materialName: '',
   classificationId: '',
-  issueStrategyId: '',
-  unit: '',
+  materialType: 0,
+  primaryUnitId: '',
+  primaryUnitName: '',
+  issueStrategyType: 0,
   specification: '',
-  isBatchEnabled: false,
-  isSerialEnabled: false,
-  status: 1,
+  batchManagementEnabled: false,
+  serialManagementEnabled: false,
+  isActive: true,
+  purchaseUnitCode: '',
+  purchaseUnitName: '',
+  inventoryUnitCode: '',
+  inventoryUnitName: '',
+  salesUnitCode: '',
+  salesUnitName: '',
 });
 
 formRules.value = {
-  code: [{ required: true, message: '请输入物料编码', trigger: 'blur' }],
-  name: [{ required: true, message: '请输入物料名称', trigger: 'blur' }],
+  materialCode: [{ required: true, message: '请输入物料编码', trigger: 'blur' }],
+  materialName: [{ required: true, message: '请输入物料名称', trigger: 'blur' }],
   classificationId: [{ required: true, message: '请选择分类', trigger: 'change' }],
-  unit: [{ required: true, message: '请输入基本单位', trigger: 'blur' }],
+  materialType: [{ required: true, message: '请选择物料类型', trigger: 'change' }],
+  primaryUnitId: [{ required: true, message: '请选择基本单位', trigger: 'change' }],
 };
 
 async function loadOptions() {
   try {
-    const [clsRes, strategyRes] = await Promise.all([
+    const [clsRes, strategyRes, unitRes] = await Promise.all([
       getClassifications({ maxResultCount: 1000 }),
       getIssueStrategies({ maxResultCount: 1000 }),
+      getDictionaryItemsByCode('SysUnit'),
     ]);
     classificationList.value = clsRes.items;
     strategyList.value = strategyRes.items;
+    unitOptions.value = unitRes;
   } catch {
     ElMessage.error('加载选项失败');
   }
@@ -223,13 +300,36 @@ function handleEdit(row: MaterialDto) {
   openForm({ ...row });
 }
 
+function handlePrimaryUnitChange() {
+  const unit = unitOptions.value.find(u => u.id === formData.primaryUnitId);
+  if (unit) {
+    formData.primaryUnitName = unit.itemName;
+  }
+}
+
+function handleUnitChange(type: 'purchase' | 'inventory' | 'sales') {
+  const code = type === 'purchase' ? formData.purchaseUnitCode :
+               type === 'inventory' ? formData.inventoryUnitCode :
+               formData.salesUnitCode;
+  const unit = unitOptions.value.find(u => u.itemCode === code);
+  if (unit) {
+    if (type === 'purchase') {
+      formData.purchaseUnitName = unit.itemName;
+    } else if (type === 'inventory') {
+      formData.inventoryUnitName = unit.itemName;
+    } else {
+      formData.salesUnitName = unit.itemName;
+    }
+  }
+}
+
 function handleDetail(row: MaterialDto) {
   router.push(`/material/detail/${row.id}`);
 }
 
 async function handleToggleStatus(row: MaterialDto) {
   try {
-    if (row.status === 1) {
+    if (row.isActive) {
       await disableMaterial(row.id);
     } else {
       await enableMaterial(row.id);
@@ -253,21 +353,47 @@ async function handleDelete(row: MaterialDto) {
 }
 
 async function handleSubmit() {
-  const data: CreateOrUpdateMaterialDto = {
-    code: formData.code || '',
-    name: formData.name || '',
+  const createData: CreateMaterialDto = {
+    materialCode: formData.materialCode || '',
+    materialName: formData.materialName || '',
     classificationId: formData.classificationId,
-    issueStrategyId: formData.issueStrategyId,
-    unit: formData.unit || '',
+    materialType: formData.materialType || 0,
+    primaryUnitId: formData.primaryUnitId || '',
+    primaryUnitName: formData.primaryUnitName || '',
+    issueStrategyType: formData.issueStrategyType,
     specification: formData.specification,
-    isBatchEnabled: formData.isBatchEnabled,
-    isSerialEnabled: formData.isSerialEnabled,
+    batchManagementEnabled: formData.batchManagementEnabled,
+    serialManagementEnabled: formData.serialManagementEnabled,
+    isActive: formData.isActive,
+    purchaseUnitCode: formData.purchaseUnitCode,
+    purchaseUnitName: formData.purchaseUnitName,
+    inventoryUnitCode: formData.inventoryUnitCode,
+    inventoryUnitName: formData.inventoryUnitName,
+    salesUnitCode: formData.salesUnitCode,
+    salesUnitName: formData.salesUnitName,
+  };
+  const updateData: UpdateMaterialDto = {
+    materialName: formData.materialName || '',
+    classificationId: formData.classificationId,
+    materialType: formData.materialType || 0,
+    primaryUnitName: formData.primaryUnitName || '',
+    issueStrategyType: formData.issueStrategyType,
+    specification: formData.specification,
+    batchManagementEnabled: formData.batchManagementEnabled,
+    serialManagementEnabled: formData.serialManagementEnabled,
+    isActive: formData.isActive,
+    purchaseUnitCode: formData.purchaseUnitCode,
+    purchaseUnitName: formData.purchaseUnitName,
+    inventoryUnitCode: formData.inventoryUnitCode,
+    inventoryUnitName: formData.inventoryUnitName,
+    salesUnitCode: formData.salesUnitCode,
+    salesUnitName: formData.salesUnitName,
   };
   const success = await submitForm(async () => {
     if (formData.id) {
-      await updateMaterial(formData.id, data);
+      await updateMaterial(formData.id, updateData);
     } else {
-      await createMaterial(data);
+      await createMaterial(createData);
     }
   }, formData.id ? '更新成功' : '创建成功');
   if (success) handleSearch();

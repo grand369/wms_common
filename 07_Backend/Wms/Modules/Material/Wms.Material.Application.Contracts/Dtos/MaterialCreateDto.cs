@@ -18,6 +18,14 @@ public class MaterialCreateDto
     [Required] [StringLength(50)] public string PrimaryUnitName { get; set; } = string.Empty;
     public Guid? SecondaryUnitId { get; set; }
     public decimal? ConversionRate { get; set; }
+    
+    [StringLength(50)] public string? PurchaseUnitCode { get; set; }
+    [StringLength(50)] public string? PurchaseUnitName { get; set; }
+    [StringLength(50)] public string? InventoryUnitCode { get; set; }
+    [StringLength(50)] public string? InventoryUnitName { get; set; }
+    [StringLength(50)] public string? SalesUnitCode { get; set; }
+    [StringLength(50)] public string? SalesUnitName { get; set; }
+    
     [Required] [Range(0, 7)] public int MaterialType { get; set; }
 
     // StorageAttribute (VO-11) flattened

@@ -143,6 +143,9 @@ public class AuthController : AbpControllerBase
         // BC-15 Dashboard
         "Wms.Dashboard","Wms.Dashboard.Read",
 
+        "Wms.DataDictionary.Dictionaries","Wms.DataDictionary.Dictionaries.Create","Wms.DataDictionary.Dictionaries.Update","Wms.DataDictionary.Dictionaries.Delete",
+        "Wms.DataDictionary.Items","Wms.DataDictionary.Items.Create","Wms.DataDictionary.Items.Update","Wms.DataDictionary.Items.Delete",
+
         // ──── System / ABP Identity Module ────
         // Identity — Users (对应前端 /system/users)
         "AbpIdentity.Users",

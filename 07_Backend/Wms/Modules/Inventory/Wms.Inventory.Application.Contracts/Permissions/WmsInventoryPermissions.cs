@@ -52,24 +52,24 @@ public class WmsInventoryPermissionDefinitionProvider : PermissionDefinitionProv
 {
     public override void Define(IPermissionDefinitionContext context)
     {
-        var group = context.AddGroup(WmsInventoryPermissions.GroupName, L("Inventory"));
+        var group = context.AddGroup(WmsInventoryPermissions.GroupName, L("库存管理"));
 
-        var balance = group.AddPermission(WmsInventoryPermissions.Balance.Read, L("Read Inventory Balance"));
-        balance.AddChild(WmsInventoryPermissions.Balance.Initialize, L("Initialize Inventory"));
-        balance.AddChild(WmsInventoryPermissions.Balance.Snapshot, L("Inventory Snapshot"));
+        var balance = group.AddPermission(WmsInventoryPermissions.Balance.Read, L("库存余额"));
+        balance.AddChild(WmsInventoryPermissions.Balance.Initialize, L("初始化库存"));
+        balance.AddChild(WmsInventoryPermissions.Balance.Snapshot, L("库存快照"));
 
-        var adjust = group.AddPermission(WmsInventoryPermissions.Adjust.Create, L("Create Adjustment"));
-        adjust.AddChild(WmsInventoryPermissions.Adjust.Submit, L("Submit Adjustment"));
-        adjust.AddChild(WmsInventoryPermissions.Adjust.Approve, L("Approve Adjustment"));
-        adjust.AddChild(WmsInventoryPermissions.Adjust.Execute, L("Execute Adjustment"));
+        var adjust = group.AddPermission(WmsInventoryPermissions.Adjust.Create, L("创建调整单"));
+        adjust.AddChild(WmsInventoryPermissions.Adjust.Submit, L("提交调整单"));
+        adjust.AddChild(WmsInventoryPermissions.Adjust.Approve, L("审批调整单"));
+        adjust.AddChild(WmsInventoryPermissions.Adjust.Execute, L("执行调整"));
 
-        var freeze = group.AddPermission(WmsInventoryPermissions.Freeze.Create, L("Create Freeze Order"));
-        freeze.AddChild(WmsInventoryPermissions.Freeze.Approve, L("Approve Freeze"));
-        freeze.AddChild(WmsInventoryPermissions.Freeze.Release, L("Release Freeze"));
-        freeze.AddChild(WmsInventoryPermissions.Freeze.Cancel, L("Cancel Freeze"));
+        var freeze = group.AddPermission(WmsInventoryPermissions.Freeze.Create, L("创建冻结单"));
+        freeze.AddChild(WmsInventoryPermissions.Freeze.Approve, L("审批冻结"));
+        freeze.AddChild(WmsInventoryPermissions.Freeze.Release, L("释放冻结"));
+        freeze.AddChild(WmsInventoryPermissions.Freeze.Cancel, L("取消冻结"));
 
-        var alert = group.AddPermission(WmsInventoryPermissions.Alert.Resolve, L("Resolve Alert"));
-        alert.AddChild(WmsInventoryPermissions.Alert.Scan, L("Scan Alerts"));
+        var alert = group.AddPermission(WmsInventoryPermissions.Alert.Resolve, L("处理预警"));
+        alert.AddChild(WmsInventoryPermissions.Alert.Scan, L("扫描预警"));
     }
 
     private static LocalizableString L(string name) => LocalizableString.Create(name);

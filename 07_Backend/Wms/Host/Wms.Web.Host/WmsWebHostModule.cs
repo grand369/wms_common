@@ -39,6 +39,9 @@ using Wms.Material.HttpApi;
 using Wms.Notification.Application;
 using Wms.Notification.EntityFrameworkCore;
 using Wms.Notification.HttpApi;
+using Wms.DataDictionary.Application;
+using Wms.DataDictionary.EntityFrameworkCore;
+using Wms.DataDictionary.HttpApi;
 using Wms.Outbound.Application;
 using Wms.Outbound.EntityFrameworkCore;
 using Wms.Outbound.HttpApi;
@@ -120,7 +123,10 @@ namespace Wms.Web.Host;
     typeof(WmsRuleEngineEntityFrameworkCoreModule),
     typeof(WmsNotificationHttpApiModule),
     typeof(WmsNotificationApplicationModule),
-    typeof(WmsNotificationEntityFrameworkCoreModule)
+    typeof(WmsNotificationEntityFrameworkCoreModule),
+    typeof(WmsDataDictionaryHttpApiModule),
+    typeof(WmsDataDictionaryApplicationModule),
+    typeof(WmsDataDictionaryEntityFrameworkCoreModule)
 )]
 public class WmsWebHostModule : AbpModule
 {
