@@ -28,4 +28,7 @@ public interface IInboundOrderRepository : IRepository<InboundOrder, Guid>
 
     /// <summary>Get inbound orders pending putaway in a warehouse.</summary>
     Task<List<InboundOrder>> GetPendingPutawayAsync(Guid warehouseId);
+
+    /// <summary>Get inbound order with lines included.</summary>
+    Task<InboundOrder> GetWithLinesAsync(Guid id);
 }

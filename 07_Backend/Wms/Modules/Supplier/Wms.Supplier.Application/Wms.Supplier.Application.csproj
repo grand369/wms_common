@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.Supplier.Application</AssemblyName>
+    <RootNamespace>Wms.Supplier.Application</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Core" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Ddd.Application" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.AutoMapper" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.Supplier.Application.Contracts\Wms.Supplier.Application.Contracts.csproj" />
+    <ProjectReference Include="..\Wms.Supplier.Domain\Wms.Supplier.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Wms.Shared\Wms.Shared.csproj" />
+  </ItemGroup>
+</Project>

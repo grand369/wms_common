@@ -27,6 +27,24 @@ public class InboundPutawayLineDto
     [Required]
     public Guid LineId { get; set; }
 
+    /// <summary>Putaway warehouse ID.</summary>
+    [Required]
+    public Guid PutawayWarehouseId { get; set; }
+
+    /// <summary>Putaway warehouse code — redundant.</summary>
+    [Required]
+    [StringLength(50)]
+    public string PutawayWarehouseCode { get; set; } = string.Empty;
+
+    /// <summary>Putaway area ID.</summary>
+    [Required]
+    public Guid PutawayAreaId { get; set; }
+
+    /// <summary>Putaway area code — redundant.</summary>
+    [Required]
+    [StringLength(50)]
+    public string PutawayAreaCode { get; set; } = string.Empty;
+
     /// <summary>Putaway location ID.</summary>
     [Required]
     public Guid PutawayLocationId { get; set; }

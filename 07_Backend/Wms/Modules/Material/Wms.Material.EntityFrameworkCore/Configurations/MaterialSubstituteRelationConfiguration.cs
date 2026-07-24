@@ -25,6 +25,7 @@ public class MaterialSubstituteRelationConfiguration : IEntityTypeConfiguration<
         builder.Property(e => e.OriginalMaterialId).IsRequired();
         builder.Property(e => e.SubstituteMaterialId).IsRequired();
         builder.Property(e => e.SubstituteMaterialCode).IsRequired().HasMaxLength(50);
+        builder.Property(e => e.SubstituteMaterialName).HasMaxLength(100).IsRequired(false);
         builder.Property(e => e.SubstitutePriority).IsRequired().HasDefaultValue(1);
         builder.Property(e => e.SubstituteRatio).HasColumnType("decimal(18,6)").IsRequired().HasDefaultValue(1.0);
     }

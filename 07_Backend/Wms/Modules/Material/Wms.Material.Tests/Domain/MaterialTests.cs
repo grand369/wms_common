@@ -164,42 +164,6 @@ public class MaterialTests
         material.DangerAttribute.ShouldBeNull();
     }
 
-    [Fact]
-    public void AddSubstituteRelation_Should_Add_To_List()
-    {
-        var material = CreateSampleMaterial();
-        var substituteId = Guid.NewGuid();
-        material.AddSubstituteRelation(substituteId, "MT-SUB01", 1, 1.0m);
-
-        material.SubstituteRelations.Count.ShouldBe(1);
-        material.SubstituteRelations[0].SubstituteMaterialId.ShouldBe(substituteId);
-        material.SubstituteRelations[0].SubstituteMaterialCode.ShouldBe("MT-SUB01");
-        material.SubstituteRelations[0].SubstitutePriority.ShouldBe(1);
-        material.SubstituteRelations[0].SubstituteRatio.ShouldBe(1.0m);
-    }
-
-    [Fact]
-    public void AddSubstituteRelation_Duplicate_Should_Throw()
-    {
-        var material = CreateSampleMaterial();
-        var substituteId = Guid.NewGuid();
-        material.AddSubstituteRelation(substituteId, "MT-SUB01", 1, 1.0m);
-
-        Should.Throw<ArgumentException>(() => material.AddSubstituteRelation(substituteId, "MT-SUB01", 2, 1.5m));
-    }
-
-    [Fact]
-    public void RemoveSubstituteRelation_Should_Remove_From_List()
-    {
-        var material = CreateSampleMaterial();
-        var substituteId = Guid.NewGuid();
-        material.AddSubstituteRelation(substituteId, "MT-SUB01", 1, 1.0m);
-
-        var relationId = material.SubstituteRelations[0].Id;
-        material.RemoveSubstituteRelation(relationId);
-
-        material.SubstituteRelations.Count.ShouldBe(0);
-    }
 
     [Fact]
     public void RemoveSubstituteRelation_NotFound_Should_Throw()

@@ -24,7 +24,17 @@
             <wms-material-selector
               v-model="line.materialId"
               :disabled="readonly"
+              :material-info="line.materialId ? { id: line.materialId, code: line.materialCode || '', name: line.materialName || '' } : undefined"
               @change="onMaterialChange(index, $event)"
+            />
+          </div>
+
+          <!-- 物料名称 -->
+          <div class="line-field line-material-name">
+            <el-input
+              :model-value="line.materialName"
+              disabled
+              placeholder="物料名称"
             />
           </div>
 
@@ -49,10 +59,12 @@
               placeholder="单位"
               clearable
             >
-              <el-option label="个" value="个" />
-              <el-option label="箱" value="箱" />
-              <el-option label="吨" value="吨" />
-              <el-option label="KG" value="KG" />
+              <el-option
+                v-for="item in unitOptions"
+                :key="item.itemCode"
+                :label="item.itemName"
+                :value="item.itemCode"
+              />
             </el-select>
           </div>
 
@@ -60,7 +72,12 @@
           <div v-if="mode !== 'transfer'" class="line-field">
             <wms-location-selector
               v-model="line.locationId"
+              :warehouse-id="line.warehouseId"
+              :area-id="line.areaId"
               :disabled="readonly"
+              @change="(location: any) => onLocationChange(index, location)"
+              @warehouse-change="(warehouse: any) => onWarehouseChange(index, warehouse)"
+              @area-change="(area: any) => onAreaChange(index, area)"
             />
           </div>
 
@@ -71,6 +88,7 @@
                 v-model="line.fromLocationId"
                 :disabled="readonly"
                 placeholder="源库位"
+                @change="() => validateLine(index)"
               />
             </div>
             <div class="line-field">
@@ -78,6 +96,7 @@
                 v-model="line.toLocationId"
                 :disabled="readonly"
                 placeholder="目标库位"
+                @change="() => validateLine(index)"
               />
             </div>
           </template>
@@ -125,10 +144,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { Plus, Minus } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 import WmsMaterialSelector from './WmsMaterialSelector.vue'
 import WmsLocationSelector from './WmsLocationSelector.vue'
+import { getDictionaryItemsByCode } from '@/api/dataDictionary'
+import type { DictionaryItemDto } from '@/api/dataDictionary'
 
 /**
  * COMP-011 WmsOrderLineEditor - 订单行编辑器组件
@@ -154,9 +176,17 @@ export interface WmsOrderLine {
   materialName?: string
   quantity: number
   unit?: string
+  warehouseId?: string
+  warehouseCode?: string
+  areaId?: string
+  areaCode?: string
   locationId?: string
+  locationCode?: string
   fromLocationId?: string
   toLocationId?: string
+  batchNumber?: string
+  expiryDate?: string
+  productionDate?: string
   remarks?: string
 }
 
@@ -180,6 +210,8 @@ const emit = defineEmits<{
 const lineData = ref<WmsOrderLine[]>([])
 // 行级错误
 const lineErrors = ref<Record<number, string>>({})
+// 单位选项
+const unitOptions = ref<DictionaryItemDto[]>([])
 
 // 初始化
 watch(() => props.lines, (newVal) => {
@@ -188,6 +220,15 @@ watch(() => props.lines, (newVal) => {
     _id: line._id || generateId()
   }))
 }, { immediate: true, deep: true })
+
+// 加载单位选项
+async function loadUnitOptions() {
+  try {
+    unitOptions.value = await getDictionaryItemsByCode('SysUnit');
+  } catch {
+    ElMessage.error('加载单位选项失败');
+  }
+}
 
 // 生成临时ID
 function generateId() {
@@ -200,11 +241,16 @@ function addLine() {
     _id: generateId(),
     materialId: '',
     quantity: 0,
-    unit: '个'
+    unit: unitOptions.value.length > 0 ? unitOptions.value[0].itemCode : ''
   }
   lineData.value.push(newLine)
   emitUpdate()
 }
+
+// 组件挂载时加载单位选项
+onMounted(() => {
+  loadUnitOptions()
+})
 
 // 删除行
 function removeLine(index: number) {
@@ -217,8 +263,51 @@ function onMaterialChange(index: number, material: any) {
   if (material) {
     lineData.value[index].materialCode = material.code
     lineData.value[index].materialName = material.name
-    lineData.value[index].unit = material.unit || '个'
+    lineData.value[index].unit = material.unit || ''
   }
+  emitUpdate()
+}
+
+// 仓库变化
+function onWarehouseChange(index: number, warehouse: any) {
+  if (warehouse) {
+    lineData.value[index].warehouseId = warehouse.id
+    lineData.value[index].warehouseCode = warehouse.code
+  } else {
+    lineData.value[index].warehouseId = ''
+    lineData.value[index].warehouseCode = ''
+  }
+  lineData.value[index].areaId = ''
+  lineData.value[index].areaCode = ''
+  lineData.value[index].locationId = ''
+  lineData.value[index].locationCode = ''
+  emitUpdate()
+}
+
+// 库区变化
+function onAreaChange(index: number, area: any) {
+  if (area) {
+    lineData.value[index].areaId = area.id
+    lineData.value[index].areaCode = area.code
+  } else {
+    lineData.value[index].areaId = ''
+    lineData.value[index].areaCode = ''
+  }
+  lineData.value[index].locationId = ''
+  lineData.value[index].locationCode = ''
+  emitUpdate()
+}
+
+// 库位变化
+function onLocationChange(index: number, location: any) {
+  if (location) {
+    lineData.value[index].locationId = location.id
+    lineData.value[index].locationCode = location.code
+  } else {
+    lineData.value[index].locationId = ''
+    lineData.value[index].locationCode = ''
+  }
+  validateLine(index)
   emitUpdate()
 }
 
@@ -252,6 +341,7 @@ function validateLine(index: number) {
     return false
   } else {
     delete lineErrors.value[index]
+    emitUpdate()
     return true
   }
 }
@@ -324,12 +414,14 @@ defineExpose({ validate })
   }
 
   .line-field {
-    flex: 1;
-    min-width: 180px;
+    min-width: 110px;
+
+    &.line-material-name {
+      min-width: 180px;
+    }
 
     &.line-remarks {
-      flex: 2;
-      min-width: 250px;
+      min-width: 160px;
     }
   }
 

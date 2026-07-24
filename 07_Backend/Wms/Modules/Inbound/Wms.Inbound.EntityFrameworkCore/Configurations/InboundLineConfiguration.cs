@@ -28,11 +28,16 @@ public class InboundLineConfiguration : IEntityTypeConfiguration<InboundLine>
         builder.Property(e => e.MaterialId).IsRequired();
         builder.Property(e => e.MaterialCode).IsRequired().HasMaxLength(50);
         builder.Property(e => e.MaterialName).IsRequired().HasMaxLength(200);
+        builder.Property(e => e.Unit).HasMaxLength(50).IsRequired(false);
         builder.Property(e => e.PlanQuantity).HasColumnType("decimal(18,4)").IsRequired();
         builder.Property(e => e.ReceivedQuantity).HasColumnType("decimal(18,4)").IsRequired();
         builder.Property(e => e.BatchNumber).HasMaxLength(50).IsRequired(false);
         builder.Property(e => e.QualityStatus).IsRequired()
             .HasConversion(s => s.Value, v => QualityStatus.FromValue(v));
+        builder.Property(e => e.PutawayWarehouseId).IsRequired(false);
+        builder.Property(e => e.PutawayWarehouseCode).HasMaxLength(50).IsRequired(false);
+        builder.Property(e => e.PutawayAreaId).IsRequired(false);
+        builder.Property(e => e.PutawayAreaCode).HasMaxLength(50).IsRequired(false);
         builder.Property(e => e.PutawayLocationId).IsRequired(false);
         builder.Property(e => e.PutawayLocationCode).HasMaxLength(50).IsRequired(false);
         builder.Property(e => e.ExpiryDate).IsRequired(false);

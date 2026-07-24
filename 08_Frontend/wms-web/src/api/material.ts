@@ -11,6 +11,7 @@ export interface MaterialDto {
   primaryUnitName: string;
   secondaryUnitId?: string;
   secondaryUnitName?: string;
+  conversionRate?: number;
   classificationId?: string;
   classificationName?: string;
   purchaseUnitCode?: string;
@@ -22,14 +23,35 @@ export interface MaterialDto {
   materialType: number;
   materialTypeDescription?: string;
   storageConditionType: number;
+  storageConditionTypeDescription?: string;
+  maxStackingLayers?: number;
+  packageSpec?: string;
+  weightPerUnit?: number;
   batchManagementEnabled: boolean;
   serialManagementEnabled: boolean;
   expiryManagementEnabled: boolean;
+  shelfLifeDays?: number;
+  qualityInspectionMode?: number;
+  qualityInspectionModeDescription?: string;
+  safetyStockQuantity?: number;
+  minOrderQuantity?: number;
+  abcClassification?: number;
+  abcClassificationDescription?: string;
+  allowNegativeInventory?: boolean;
   issueStrategyType: number;
   issueStrategyTypeDescription?: string;
+  strategyScope?: number;
+  strategyScopeDescription?: string;
+  dangerLevel?: number;
+  dangerLevelDescription?: string;
+  msdsNumber?: string;
+  specialMark?: string;
   isActive: boolean;
   erpSyncStatus: number;
+  erpSyncStatusDescription?: string;
+  substituteRelations?: MaterialSubstituteRelationDto[];
   creationTime: string;
+  creatorId?: string;
 }
 
 export interface CreateMaterialDto {
@@ -144,13 +166,24 @@ export interface MaterialIssueStrategyDto {
 export interface AddSubstituteRequest {
   substituteMaterialId: string;
   substituteMaterialCode: string;
+  substituteMaterialName?: string;
   priority?: number;
   ratio?: number;
 }
 
+export interface MaterialSubstituteRelationDto {
+  id: string;
+  originalMaterialId: string;
+  substituteMaterialId: string;
+  substituteMaterialCode: string;
+  substituteMaterialName?: string;
+  substitutePriority: number;
+  substituteRatio: number;
+}
+
 export interface MaterialSubstituteDto {
   id: string;
-  materialId: string;
+  originalMaterialId: string;
   substituteMaterialId: string;
   substituteMaterialCode: string;
   substituteMaterialName: string;
@@ -227,7 +260,7 @@ export function deleteIssueStrategy(id: string) {
 }
 
 export function getMaterialSubstitutes(id: string) {
-  return get<ListResultDto<MaterialSubstituteDto>>(`/api/v1/material/materials/${id}/substitutes`);
+  return get<ListResultDto<MaterialSubstituteRelationDto>>(`/api/v1/material/materials/${id}/substitutes`);
 }
 
 export function addMaterialSubstitute(id: string, data: AddSubstituteRequest) {

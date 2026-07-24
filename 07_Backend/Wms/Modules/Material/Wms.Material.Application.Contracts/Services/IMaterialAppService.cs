@@ -17,6 +17,6 @@ public interface IMaterialAppService
     Task ActivateAsync(Guid id);
     Task DeactivateAsync(Guid id);
     Task<List<MaterialSubstituteRelationDto>> GetSubstitutesAsync(Guid materialId);
-    Task<MaterialSubstituteRelationDto> AddSubstituteAsync(Guid materialId, Guid substituteMaterialId, string substituteMaterialCode, int priority = 1, decimal ratio = 1.0m);
+    Task<MaterialSubstituteRelationDto> AddSubstituteAsync(Guid materialId, Guid substituteMaterialId, string substituteMaterialCode, string substituteMaterialName = "", int priority = 1, decimal ratio = 1.0m);
     Task RemoveSubstituteAsync(Guid materialId, Guid substituteRelationId);
 }

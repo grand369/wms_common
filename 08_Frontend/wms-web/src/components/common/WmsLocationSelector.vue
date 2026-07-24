@@ -56,7 +56,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { ElMessage } from 'element-plus'
-import { getWarehouses, getAreas, getLocationsByArea } from '@/api/warehouse'
+import { getWarehouses, getAreas, getLocationsByArea, getLocation } from '@/api/warehouse'
 
 /**
  * COMP-010 WmsLocationSelector - 三级级联库位选择器
@@ -104,10 +104,12 @@ interface WmsLocation {
 const props = withDefaults(defineProps<{
   modelValue?: string
   warehouseId?: string
+  areaId?: string
   disabled?: boolean
 }>(), {
   modelValue: '',
   warehouseId: '',
+  areaId: '',
   disabled: false
 })
 
@@ -115,8 +117,8 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
   'update:modelValue': [value: string]
   change: [location: WmsLocation | null]
-  'warehouse-change': [warehouseId: string]
-  'area-change': [areaId: string]
+  'warehouse-change': [warehouse: WmsWarehouse | null]
+  'area-change': [area: WmsArea | null]
 }>()
 
 // 选择状态
@@ -143,14 +145,47 @@ async function loadWarehouses() {
       name: item.warehouseName
     }))
 
-    if (props.warehouseId) {
+    // 如果有已选中的库位ID，反查仓库和库区信息
+    if (props.modelValue) {
+      await loadLocationInfo(props.modelValue)
+    } else if (props.warehouseId) {
+      // 如果没有库位ID但有仓库ID，直接加载仓库和库区
       selectedWarehouse.value = props.warehouseId
       await loadAreas(props.warehouseId)
+      
+      // 如果有库区ID，加载库区对应的库位列表
+      if (props.areaId) {
+        selectedArea.value = props.areaId
+        await loadLocations(props.areaId)
+      }
     }
   } catch (error) {
     ElMessage.error('加载仓库失败')
   } finally {
     loading.value = false
+  }
+}
+
+// 根据库位ID加载仓库和库区信息
+async function loadLocationInfo(locationId: string) {
+  try {
+    const location = await getLocation(locationId)
+    if (location) {
+      selectedWarehouse.value = location.warehouseId
+      selectedArea.value = location.areaId
+      selectedLocation.value = location.id
+      
+      // 加载库区和库位列表
+      await loadAreas(location.warehouseId)
+      
+      // 找到对应库区后加载库位列表
+      const areaIndex = areaList.value.findIndex(a => a.id === location.areaId)
+      if (areaIndex !== -1) {
+        await loadLocations(location.areaId)
+      }
+    }
+  } catch (error) {
+    // 库位信息获取失败不影响主流程
   }
 }
 
@@ -177,7 +212,7 @@ async function loadLocations(areaId: string) {
   loading.value = true
   try {
     const res = await getLocationsByArea(areaId)
-    locationList.value = res.items.map(item => ({
+    locationList.value = res.map(item => ({
       id: item.id,
       code: item.locationCode,
       name: item.locationCode,
@@ -197,7 +232,9 @@ async function onWarehouseChange(warehouseId: string) {
   selectedLocation.value = ''
   areaList.value = []
   locationList.value = []
-  emit('warehouse-change', warehouseId)
+  
+  const warehouse = warehouseList.value.find(item => item.id === warehouseId) || null
+  emit('warehouse-change', warehouse)
 
   if (warehouseId) {
     await loadAreas(warehouseId)
@@ -208,7 +245,9 @@ async function onWarehouseChange(warehouseId: string) {
 async function onAreaChange(areaId: string) {
   selectedLocation.value = ''
   locationList.value = []
-  emit('area-change', areaId)
+  
+  const area = areaList.value.find(item => item.id === areaId) || null
+  emit('area-change', area)
 
   if (areaId) {
     await loadLocations(areaId)

@@ -379,4 +379,65 @@ public class OutboundOrder : FullAuditedAggregateRoot<Guid>
     {
         Remark = remark;
     }
+
+    /// <summary>
+    /// Update material requisition information. Only allowed in Draft status.
+    /// </summary>
+    public void SetMaterialRequisition(Guid? materialRequisitionId)
+    {
+        if (OutboundStatus != OutboundStatus.Draft)
+        {
+            throw new BusinessException("WMS:Outbound:StatusNotAllowed",
+                $"Cannot update material requisition when order status is {OutboundStatus.Name}. Only Draft status allows this operation. (OB-001)");
+        }
+
+        MaterialRequisitionId = materialRequisitionId;
+    }
+
+    /// <summary>
+    /// Update sales order information. Only allowed in Draft status.
+    /// </summary>
+    public void SetSalesOrder(Guid? salesOrderId)
+    {
+        if (OutboundStatus != OutboundStatus.Draft)
+        {
+            throw new BusinessException("WMS:Outbound:StatusNotAllowed",
+                $"Cannot update sales order when order status is {OutboundStatus.Name}. Only Draft status allows this operation. (OB-001)");
+        }
+
+        SalesOrderId = salesOrderId;
+    }
+
+    /// <summary>
+    /// Update return material order information. Only allowed in Draft status.
+    /// </summary>
+    public void SetReturnMaterialOrder(Guid? returnMaterialOrderId)
+    {
+        if (OutboundStatus != OutboundStatus.Draft)
+        {
+            throw new BusinessException("WMS:Outbound:StatusNotAllowed",
+                $"Cannot update return material order when order status is {OutboundStatus.Name}. Only Draft status allows this operation. (OB-001)");
+        }
+
+        ReturnMaterialOrderId = returnMaterialOrderId;
+    }
+
+    /// <summary>
+    /// Update order details - replace all lines with new lines. Only allowed in Draft status.
+    /// </summary>
+    public void UpdateLines(List<OutboundLine> newLines)
+    {
+        if (OutboundStatus != OutboundStatus.Draft)
+        {
+            throw new BusinessException("WMS:Outbound:StatusNotAllowed",
+                $"Cannot update lines when order status is {OutboundStatus.Name}. Only Draft status allows this operation. (OB-001)");
+        }
+
+        Lines.Clear();
+        Lines.AddRange(newLines);
+        TotalRequiredQuantity = Lines.Sum(l => l.RequiredQuantity);
+        TotalAllocatedQuantity = Lines.Sum(l => l.AllocatedQuantity);
+        TotalPickedQuantity = Lines.Sum(l => l.PickedQuantity);
+        TotalShippedQuantity = Lines.Sum(l => l.ShippedQuantity);
+    }
 }

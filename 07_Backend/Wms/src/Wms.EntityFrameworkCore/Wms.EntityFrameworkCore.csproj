@@ -34,6 +34,7 @@
     <ProjectReference Include="..\..\Modules\RuleEngine\Wms.RuleEngine.EntityFrameworkCore\Wms.RuleEngine.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\..\Modules\Notification\Wms.Notification.EntityFrameworkCore\Wms.Notification.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\..\Modules\DataDictionary\Wms.DataDictionary.EntityFrameworkCore\Wms.DataDictionary.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Modules\Supplier\Wms.Supplier.EntityFrameworkCore\Wms.Supplier.EntityFrameworkCore.csproj" />
   </ItemGroup>
 
 </Project>

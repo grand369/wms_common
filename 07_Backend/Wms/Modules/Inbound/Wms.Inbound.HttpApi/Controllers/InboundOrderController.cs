@@ -34,13 +34,13 @@ public class InboundOrderController : AbpControllerBase
     }
 
     [HttpPost]
-    public Task<InboundOrderOutputDto> CreateAsync(InboundOrderCreateDto dto)
+    public Task<InboundOrderOutputDto> CreateAsync([FromBody]InboundOrderCreateDto dto)
     {
         return _appService.CreateAsync(dto);
     }
 
     [HttpPut("{id}")]
-    public Task<InboundOrderOutputDto> UpdateAsync(Guid id, InboundOrderUpdateDto dto)
+    public Task<InboundOrderOutputDto> UpdateAsync(Guid id, [FromBody] InboundOrderUpdateDto dto)
     {
         return _appService.UpdateAsync(id, dto);
     }
@@ -52,19 +52,19 @@ public class InboundOrderController : AbpControllerBase
     }
 
     [HttpPatch("{id}/confirm")]
-    public Task<InboundOrderOutputDto> ConfirmAsync(Guid id, InboundConfirmCommandDto dto)
+    public Task<InboundOrderOutputDto> ConfirmAsync(Guid id, [FromBody] InboundConfirmCommandDto dto)
     {
         return _appService.ConfirmAsync(id, dto);
     }
 
     [HttpPatch("{id}/quality-inspect")]
-    public Task<InboundOrderOutputDto> QualityInspectAsync(Guid id, InboundQualityInspectCommandDto dto)
+    public Task<InboundOrderOutputDto> QualityInspectAsync(Guid id, [FromBody] InboundQualityInspectCommandDto dto)
     {
         return _appService.QualityInspectAsync(id, dto);
     }
 
     [HttpPatch("{id}/putaway")]
-    public Task<InboundOrderOutputDto> PutawayAsync(Guid id, InboundPutawayCommandDto dto)
+    public Task<InboundOrderOutputDto> PutawayAsync(Guid id, [FromBody] InboundPutawayCommandDto dto)
     {
         return _appService.PutawayAsync(id, dto);
     }
@@ -88,7 +88,7 @@ public class InboundOrderController : AbpControllerBase
     }
 
     [HttpPost("batch-create")]
-    public Task<List<InboundOrderOutputDto>> BatchCreateAsync(List<InboundOrderCreateDto> dtos)
+    public Task<List<InboundOrderOutputDto>> BatchCreateAsync([FromBody] List<InboundOrderCreateDto> dtos)
     {
         return _appService.BatchCreateAsync(dtos);
     }
@@ -97,5 +97,11 @@ public class InboundOrderController : AbpControllerBase
     public Task<InboundOrderOutputDto> GetByNoAsync(string orderNo)
     {
         return _appService.GetByNoAsync(orderNo);
+    }
+
+    [HttpGet("statistics")]
+    public Task<InboundStatisticsDto> GetStatisticsAsync([FromQuery] InboundStatisticsQueryDto query)
+    {
+        return _appService.GetStatisticsAsync(query);
     }
 }

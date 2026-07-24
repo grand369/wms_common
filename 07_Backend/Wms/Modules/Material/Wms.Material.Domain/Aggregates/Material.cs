@@ -246,7 +246,7 @@ public class Material : FullAuditedAggregateRoot<Guid>
     /// <summary>
     /// Adds a substitute material relation to this material.
     /// </summary>
-    public Material AddSubstituteRelation(Guid substituteMaterialId, string substituteMaterialCode, int priority = 1, decimal ratio = 1.0m)
+    public Material AddSubstituteRelation(Guid substituteMaterialId, string substituteMaterialCode, string substituteMaterialName = "", int priority = 1, decimal ratio = 1.0m)
     {
         if (SubstituteRelations.Any(r => r.SubstituteMaterialId == substituteMaterialId))
             throw new ArgumentException("Substitute material already exists in the relation list.", nameof(substituteMaterialId));
@@ -256,6 +256,7 @@ public class Material : FullAuditedAggregateRoot<Guid>
             Id,
             substituteMaterialId,
             substituteMaterialCode,
+            substituteMaterialName,
             priority,
             ratio);
 

@@ -237,6 +237,13 @@ export const asyncRoutes: RouteRecordRaw[] = [
     { title: '通知配置', icon: 'Bell', permission: 'Wms.Notification.Create' }),
 
   // ========================
+  // BC-15 Supplier (1 page)
+  // ========================
+  createRoute('supplier/list', 'SupplierList',
+    () => import('@/views/supplier/List.vue'),
+    { title: '供应商管理', icon: 'UserFilled', permission: 'Wms.Supplier.Suppliers' }),
+
+  // ========================
   // BC-16 DataDictionary (2 pages)
   // ========================
   createRoute('data-dictionary/list', 'DataDictionaryList',

@@ -25,4 +25,7 @@ public interface IOutboundOrderRepository : IRepository<OutboundOrder, Guid>
 
     /// <summary>Get outbound orders pending allocation for a warehouse.</summary>
     Task<List<OutboundOrder>> GetPendingAllocationAsync(Guid warehouseId);
+
+    /// <summary>Get outbound order with lines loaded.</summary>
+    Task<OutboundOrder> GetWithLinesAsync(Guid id);
 }

@@ -45,7 +45,7 @@ public class InboundDomainService : DomainService
         Guid? supplierId,
         string? supplierName,
         string? remark,
-        List<(Guid materialId, string materialCode, string materialName, decimal planQuantity, string? batchNumber)> lineData)
+        List<(Guid materialId, string materialCode, string materialName, string unit, decimal planQuantity, Guid? putawayWarehouseId, string? putawayWarehouseCode, Guid? putawayAreaId, string? putawayAreaCode, Guid? putawayLocationId, string? putawayLocationCode, string? batchNumber)> lineData)
     {
         var orderId = GuidGenerator.Create();
         var order = new InboundOrder(
@@ -59,10 +59,22 @@ public class InboundDomainService : DomainService
         for (int i = 0; i < lineData.Count; i++)
         {
             var ld = lineData[i];
-            order.AddLine(
+            var line = order.AddLine(
                 GuidGenerator.Create(), i + 1,
-                ld.materialId, ld.materialCode, ld.materialName,
+                ld.materialId, ld.materialCode, ld.materialName, ld.unit,
                 ld.planQuantity, ld.batchNumber);
+            
+            // 设置入库库位信息（如果有）
+            if (ld.putawayLocationId.HasValue)
+            {
+                line.SetPutawayLocation(
+                    ld.putawayWarehouseId.Value,
+                    ld.putawayWarehouseCode ?? "",
+                    ld.putawayAreaId.Value,
+                    ld.putawayAreaCode ?? "",
+                    ld.putawayLocationId.Value,
+                    ld.putawayLocationCode ?? "");
+            }
         }
 
         await _inboundOrderRepository.InsertAsync(order);
@@ -90,7 +102,7 @@ public class InboundDomainService : DomainService
         Guid orderId,
         List<(Guid lineId, decimal receivedQuantity, string? batchNumber)> recvData)
     {
-        var order = await _inboundOrderRepository.GetAsync(orderId);
+        var order = await _inboundOrderRepository.GetWithLinesAsync(orderId);
 
         // Set received quantities on each line
         foreach (var (lineId, receivedQty, batchNo) in recvData)
@@ -113,7 +125,7 @@ public class InboundDomainService : DomainService
     public async Task<InboundOrder> ProcessQualityInspectionAsync(
         Guid orderId, Guid lineId, QualityStatus result)
     {
-        var order = await _inboundOrderRepository.GetAsync(orderId);
+        var order = await _inboundOrderRepository.GetWithLinesAsync(orderId);
 
         if (order.InboundStatus != InboundStatus.Inspecting)
         {
@@ -161,9 +173,9 @@ public class InboundDomainService : DomainService
     /// (DS-02, REQ-IN-007)
     /// </summary>
     public async Task<InboundOrder> ConfirmPutawayAsync(
-        Guid orderId, Guid lineId, Guid locationId, string locationCode, decimal qty)
+        Guid orderId, Guid lineId, Guid warehouseId, string warehouseCode, Guid areaId, string areaCode, Guid locationId, string locationCode, decimal qty)
     {
-        var order = await _inboundOrderRepository.GetAsync(orderId);
+        var order = await _inboundOrderRepository.GetWithLinesAsync(orderId);
 
         // Transition to Putaway if still in Inspecting (all lines passed)
         if (order.InboundStatus == InboundStatus.Inspecting)
@@ -178,7 +190,7 @@ public class InboundDomainService : DomainService
             order.StartQualityInspection(); // This will transition to Putaway if no inspection needed
         }
 
-        order.ConfirmPutaway(lineId, locationId, locationCode, qty);
+        order.ConfirmPutaway(lineId, warehouseId, warehouseCode, areaId, areaCode, locationId, locationCode, qty);
 
         await _inboundOrderRepository.UpdateAsync(order);
         return order;
@@ -193,7 +205,7 @@ public class InboundDomainService : DomainService
     /// </summary>
     public async Task<InboundOrder> CompleteInboundOrderAsync(Guid orderId)
     {
-        var order = await _inboundOrderRepository.GetAsync(orderId);
+        var order = await _inboundOrderRepository.GetWithLinesAsync(orderId);
         order.Complete();
 
         await _inboundOrderRepository.UpdateAsync(order);

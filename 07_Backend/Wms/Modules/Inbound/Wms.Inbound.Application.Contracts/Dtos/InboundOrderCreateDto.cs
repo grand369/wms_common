@@ -63,6 +63,9 @@ public class InboundOrderCreateDto
 /// </summary>
 public class InboundLineCreateDto
 {
+    /// <summary>Line ID — for update scenarios.</summary>
+    public Guid? Id { get; set; }
+
     /// <summary>Material ID.</summary>
     [Required]
     public Guid MaterialId { get; set; }
@@ -77,10 +80,35 @@ public class InboundLineCreateDto
     [StringLength(200)]
     public string MaterialName { get; set; } = string.Empty;
 
+    /// <summary>Unit of measure — redundant.</summary>
+    [StringLength(50)]
+    public string? Unit { get; set; }
+
     /// <summary>Plan quantity.</summary>
     [Required]
     [Range(0.0001, double.MaxValue)]
     public decimal PlanQuantity { get; set; }
+
+    /// <summary>Putaway warehouse ID — optional.</summary>
+    public Guid? PutawayWarehouseId { get; set; }
+
+    /// <summary>Putaway warehouse code — redundant.</summary>
+    [StringLength(50)]
+    public string? PutawayWarehouseCode { get; set; }
+
+    /// <summary>Putaway area ID — optional.</summary>
+    public Guid? PutawayAreaId { get; set; }
+
+    /// <summary>Putaway area code — redundant.</summary>
+    [StringLength(50)]
+    public string? PutawayAreaCode { get; set; }
+
+    /// <summary>Putaway location ID — optional.</summary>
+    public Guid? PutawayLocationId { get; set; }
+
+    /// <summary>Putaway location code — redundant.</summary>
+    [StringLength(50)]
+    public string? PutawayLocationCode { get; set; }
 
     /// <summary>Batch number — optional.</summary>
     [StringLength(50)]

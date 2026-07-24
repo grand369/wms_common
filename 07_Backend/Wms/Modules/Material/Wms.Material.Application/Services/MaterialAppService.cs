@@ -55,6 +55,7 @@ public class MaterialAppService : ApplicationService, IMaterialAppService
         joinedQuery = joinedQuery
             .WhereIf(!string.IsNullOrWhiteSpace(query.MaterialCode), x => x.Material.MaterialCode.Contains(query.MaterialCode!))
             .WhereIf(!string.IsNullOrWhiteSpace(query.MaterialName), x => x.Material.MaterialName.Contains(query.MaterialName!))
+            .WhereIf(!string.IsNullOrWhiteSpace(query.Filter), x => x.Material.MaterialCode.Contains(query.Filter!) || x.Material.MaterialName.Contains(query.Filter!))
             .WhereIf(query.MaterialType.HasValue, x => x.Material.MaterialType == query.MaterialType.Value)
             .WhereIf(query.ClassificationId.HasValue, x => x.Material.ClassificationId == query.ClassificationId.Value)
             .WhereIf(query.IsActive.HasValue, x => x.Material.IsActive == query.IsActive.Value)
@@ -164,16 +165,17 @@ public class MaterialAppService : ApplicationService, IMaterialAppService
             OriginalMaterialId = r.OriginalMaterialId,
             SubstituteMaterialId = r.SubstituteMaterialId,
             SubstituteMaterialCode = r.SubstituteMaterialCode,
+            SubstituteMaterialName = r.SubstituteMaterialName,
             SubstitutePriority = r.SubstitutePriority,
             SubstituteRatio = r.SubstituteRatio
         }).ToList();
     }
 
     [Authorize(WmsMaterialPermissions.Substitutes.Create)]
-    public async Task<MaterialSubstituteRelationDto> AddSubstituteAsync(Guid materialId, Guid substituteMaterialId, string substituteMaterialCode, int priority = 1, decimal ratio = 1.0m)
+    public async Task<MaterialSubstituteRelationDto> AddSubstituteAsync(Guid materialId, Guid substituteMaterialId, string substituteMaterialCode, string substituteMaterialName = "", int priority = 1, decimal ratio = 1.0m)
     {
         var material = await _materialRepository.GetAsync(materialId);
-        material.AddSubstituteRelation(substituteMaterialId, substituteMaterialCode, priority, ratio);
+        material.AddSubstituteRelation(substituteMaterialId, substituteMaterialCode, substituteMaterialName, priority, ratio);
         await _materialRepository.UpdateAsync(material);
         var relation = material.SubstituteRelations.First(r => r.SubstituteMaterialId == substituteMaterialId);
         return new MaterialSubstituteRelationDto
@@ -182,6 +184,7 @@ public class MaterialAppService : ApplicationService, IMaterialAppService
             OriginalMaterialId = relation.OriginalMaterialId,
             SubstituteMaterialId = relation.SubstituteMaterialId,
             SubstituteMaterialCode = relation.SubstituteMaterialCode,
+            SubstituteMaterialName = relation.SubstituteMaterialName,
             SubstitutePriority = relation.SubstitutePriority,
             SubstituteRatio = relation.SubstituteRatio
         };
@@ -265,7 +268,8 @@ public class MaterialAppService : ApplicationService, IMaterialAppService
             SubstituteRelations = material.SubstituteRelations.Select(r => new MaterialSubstituteRelationDto
             {
                 Id = r.Id, OriginalMaterialId = r.OriginalMaterialId, SubstituteMaterialId = r.SubstituteMaterialId,
-                SubstituteMaterialCode = r.SubstituteMaterialCode, SubstitutePriority = r.SubstitutePriority, SubstituteRatio = r.SubstituteRatio
+                SubstituteMaterialCode = r.SubstituteMaterialCode, SubstituteMaterialName = r.SubstituteMaterialName,
+                SubstitutePriority = r.SubstitutePriority, SubstituteRatio = r.SubstituteRatio
             }).ToList(),
             CreationTime = material.CreationTime,
             CreatorId = material.CreatorId

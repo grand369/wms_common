@@ -26,6 +26,9 @@ public class InboundLine : FullAuditedEntity<Guid>
     /// <summary>Material name — redundant for query optimization.</summary>
     public string MaterialName { get; private set; }
 
+    /// <summary>Unit — the unit of measure for the material.</summary>
+    public string Unit { get; private set; } = string.Empty;
+
     /// <summary>Plan quantity — expected receipt quantity.</summary>
     public decimal PlanQuantity { get; private set; }
 
@@ -40,6 +43,18 @@ public class InboundLine : FullAuditedEntity<Guid>
 
     /// <summary>Quality status — Pending/Qualified/Unqualified/Skip.</summary>
     public QualityStatus QualityStatus { get; private set; }
+
+    /// <summary>Putaway warehouse ID — nullable, set during putaway confirmation.</summary>
+    public Guid? PutawayWarehouseId { get; private set; }
+
+    /// <summary>Putaway warehouse code — redundant.</summary>
+    public string? PutawayWarehouseCode { get; private set; }
+
+    /// <summary>Putaway area ID — nullable, set during putaway confirmation.</summary>
+    public Guid? PutawayAreaId { get; private set; }
+
+    /// <summary>Putaway area code — redundant.</summary>
+    public string? PutawayAreaCode { get; private set; }
 
     /// <summary>Putaway location ID — nullable, set during putaway confirmation.</summary>
     public Guid? PutawayLocationId { get; private set; }
@@ -65,6 +80,7 @@ public class InboundLine : FullAuditedEntity<Guid>
         Guid materialId,
         string materialCode,
         string materialName,
+        string unit,
         decimal planQuantity,
         string? batchNumber = null,
         DateTime? expiryDate = null,
@@ -77,11 +93,16 @@ public class InboundLine : FullAuditedEntity<Guid>
         MaterialId = materialId;
         MaterialCode = materialCode;
         MaterialName = materialName;
+        Unit = unit;
         PlanQuantity = planQuantity;
         ReceivedQuantity = 0m;
         BatchNumber = batchNumber;
         SerialNumberList = null;
         QualityStatus = QualityStatus.Pending;
+        PutawayWarehouseId = null;
+        PutawayWarehouseCode = null;
+        PutawayAreaId = null;
+        PutawayAreaCode = null;
         PutawayLocationId = null;
         PutawayLocationCode = null;
         ExpiryDate = expiryDate;
@@ -133,7 +154,7 @@ public class InboundLine : FullAuditedEntity<Guid>
     /// <summary>
     /// Set putaway location — called during putaway confirmation.
     /// </summary>
-    public void SetPutawayLocation(Guid locationId, string locationCode)
+    public void SetPutawayLocation(Guid warehouseId, string warehouseCode, Guid areaId, string areaCode, Guid locationId, string locationCode)
     {
         if (QualityStatus == QualityStatus.Unqualified)
         {
@@ -141,6 +162,10 @@ public class InboundLine : FullAuditedEntity<Guid>
                 $"Cannot set putaway location for unqualified material {MaterialCode}. (IN-005)");
         }
 
+        PutawayWarehouseId = warehouseId;
+        PutawayWarehouseCode = warehouseCode;
+        PutawayAreaId = areaId;
+        PutawayAreaCode = areaCode;
         PutawayLocationId = locationId;
         PutawayLocationCode = locationCode;
     }

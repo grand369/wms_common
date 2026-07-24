@@ -5,13 +5,13 @@
     <el-card shadow="hover" class="detail-card">
       <template #header>
         <div class="card-header">
-          <span>入库单号：{{ order?.orderNo }}</span>
+          <span>入库单号：{{ order?.inboundOrderNo }}</span>
           <div class="header-actions">
-            <WmsStatusTag v-if="order" :status="mapDocumentStatus(order.status)" type="document" />
-            <el-button v-if="order?.status === 1" type="warning" @click="handleQualityInspect">质检</el-button>
-            <el-button v-if="order?.status === 2" type="success" @click="handlePutaway">上架</el-button>
-            <el-button v-if="order?.status === 2" type="primary" @click="handleComplete">完成</el-button>
-            <el-button v-if="order && order.status < 3" type="danger" @click="handleCancel">取消</el-button>
+            <WmsStatusTag v-if="order" :status="mapDocumentStatus(order.inboundStatusValue)" type="document" />
+            <el-button v-if="order?.inboundStatusValue === 1" type="warning" @click="handleQualityInspect">质检</el-button>
+            <el-button v-if="order?.inboundStatusValue === 2" type="success" @click="handlePutaway">上架</el-button>
+            <el-button v-if="order?.inboundStatusValue === 2" type="primary" @click="handleComplete">完成</el-button>
+            <el-button v-if="order && order.inboundStatusValue < 3" type="danger" @click="handleCancel">取消</el-button>
           </div>
         </div>
       </template>
@@ -19,20 +19,27 @@
       <WmsSteps :steps="inboundSteps" :active-step="activeStep" />
 
       <el-descriptions :column="3" border class="order-info">
-        <el-descriptions-item label="入库类型">{{ order?.orderType }}</el-descriptions-item>
-        <el-descriptions-item label="仓库">{{ order?.warehouseName }}</el-descriptions-item>
+        <el-descriptions-item label="入库类型">{{ order?.inboundTypeName }}</el-descriptions-item>
+        <el-descriptions-item label="仓库">{{ order?.warehouseCode }}</el-descriptions-item>
         <el-descriptions-item label="供应商">{{ order?.supplierName || '-' }}</el-descriptions-item>
-        <el-descriptions-item label="计划日期">{{ order?.planDate || '-' }}</el-descriptions-item>
-        <el-descriptions-item label="到货日期">{{ order?.arrivalDate || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="采购订单号">{{ order?.purchaseOrderNo || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="计划数量">{{ order?.totalPlanQuantity }}</el-descriptions-item>
+        <el-descriptions-item label="已收数量">{{ order?.totalReceivedQuantity }}</el-descriptions-item>
+        <el-descriptions-item label="备注">{{ order?.remark || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="创建时间">{{ order?.creationTime }}</el-descriptions-item>
       </el-descriptions>
 
       <el-divider content-position="left">入库明细</el-divider>
       <el-table :data="order?.lines" border>
         <el-table-column type="index" width="50" />
+        <el-table-column prop="lineNo" label="行号" width="80" />
         <el-table-column prop="materialCode" label="物料编码" />
         <el-table-column prop="materialName" label="物料名称" />
-        <el-table-column prop="qty" label="数量" align="right" />
-        <el-table-column prop="batchNo" label="批次" />
+        <el-table-column prop="planQuantity" label="计划数量" align="right" />
+        <el-table-column prop="receivedQuantity" label="已收数量" align="right" />
+        <el-table-column prop="batchNumber" label="批次" />
+        <el-table-column prop="qualityStatusName" label="质检状态" />
+        <el-table-column prop="remark" label="备注" />
       </el-table>
 
       <el-divider content-position="left">状态记录</el-divider>
@@ -63,23 +70,23 @@ const inboundSteps = ['草稿', '已确认', '质检', '上架', '完成'];
 const activeStep = computed(() => {
   if (!order.value) return 0;
   const map: Record<number, number> = { 0: 0, 1: 1, 2: 3, 3: 4, 4: 0 };
-  return map[order.value.status] || 0;
+  return map[order.value.inboundStatusValue] || 0;
 });
 
 const timelineItems = computed<WmsTimelineItem[]>(() => {
   if (!order.value) return [];
   const items: WmsTimelineItem[] = [];
-  items.push({ time: order.value.planDate || '', status: 'Draft', description: '创建入库单', operator: '' });
-  if (order.value.status >= 1) {
+  items.push({ time: order.value.creationTime || '', status: 'Draft', description: '创建入库单', operator: '' });
+  if (order.value.inboundStatusValue >= 1) {
     items.push({ time: '', status: 'Confirmed', description: '入库单已确认', operator: '' });
   }
-  if (order.value.status >= 2) {
+  if (order.value.inboundStatusValue >= 2) {
     items.push({ time: '', status: 'InProgress', description: '入库单质检/上架中', operator: '' });
   }
-  if (order.value.status === 3) {
+  if (order.value.inboundStatusValue === 3) {
     items.push({ time: '', status: 'Completed', description: '入库单已完成', operator: '' });
   }
-  if (order.value.status === 4) {
+  if (order.value.inboundStatusValue === 4) {
     items.push({ time: '', status: 'Cancelled', description: '入库单已取消', operator: '' });
   }
   return items;

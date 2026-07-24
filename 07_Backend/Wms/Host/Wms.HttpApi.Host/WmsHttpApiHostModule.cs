@@ -50,6 +50,9 @@ using Wms.RuleEngine.EntityFrameworkCore;
 using Wms.Notification.HttpApi;
 using Wms.Notification.Application;
 using Wms.Notification.EntityFrameworkCore;
+using Wms.Supplier.HttpApi;
+using Wms.Supplier.Application;
+using Wms.Supplier.EntityFrameworkCore;
 
 namespace Wms.HttpApi.Host;
 
@@ -105,7 +108,10 @@ namespace Wms.HttpApi.Host;
     typeof(WmsRuleEngineEntityFrameworkCoreModule),
     typeof(WmsNotificationHttpApiModule),
     typeof(WmsNotificationApplicationModule),
-    typeof(WmsNotificationEntityFrameworkCoreModule)
+    typeof(WmsNotificationEntityFrameworkCoreModule),
+    typeof(WmsSupplierHttpApiModule),
+    typeof(WmsSupplierApplicationModule),
+    typeof(WmsSupplierEntityFrameworkCoreModule)
 )]
 public class WmsHttpApiHostModule : AbpModule
 {

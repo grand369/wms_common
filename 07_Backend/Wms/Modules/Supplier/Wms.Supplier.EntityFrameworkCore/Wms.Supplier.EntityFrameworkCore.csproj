@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.Supplier.EntityFrameworkCore</AssemblyName>
+    <RootNamespace>Wms.Supplier.EntityFrameworkCore</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore.SqlServer" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.Supplier.Application\Wms.Supplier.Application.csproj" />
+    <ProjectReference Include="..\Wms.Supplier.Domain\Wms.Supplier.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Wms.Shared\Wms.Shared.csproj" />
+  </ItemGroup>
+</Project>

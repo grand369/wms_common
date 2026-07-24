@@ -18,6 +18,7 @@ using Wms.BarcodeLabel.EntityFrameworkCore.Configurations;
 using Wms.RuleEngine.EntityFrameworkCore.Configurations;
 using Wms.Notification.EntityFrameworkCore.Configurations;
 using Wms.DataDictionary.EntityFrameworkCore.Configurations;
+using Wms.Supplier.EntityFrameworkCore.Configurations;
 using Wms.LineSide.Domain.Aggregates;
 using Wms.RuleEngine.Domain.Aggregates;
 using Wms.Transfer.Domain.Aggregates;
@@ -56,6 +57,7 @@ public class WmsDbContext : AbpDbContext<WmsDbContext>
     public DbSet<Wms.Notification.Domain.Aggregates.NotificationRule> NotificationRules { get; set; }
     public DbSet<Wms.DataDictionary.Domain.Entities.Dictionary> DataDictionaries { get; set; }
     public DbSet<Wms.DataDictionary.Domain.Entities.DataDictionaryItem> DataDictionaryItems { get; set; }
+    public DbSet<Wms.Supplier.Domain.Aggregates.Supplier> Suppliers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -94,6 +96,7 @@ public class WmsDbContext : AbpDbContext<WmsDbContext>
         builder.ApplyConfiguration(new NotificationRuleConfiguration());
         builder.ApplyConfiguration(new DataDictionaryConfiguration());
         builder.ApplyConfiguration(new DataDictionaryItemConfiguration());
+        builder.ApplyConfiguration(new SupplierConfiguration());
 
         ConfigureLineSide(builder);
         ConfigureTransfer(builder);
@@ -423,6 +426,8 @@ public class WmsDbContext : AbpDbContext<WmsDbContext>
             typeof(Wms.Workflow.Domain.Aggregates.ApprovalInstance),    // FullAuditedAggregateRoot
             // TaskCenter module (FullAuditedAggregateRoot)
             typeof(Wms.TaskCenter.Domain.Aggregates.WarehouseTask),
+            // Supplier module
+            typeof(Wms.Supplier.Domain.Aggregates.Supplier),           // FullAuditedAggregateRoot
         };
 
         var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };

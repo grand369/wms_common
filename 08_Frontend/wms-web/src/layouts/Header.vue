@@ -165,8 +165,12 @@ interface BreadcrumbItem {
 const breadcrumbs = computed<BreadcrumbItem[]>(() => {
   const items: BreadcrumbItem[] = [];
 
-  // Current route title
-  const currentTitle = (route.meta.title as string) || undefined;
+  // Handle edit mode for inbound order
+  let currentTitle = (route.meta.title as string) || undefined;
+  if (route.path === '/inbound/create' && route.query.id) {
+    currentTitle = '编辑入库单';
+  }
+
   if (currentTitle && route.path !== '/') {
     items.push({ label: currentTitle, path: undefined });
   }

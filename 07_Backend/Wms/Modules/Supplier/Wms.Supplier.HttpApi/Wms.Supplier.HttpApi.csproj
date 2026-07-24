@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Wms.Supplier.HttpApi</AssemblyName>
+    <RootNamespace>Wms.Supplier.HttpApi</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wms.Supplier.EntityFrameworkCore\Wms.Supplier.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\Wms.Supplier.Application.Contracts\Wms.Supplier.Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Wms.Shared\Wms.Shared.csproj" />
+  </ItemGroup>
+</Project>

@@ -52,6 +52,9 @@ public class OutboundOrderCreateDto
 /// </summary>
 public class OutboundLineCreateDto
 {
+    /// <summary>Line ID — for update scenarios.</summary>
+    public Guid? Id { get; set; }
+
     /// <summary>Material ID.</summary>
     [Required]
     public Guid MaterialId { get; set; }

@@ -103,7 +103,7 @@ public class OutboundOrderAppService : ApplicationService, IOutboundOrderAppServ
     [Authorize(WmsOutboundPermissions.Order.Update)]
     public async Task<OutboundOrderOutputDto> UpdateAsync(Guid id, OutboundOrderUpdateDto dto)
     {
-        var order = await _outboundOrderRepository.GetAsync(id);
+        var order = await _outboundOrderRepository.GetWithLinesAsync(id);
 
         if (order.OutboundStatus != OutboundStatus.Draft)
         {
@@ -111,7 +111,33 @@ public class OutboundOrderAppService : ApplicationService, IOutboundOrderAppServ
                 $"Cannot update when order status is {order.OutboundStatus.Name}. Only Draft allows update. (OB-004)");
         }
 
+        // Update related order IDs
+        order.SetMaterialRequisition(dto.MaterialRequisitionId);
+        order.SetSalesOrder(dto.SalesOrderId);
+        order.SetReturnMaterialOrder(dto.ReturnMaterialOrderId);
+
+        // Update other fields
         order.SetRemark(dto.Remark);
+
+        // Update lines if provided
+        if (dto.Lines != null && dto.Lines.Count > 0)
+        {
+            var newLines = dto.Lines.Select((l, index) => new OutboundLine(
+                l.Id ?? GuidGenerator.Create(),
+                id,
+                index + 1,
+                l.MaterialId,
+                l.MaterialCode,
+                l.MaterialName,
+                l.RequiredQuantity,
+                IssueStrategyType.FromValue(l.IssueStrategyValue),
+                l.BatchNumber,
+                l.Remark
+            )).ToList();
+
+            order.UpdateLines(newLines);
+        }
+
         await _outboundOrderRepository.UpdateAsync(order);
         return MapToOutputDto(order);
     }

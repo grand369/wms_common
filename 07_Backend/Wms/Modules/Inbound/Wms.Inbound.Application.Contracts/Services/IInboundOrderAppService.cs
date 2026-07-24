@@ -1,4 +1,4 @@
-﻿using Wms.Inbound.Application.Contracts.Dtos;
+using Wms.Inbound.Application.Contracts.Dtos;
 using Volo.Abp.Application.Dtos;
 
 namespace Wms.Inbound.Application.Contracts.Services;
@@ -48,4 +48,7 @@ public interface IInboundOrderAppService
 
     /// <summary>API-IN-013: Get inbound order by order number.</summary>
     Task<InboundOrderOutputDto> GetByNoAsync(string orderNo);
+
+    /// <summary>API-IN-014: Get inbound order statistics.</summary>
+    Task<InboundStatisticsDto> GetStatisticsAsync(InboundStatisticsQueryDto query);
 }

@@ -54,4 +54,12 @@ public class OutboundOrderRepository : EfCoreRepository<WmsOutboundDbContext, Ou
             o.OutboundStatus == OutboundStatus.Draft)
             .OrderByDescending(o => o.CreationTime).ToListAsync();
     }
+
+    public async Task<OutboundOrder> GetWithLinesAsync(Guid id)
+    {
+        var dbSet = await GetDbSetAsync();
+        return await dbSet.Include(o => o.Lines)
+            .FirstOrDefaultAsync(o => o.Id == id) 
+            ?? throw new Exception("Outbound order not found");
+    }
 }

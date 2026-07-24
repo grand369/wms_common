@@ -43,6 +43,18 @@ service.interceptors.response.use(
   },
   (error) => {
     const status = error.response?.status;
+    const responseData = error.response?.data;
+    
+    // Handle ABP BusinessException (returns 403 Forbidden with error details)
+    if (responseData?.error?.message) {
+      ElMessage.error(responseData.error.message);
+      if (responseData.error.code === 401 || status === 401) {
+        removeToken();
+        window.location.href = '/login';
+      }
+      return Promise.reject(error);
+    }
+    
     if (status === 401) {
       removeToken();
       window.location.href = '/login';

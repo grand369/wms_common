@@ -43,12 +43,17 @@ public class InboundLineOutputDto
     public Guid MaterialId { get; set; }
     public string MaterialCode { get; set; } = string.Empty;
     public string MaterialName { get; set; } = string.Empty;
+    public string Unit { get; set; } = string.Empty;
     public decimal PlanQuantity { get; set; }
     public decimal ReceivedQuantity { get; set; }
     public string? BatchNumber { get; set; }
     public List<string>? SerialNumberList { get; set; }
     public int QualityStatusValue { get; set; }
     public string QualityStatusName { get; set; } = string.Empty;
+    public Guid? PutawayWarehouseId { get; set; }
+    public string? PutawayWarehouseCode { get; set; }
+    public Guid? PutawayAreaId { get; set; }
+    public string? PutawayAreaCode { get; set; }
     public Guid? PutawayLocationId { get; set; }
     public string? PutawayLocationCode { get; set; }
     public DateTime? ExpiryDate { get; set; }

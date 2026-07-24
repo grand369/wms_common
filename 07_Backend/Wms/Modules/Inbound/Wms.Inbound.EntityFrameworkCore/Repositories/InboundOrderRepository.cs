@@ -20,7 +20,16 @@ public class InboundOrderRepository : EfCoreRepository<WmsInboundDbContext, Inbo
     public async Task<InboundOrder?> FindByNoAsync(string inboundOrderNo)
     {
         var dbSet = await GetDbSetAsync();
-        return await dbSet.FirstOrDefaultAsync(o => o.InboundOrderNo == inboundOrderNo);
+        return await dbSet.Include(o => o.Lines)
+            .FirstOrDefaultAsync(o => o.InboundOrderNo == inboundOrderNo);
+    }
+
+    public async Task<InboundOrder> GetWithLinesAsync(Guid id)
+    {
+        var dbSet = await GetDbSetAsync();
+        return await dbSet.Include(o => o.Lines)
+            .FirstOrDefaultAsync(o => o.Id == id) 
+            ?? throw new Exception("Inbound order not found");
     }
 
     public async Task<List<InboundOrder>> GetListByWarehouseAsync(Guid warehouseId)

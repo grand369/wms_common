@@ -37,8 +37,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { ElMessage } from 'element-plus'
+import { getMaterials } from '@/api/material'
 
 /**
  * COMP-008 WmsMaterialSelector - 物料远程搜索选择器
@@ -72,10 +73,12 @@ const props = withDefaults(defineProps<{
   multiple?: boolean
   disabled?: boolean
   placeholder?: string
+  materialInfo?: WmsMaterial
 }>(), {
   multiple: false,
   disabled: false,
-  placeholder: '请输入物料编码或名称搜索'
+  placeholder: '请输入物料编码或名称搜索',
+  materialInfo: undefined
 })
 
 // Emits 定义
@@ -98,18 +101,17 @@ async function onSearch(query: string) {
 
   loading.value = true
   try {
-    // TODO: 替换为实际 API 调用
-    // const res = await api.get('/api/wms/material', { params: { filter: query } })
-    // materialList.value = res.data
-
-    // 模拟数据
-    await new Promise(resolve => setTimeout(resolve, 300))
-    materialList.value = [
-      { id: '1', code: 'MAT-001', name: '电子元器件A', specification: '规格A', unit: '个' },
-      { id: '2', code: 'MAT-002', name: '电子元器件B', specification: '规格B', unit: '个' }
-    ].filter(item =>
-      item.code.includes(query) || item.name.includes(query)
-    )
+    const res = await getMaterials({
+      maxResultCount: 20,
+      filter: query
+    })
+    materialList.value = res.items.map(item => ({
+      id: item.id,
+      code: item.materialCode,
+      name: item.materialName,
+      specification: item.specification,
+      unit: item.primaryUnitName
+    }))
   } catch (error) {
     ElMessage.error('搜索失败')
     materialList.value = []
@@ -136,10 +138,31 @@ function onChange(value: string | string[]) {
   }
 }
 
-// 初始加载（可选）
+// 使用传入的物料信息初始化下拉选项
+function initMaterialInfo() {
+  if (props.materialInfo && props.materialInfo.id) {
+    const existing = materialList.value.find(item => item.id === props.materialInfo!.id)
+    if (!existing) {
+      materialList.value.push({
+        id: props.materialInfo.id,
+        code: props.materialInfo.code,
+        name: props.materialInfo.name,
+        specification: props.materialInfo.specification,
+        unit: props.materialInfo.unit
+      })
+    }
+  }
+}
+
+// 初始加载
 onMounted(() => {
-  // 如果有初始值，可以加载对应的物料信息
+  initMaterialInfo()
 })
+
+// 监听materialInfo变化
+watch(() => props.materialInfo, () => {
+  initMaterialInfo()
+}, { deep: true })
 </script>
 
 <style scoped lang="scss">

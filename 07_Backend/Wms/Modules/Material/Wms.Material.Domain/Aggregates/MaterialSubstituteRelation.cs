@@ -19,6 +19,9 @@ public class MaterialSubstituteRelation : FullAuditedEntity<Guid>
     /// <summary>替代料编码（冗余）</summary>
     public string SubstituteMaterialCode { get; private set; } = string.Empty;
 
+    /// <summary>替代料名称（冗余）</summary>
+    public string SubstituteMaterialName { get; private set; } = string.Empty;
+
     /// <summary>替代优先级（1=首选替代）</summary>
     public int SubstitutePriority { get; private set; }
 
@@ -32,6 +35,7 @@ public class MaterialSubstituteRelation : FullAuditedEntity<Guid>
         Guid originalMaterialId,
         Guid substituteMaterialId,
         string substituteMaterialCode,
+        string substituteMaterialName = "",
         int substitutePriority = 1,
         decimal substituteRatio = 1.0m)
     {
@@ -39,6 +43,7 @@ public class MaterialSubstituteRelation : FullAuditedEntity<Guid>
         OriginalMaterialId = originalMaterialId;
         SubstituteMaterialId = substituteMaterialId;
         SubstituteMaterialCode = substituteMaterialCode ?? throw new ArgumentNullException(nameof(substituteMaterialCode));
+        SubstituteMaterialName = substituteMaterialName ?? string.Empty;
         SubstitutePriority = substitutePriority;
         SubstituteRatio = substituteRatio;
     }

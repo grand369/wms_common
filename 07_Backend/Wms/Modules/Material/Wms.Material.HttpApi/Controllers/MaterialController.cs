@@ -79,7 +79,7 @@ public class MaterialController : AbpControllerBase
     [HttpPost("{materialId}/substitutes")]
     public Task<MaterialSubstituteRelationDto> AddSubstituteAsync(Guid materialId, [FromBody] AddSubstituteRequest request)
     {
-        return _materialAppService.AddSubstituteAsync(materialId, request.SubstituteMaterialId, request.SubstituteMaterialCode, request.Priority, request.Ratio);
+        return _materialAppService.AddSubstituteAsync(materialId, request.SubstituteMaterialId, request.SubstituteMaterialCode, request.SubstituteMaterialName, request.Priority, request.Ratio);
     }
 
     [HttpDelete("{materialId}/substitutes/{substituteRelationId}")]
@@ -96,6 +96,7 @@ public class AddSubstituteRequest
 {
     public Guid SubstituteMaterialId { get; set; }
     public string SubstituteMaterialCode { get; set; } = string.Empty;
+    public string SubstituteMaterialName { get; set; } = string.Empty;
     public int Priority { get; set; } = 1;
     public decimal Ratio { get; set; } = 1.0m;
 }

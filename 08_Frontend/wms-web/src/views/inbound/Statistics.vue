@@ -124,7 +124,7 @@ onMounted(() => {
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
-    color: white;
+    color: rgb(53, 53, 53);
     padding-bottom: 8px;
     transition: all 0.3s;
   }

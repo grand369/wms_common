@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -23,6 +24,9 @@ using Wms.BarcodeLabel.HttpApi;
 using Wms.CycleCount.Application;
 using Wms.CycleCount.EntityFrameworkCore;
 using Wms.CycleCount.HttpApi;
+using Wms.DataDictionary.Application;
+using Wms.DataDictionary.EntityFrameworkCore;
+using Wms.DataDictionary.HttpApi;
 using Wms.EntityFrameworkCore.SqlServer;
 using Wms.Inbound.Application;
 using Wms.Inbound.EntityFrameworkCore;
@@ -39,9 +43,6 @@ using Wms.Material.HttpApi;
 using Wms.Notification.Application;
 using Wms.Notification.EntityFrameworkCore;
 using Wms.Notification.HttpApi;
-using Wms.DataDictionary.Application;
-using Wms.DataDictionary.EntityFrameworkCore;
-using Wms.DataDictionary.HttpApi;
 using Wms.Outbound.Application;
 using Wms.Outbound.EntityFrameworkCore;
 using Wms.Outbound.HttpApi;
@@ -52,6 +53,9 @@ using Wms.RuleEngine.Application;
 using Wms.RuleEngine.EntityFrameworkCore;
 using Wms.RuleEngine.HttpApi;
 using Wms.Shared;
+using Wms.Supplier.Application;
+using Wms.Supplier.EntityFrameworkCore;
+using Wms.Supplier.HttpApi;
 using Wms.TaskCenter.Application;
 using Wms.TaskCenter.EntityFrameworkCore;
 using Wms.TaskCenter.HttpApi;
@@ -65,7 +69,6 @@ using Wms.Web.Host.Auth;
 using Wms.Workflow.Application;
 using Wms.Workflow.EntityFrameworkCore;
 using Wms.Workflow.HttpApi;
-using Microsoft.Extensions.DependencyInjection;
 namespace Wms.Web.Host;
 
 [DependsOn(
@@ -126,7 +129,10 @@ namespace Wms.Web.Host;
     typeof(WmsNotificationEntityFrameworkCoreModule),
     typeof(WmsDataDictionaryHttpApiModule),
     typeof(WmsDataDictionaryApplicationModule),
-    typeof(WmsDataDictionaryEntityFrameworkCoreModule)
+    typeof(WmsDataDictionaryEntityFrameworkCoreModule),
+    typeof(WmsSupplierHttpApiModule),
+    typeof(WmsSupplierApplicationModule),
+    typeof(WmsSupplierEntityFrameworkCoreModule)
 )]
 public class WmsWebHostModule : AbpModule
 {

@@ -74,7 +74,7 @@ public class InboundOrderAppService : ApplicationService, IInboundOrderAppServic
     [Authorize(WmsInboundPermissions.Order.Read)]
     public async Task<InboundOrderOutputDto> GetAsync(Guid id)
     {
-        var order = await _inboundOrderRepository.GetAsync(id);
+        var order = await _inboundOrderRepository.GetWithLinesAsync(id);
         return MapToOutputDto(order);
     }
 
@@ -84,7 +84,9 @@ public class InboundOrderAppService : ApplicationService, IInboundOrderAppServic
         var inboundType = InboundType.FromValue(dto.InboundTypeValue);
 
         var lineData = dto.Lines.Select(l =>
-            (l.MaterialId, l.MaterialCode, l.MaterialName, l.PlanQuantity, l.BatchNumber)).ToList();
+            (l.MaterialId, l.MaterialCode, l.MaterialName, l.Unit ?? string.Empty, l.PlanQuantity, 
+             l.PutawayWarehouseId, l.PutawayWarehouseCode, l.PutawayAreaId, l.PutawayAreaCode, 
+             l.PutawayLocationId, l.PutawayLocationCode, l.BatchNumber)).ToList();
 
         var order = await _inboundDomainService.CreateInboundOrderAsync(
             inboundType, dto.WarehouseId, dto.WarehouseCode,
@@ -100,7 +102,7 @@ public class InboundOrderAppService : ApplicationService, IInboundOrderAppServic
     [Authorize(WmsInboundPermissions.Order.Update)]
     public async Task<InboundOrderOutputDto> UpdateAsync(Guid id, InboundOrderUpdateDto dto)
     {
-        var order = await _inboundOrderRepository.GetAsync(id);
+        var order = await _inboundOrderRepository.GetWithLinesAsync(id);
 
         if (order.InboundStatus != InboundStatus.Draft)
         {
@@ -108,7 +110,53 @@ public class InboundOrderAppService : ApplicationService, IInboundOrderAppServic
                 $"Cannot update when order status is {order.InboundStatus.Name}. Only Draft allows update. (IN-004)");
         }
 
+        // Update supplier
+        order.SetSupplier(dto.SupplierId, dto.SupplierName);
+
+        // Update purchase order
+        order.SetPurchaseOrder(dto.PurchaseOrderId, dto.PurchaseOrderNo);
+
+        // Update other fields
         order.SetRemark(dto.Remark);
+
+        // Update lines if provided
+        if (dto.Lines != null && dto.Lines.Count > 0)
+        {
+            var newLines = dto.Lines.Select((l, index) => new InboundLine(
+                l.Id ?? GuidGenerator.Create(),
+                id,
+                index + 1,
+                l.MaterialId,
+                l.MaterialCode,
+                l.MaterialName,
+                l.Unit ?? string.Empty,
+                l.PlanQuantity,
+                l.BatchNumber,
+                l.ExpiryDate,
+                l.ProductionDate,
+                l.Remark
+            )).ToList();
+
+            // Set putaway location for lines that have it
+            for (int i = 0; i < newLines.Count; i++)
+            {
+                var line = newLines[i];
+                var dtoLine = dto.Lines[i];
+                if (dtoLine.PutawayLocationId.HasValue)
+                {
+                    line.SetPutawayLocation(
+                        dtoLine.PutawayWarehouseId.Value,
+                        dtoLine.PutawayWarehouseCode ?? "",
+                        dtoLine.PutawayAreaId.Value,
+                        dtoLine.PutawayAreaCode ?? "",
+                        dtoLine.PutawayLocationId.Value,
+                        dtoLine.PutawayLocationCode ?? "");
+                }
+            }
+
+            order.UpdateLines(newLines);
+        }
+
         await _inboundOrderRepository.UpdateAsync(order);
         return MapToOutputDto(order);
     }
@@ -164,7 +212,8 @@ public class InboundOrderAppService : ApplicationService, IInboundOrderAppServic
         foreach (var lineDto in dto.Lines)
         {
             await _inboundDomainService.ConfirmPutawayAsync(
-                id, lineDto.LineId, lineDto.PutawayLocationId, lineDto.PutawayLocationCode, lineDto.Quantity);
+                id, lineDto.LineId, lineDto.PutawayWarehouseId, lineDto.PutawayWarehouseCode, 
+                lineDto.PutawayAreaId, lineDto.PutawayAreaCode, lineDto.PutawayLocationId, lineDto.PutawayLocationCode, lineDto.Quantity);
         }
 
         order = await _inboundOrderRepository.GetAsync(id);
@@ -252,6 +301,45 @@ public class InboundOrderAppService : ApplicationService, IInboundOrderAppServic
         return MapToOutputDto(order);
     }
 
+    [Authorize(WmsInboundPermissions.Order.Read)]
+    public async Task<InboundStatisticsDto> GetStatisticsAsync(InboundStatisticsQueryDto query)
+    {
+        var queryable = await _inboundOrderRepository.GetQueryableAsync();
+
+        // Apply date filter if provided
+        if (query.StartDate.HasValue)
+        {
+            queryable = queryable.Where(o => o.CreationTime >= query.StartDate.Value);
+        }
+        if (query.EndDate.HasValue)
+        {
+            queryable = queryable.Where(o => o.CreationTime <= query.EndDate.Value.AddDays(1));
+        }
+
+        var totalCount = await AsyncExecuter.CountAsync(queryable);
+        
+        var pendingCount = await AsyncExecuter.CountAsync(queryable
+            .Where(o => o.InboundStatus == InboundStatus.Draft || 
+                        o.InboundStatus == InboundStatus.Confirmed ||
+                        o.InboundStatus == InboundStatus.Inspecting ||
+                        o.InboundStatus == InboundStatus.Putaway));
+
+        var completedCount = await AsyncExecuter.CountAsync(queryable
+            .Where(o => o.InboundStatus == InboundStatus.Completed));
+
+        var today = DateTime.Today;
+        var todayCount = await AsyncExecuter.CountAsync(queryable
+            .Where(o => o.CreationTime >= today && o.CreationTime < today.AddDays(1)));
+
+        return new InboundStatisticsDto
+        {
+            TotalCount = (int)totalCount,
+            PendingCount = (int)pendingCount,
+            CompletedCount = (int)completedCount,
+            TodayCount = (int)todayCount
+        };
+    }
+
     private InboundOrderOutputDto MapToOutputDto(InboundOrder order)
     {
         return new InboundOrderOutputDto
@@ -294,12 +382,17 @@ public class InboundOrderAppService : ApplicationService, IInboundOrderAppServic
             MaterialId = line.MaterialId,
             MaterialCode = line.MaterialCode,
             MaterialName = line.MaterialName,
+            Unit = line.Unit,
             PlanQuantity = line.PlanQuantity,
             ReceivedQuantity = line.ReceivedQuantity,
             BatchNumber = line.BatchNumber,
             SerialNumberList = line.SerialNumberList,
             QualityStatusValue = line.QualityStatus.Value,
             QualityStatusName = line.QualityStatus.Description,
+            PutawayWarehouseId = line.PutawayWarehouseId,
+            PutawayWarehouseCode = line.PutawayWarehouseCode,
+            PutawayAreaId = line.PutawayAreaId,
+            PutawayAreaCode = line.PutawayAreaCode,
             PutawayLocationId = line.PutawayLocationId,
             PutawayLocationCode = line.PutawayLocationCode,
             ExpiryDate = line.ExpiryDate,

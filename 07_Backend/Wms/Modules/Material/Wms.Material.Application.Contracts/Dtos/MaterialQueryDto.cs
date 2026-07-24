@@ -8,6 +8,7 @@ public class MaterialQueryDto
 {
     public string? MaterialCode { get; set; }
     public string? MaterialName { get; set; }
+    public string? Filter { get; set; }
     public int? MaterialType { get; set; }
     public Guid? ClassificationId { get; set; }
     public bool? IsActive { get; set; }

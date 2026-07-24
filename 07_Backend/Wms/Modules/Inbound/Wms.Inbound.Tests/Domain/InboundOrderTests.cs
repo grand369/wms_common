@@ -58,8 +58,8 @@ public class InboundOrderTests
     {
         var order = CreateTestOrder();
 
-        order.AddLine(Guid.NewGuid(), 1, Guid.NewGuid(), "MAT-001", "Material-A", 100m);
-        order.AddLine(Guid.NewGuid(), 2, Guid.NewGuid(), "MAT-002", "Material-B", 50m);
+        order.AddLine(Guid.NewGuid(), 1, Guid.NewGuid(), "MAT-001", "Material-A", "PCS", 100m);
+        order.AddLine(Guid.NewGuid(), 2, Guid.NewGuid(), "MAT-002", "Material-B", "PCS", 50m);
 
         order.Lines.Count.ShouldBe(2);
         order.TotalPlanQuantity.ShouldBe(150m);
@@ -69,19 +69,19 @@ public class InboundOrderTests
     public void AddLine_WhenNotDraft_ShouldThrow()
     {
         var order = CreateTestOrder();
-        order.AddLine(Guid.NewGuid(), 1, Guid.NewGuid(), "MAT-001", "Material-A", 100m);
+        order.AddLine(Guid.NewGuid(), 1, Guid.NewGuid(), "MAT-001", "Material-A", "PCS", 100m);
         order.ConfirmReceipt(); // Would fail if received qty = 0 — need to set received first
 
         // Actually we need to receive quantity first
         var order2 = CreateTestOrder();
         var lineId = Guid.NewGuid();
-        order2.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", 100m);
+        order2.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", "PCS", 100m);
         order2.ReceiveLineQuantity(lineId, 100m);
         order2.ConfirmReceipt();
 
         Should.Throw<BusinessException>(() =>
         {
-            order2.AddLine(Guid.NewGuid(), 2, Guid.NewGuid(), "MAT-002", "Material-B", 50m);
+            order2.AddLine(Guid.NewGuid(), 2, Guid.NewGuid(), "MAT-002", "Material-B", "PCS", 50m);
         });
     }
 
@@ -90,7 +90,7 @@ public class InboundOrderTests
     {
         var order = CreateTestOrder();
         var lineId = Guid.NewGuid();
-        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", 100m);
+        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", "PCS", 100m);
         order.ReceiveLineQuantity(lineId, 100m);
 
         order.ConfirmReceipt();
@@ -112,7 +112,7 @@ public class InboundOrderTests
             Guid.NewGuid(), "Supplier-A");
 
         var lineId = Guid.NewGuid();
-        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", 100m);
+        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", "PCS", 100m);
         order.ReceiveLineQuantity(lineId, 110m); // 110 > 100 * (1 + 0.05) = 105
 
         Should.Throw<BusinessException>(() =>
@@ -126,7 +126,7 @@ public class InboundOrderTests
     {
         var order = CreateTestOrder();
         var lineId = Guid.NewGuid();
-        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", 100m);
+        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", "PCS", 100m);
         order.ReceiveLineQuantity(lineId, 100m);
         order.ConfirmReceipt();
 
@@ -148,7 +148,7 @@ public class InboundOrderTests
             Guid.NewGuid(), "Supplier-A");
 
         var lineId = Guid.NewGuid();
-        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", 100m);
+        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", "PCS", 100m);
         order.ReceiveLineQuantity(lineId, 100m);
         order.ConfirmReceipt();
 
@@ -163,7 +163,7 @@ public class InboundOrderTests
     {
         var order = CreateTestOrder();
         var lineId = Guid.NewGuid();
-        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", 100m);
+        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", "PCS", 100m);
         order.ReceiveLineQuantity(lineId, 100m);
         order.ConfirmReceipt();
         order.StartQualityInspection();
@@ -179,7 +179,7 @@ public class InboundOrderTests
     {
         var order = CreateTestOrder();
         var lineId = Guid.NewGuid();
-        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", 100m);
+        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", "PCS", 100m);
         order.ReceiveLineQuantity(lineId, 100m);
         order.ConfirmReceipt();
         order.StartQualityInspection();
@@ -203,14 +203,20 @@ public class InboundOrderTests
             Guid.NewGuid(), "Supplier-A");
 
         var lineId = Guid.NewGuid();
-        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", 100m);
+        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", "PCS", 100m);
         order.ReceiveLineQuantity(lineId, 100m);
         order.ConfirmReceipt();
         order.StartQualityInspection(); // Transitions to Putaway (skip inspection)
 
+        var warehouseId = Guid.NewGuid();
+        var areaId = Guid.NewGuid();
         var locationId = Guid.NewGuid();
-        order.ConfirmPutaway(lineId, locationId, "LOC-001", 100m);
+        order.ConfirmPutaway(lineId, warehouseId, "WH-001", areaId, "AREA-001", locationId, "LOC-001", 100m);
 
+        order.Lines.First().PutawayWarehouseId.ShouldBe(warehouseId);
+        order.Lines.First().PutawayWarehouseCode.ShouldBe("WH-001");
+        order.Lines.First().PutawayAreaId.ShouldBe(areaId);
+        order.Lines.First().PutawayAreaCode.ShouldBe("AREA-001");
         order.Lines.First().PutawayLocationId.ShouldBe(locationId);
         order.Lines.First().PutawayLocationCode.ShouldBe("LOC-001");
     }
@@ -220,7 +226,7 @@ public class InboundOrderTests
     {
         var order = CreateTestOrder();
         var lineId = Guid.NewGuid();
-        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", 100m);
+        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", "PCS", 100m);
         order.ReceiveLineQuantity(lineId, 100m);
         order.ConfirmReceipt();
         order.StartQualityInspection();
@@ -228,7 +234,7 @@ public class InboundOrderTests
 
         Should.Throw<BusinessException>(() =>
         {
-            order.ConfirmPutaway(lineId, Guid.NewGuid(), "LOC-001", 100m);
+            order.ConfirmPutaway(lineId, Guid.NewGuid(), "WH-001", Guid.NewGuid(), "AREA-001", Guid.NewGuid(), "LOC-001", 100m);
         });
     }
 
@@ -245,11 +251,11 @@ public class InboundOrderTests
             Guid.NewGuid(), "Supplier-A");
 
         var lineId = Guid.NewGuid();
-        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", 100m);
+        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", "PCS", 100m);
         order.ReceiveLineQuantity(lineId, 100m);
         order.ConfirmReceipt();
         order.StartQualityInspection();
-        order.ConfirmPutaway(lineId, Guid.NewGuid(), "LOC-001", 100m);
+        order.ConfirmPutaway(lineId, Guid.NewGuid(), "WH-001", Guid.NewGuid(), "AREA-001", Guid.NewGuid(), "LOC-001", 100m);
 
         order.Complete();
 
@@ -280,11 +286,11 @@ public class InboundOrderTests
             Guid.NewGuid(), "Supplier-A");
 
         var lineId = Guid.NewGuid();
-        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", 100m);
+        order.AddLine(lineId, 1, Guid.NewGuid(), "MAT-001", "Material-A", "PCS", 100m);
         order.ReceiveLineQuantity(lineId, 100m);
         order.ConfirmReceipt();
         order.StartQualityInspection();
-        order.ConfirmPutaway(lineId, Guid.NewGuid(), "LOC-001", 100m);
+        order.ConfirmPutaway(lineId, Guid.NewGuid(), "WH-001", Guid.NewGuid(), "AREA-001", Guid.NewGuid(), "LOC-001", 100m);
         order.Complete();
 
         Should.Throw<BusinessException>(() =>
@@ -299,8 +305,8 @@ public class InboundOrderTests
         var order = CreateTestOrder();
         var lineId1 = Guid.NewGuid();
         var lineId2 = Guid.NewGuid();
-        order.AddLine(lineId1, 1, Guid.NewGuid(), "MAT-001", "Material-A", 100m);
-        order.AddLine(lineId2, 2, Guid.NewGuid(), "MAT-002", "Material-B", 50m);
+        order.AddLine(lineId1, 1, Guid.NewGuid(), "MAT-001", "Material-A", "PCS", 100m);
+        order.AddLine(lineId2, 2, Guid.NewGuid(), "MAT-002", "Material-B", "PCS", 50m);
 
         order.RemoveLine(lineId2);
 

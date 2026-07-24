@@ -114,23 +114,23 @@ public class InboundOrder : FullAuditedAggregateRoot<Guid>
         Remark = remark;
 
         // Validate: PurchaseReceipt requires PurchaseOrderId + SupplierId
-        if (inboundType == InboundType.PurchaseReceipt && !purchaseOrderId.HasValue)
-        {
-            throw new BusinessException("WMS:Inbound:PurchaseOrderRequired",
-                "Purchase order ID is required for PurchaseReceipt inbound type.");
-        }
+        //if (inboundType == InboundType.PurchaseReceipt && !purchaseOrderId.HasValue)
+        //{
+        //    throw new BusinessException("WMS:Inbound:PurchaseOrderRequired",
+        //        "Purchase order ID is required for PurchaseReceipt inbound type.");
+        //}
 
-        if (inboundType == InboundType.ProductionReceipt && !productionOrderId.HasValue)
-        {
-            throw new BusinessException("WMS:Inbound:ProductionOrderRequired",
-                "Production order ID is required for ProductionReceipt inbound type.");
-        }
+        //if (inboundType == InboundType.ProductionReceipt && !productionOrderId.HasValue)
+        //{
+        //    throw new BusinessException("WMS:Inbound:ProductionOrderRequired",
+        //        "Production order ID is required for ProductionReceipt inbound type.");
+        //}
 
-        if (inboundType == InboundType.ReturnReceipt && !returnOrderId.HasValue)
-        {
-            throw new BusinessException("WMS:Inbound:ReturnOrderRequired",
-                "Return order ID is required for ReturnReceipt inbound type.");
-        }
+        //if (inboundType == InboundType.ReturnReceipt && !returnOrderId.HasValue)
+        //{
+        //    throw new BusinessException("WMS:Inbound:ReturnOrderRequired",
+        //        "Return order ID is required for ReturnReceipt inbound type.");
+        //}
 
         // Publish creation event (DE-008)
         AddLocalEvent(new InboundOrderCreatedEvent
@@ -154,6 +154,7 @@ public class InboundOrder : FullAuditedAggregateRoot<Guid>
         Guid materialId,
         string materialCode,
         string materialName,
+        string unit,
         decimal planQuantity,
         string? batchNumber = null,
         DateTime? expiryDate = null,
@@ -167,7 +168,7 @@ public class InboundOrder : FullAuditedAggregateRoot<Guid>
         }
 
         var line = new InboundLine(
-            lineId, Id, lineNo, materialId, materialCode, materialName,
+            lineId, Id, lineNo, materialId, materialCode, materialName, unit,
             planQuantity, batchNumber, expiryDate, productionDate, remark);
 
         Lines.Add(line);
@@ -345,7 +346,7 @@ public class InboundOrder : FullAuditedAggregateRoot<Guid>
     /// Confirm putaway for a specific line — sets putaway location (DE-011).
     /// When all lines have putaway locations confirmed, order can transition to Completed.
     /// </summary>
-    public void ConfirmPutaway(Guid lineId, Guid locationId, string locationCode, decimal putawayQty)
+    public void ConfirmPutaway(Guid lineId, Guid warehouseId, string warehouseCode, Guid areaId, string areaCode, Guid locationId, string locationCode, decimal putawayQty)
     {
         if (InboundStatus != InboundStatus.Putaway)
         {
@@ -367,7 +368,7 @@ public class InboundOrder : FullAuditedAggregateRoot<Guid>
                 $"Cannot put away unqualified material {line.MaterialCode}. Quality status: {line.QualityStatus.Name}. (IN-005)");
         }
 
-        line.SetPutawayLocation(locationId, locationCode);
+        line.SetPutawayLocation(warehouseId, warehouseCode, areaId, areaCode, locationId, locationCode);
 
         AddLocalEvent(new InboundPutawayCompletedEvent
         {
@@ -476,5 +477,51 @@ public class InboundOrder : FullAuditedAggregateRoot<Guid>
     public void SetRemark(string? remark)
     {
         Remark = remark;
+    }
+
+    /// <summary>
+    /// Update supplier information. Only allowed in Draft status.
+    /// </summary>
+    public void SetSupplier(Guid? supplierId, string? supplierName)
+    {
+        if (InboundStatus != InboundStatus.Draft)
+        {
+            throw new BusinessException("WMS:Inbound:StatusNotAllowed",
+                $"Cannot update supplier when order status is {InboundStatus.Name}. Only Draft status allows this operation. (IN-001)");
+        }
+
+        SupplierId = supplierId;
+        SupplierName = supplierName;
+    }
+
+    /// <summary>
+    /// Update purchase order information. Only allowed in Draft status.
+    /// </summary>
+    public void SetPurchaseOrder(Guid? purchaseOrderId, string? purchaseOrderNo)
+    {
+        if (InboundStatus != InboundStatus.Draft)
+        {
+            throw new BusinessException("WMS:Inbound:StatusNotAllowed",
+                $"Cannot update purchase order when order status is {InboundStatus.Name}. Only Draft status allows this operation. (IN-001)");
+        }
+
+        PurchaseOrderId = purchaseOrderId;
+        PurchaseOrderNo = purchaseOrderNo;
+    }
+
+    /// <summary>
+    /// Update order details - replace all lines with new lines. Only allowed in Draft status.
+    /// </summary>
+    public void UpdateLines(List<InboundLine> newLines)
+    {
+        if (InboundStatus != InboundStatus.Draft)
+        {
+            throw new BusinessException("WMS:Inbound:StatusNotAllowed",
+                $"Cannot update lines when order status is {InboundStatus.Name}. Only Draft status allows this operation. (IN-001)");
+        }
+
+        Lines.Clear();
+        Lines.AddRange(newLines);
+        TotalPlanQuantity = Lines.Sum(l => l.PlanQuantity);
     }
 }

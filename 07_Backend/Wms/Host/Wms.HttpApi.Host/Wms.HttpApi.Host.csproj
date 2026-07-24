@@ -18,6 +18,8 @@
     <PackageReference Include="Serilog.Extensions.Logging" Version="$(SerilogExtensionsLoggingVersion)" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Modules\Supplier\Wms.Supplier.Application\Wms.Supplier.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Supplier\Wms.Supplier.HttpApi\Wms.Supplier.HttpApi.csproj" />
     <ProjectReference Include="..\..\Modules\Warehouse\Wms.Warehouse.HttpApi\Wms.Warehouse.HttpApi.csproj" />
     <ProjectReference Include="..\..\Modules\Warehouse\Wms.Warehouse.Application\Wms.Warehouse.Application.csproj" />
     <ProjectReference Include="..\..\Modules\Warehouse\Wms.Warehouse.EntityFrameworkCore\Wms.Warehouse.EntityFrameworkCore.csproj" />

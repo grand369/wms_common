@@ -3,32 +3,67 @@ import type { PagedParams, PagedResult } from '@/api/types';
 
 export interface InboundOrderDto {
   id: string;
-  orderNo: string;
-  orderType: string;
+  inboundOrderNo: string;
+  inboundTypeValue: number;
+  inboundTypeName: string;
+  inboundStatusValue: number;
+  inboundStatusName: string;
   supplierId?: string;
   supplierName?: string;
   warehouseId: string;
-  warehouseName: string;
-  status: number;
-  planDate?: string;
-  arrivalDate?: string;
+  warehouseCode: string;
+  purchaseOrderId?: string;
+  purchaseOrderNo?: string;
+  productionOrderId?: string;
+  returnOrderId?: string;
+  overReceiptRatio: number;
+  qualityInspectionRequired: boolean;
+  totalPlanQuantity: number;
+  totalReceivedQuantity: number;
+  isCompleted: boolean;
+  completionTime?: string;
+  remark?: string;
+  creationTime: string;
 }
 
 export interface CreateOrUpdateInboundOrderDto {
-  orderType: string;
-  supplierId?: string;
+  inboundTypeValue: number;
   warehouseId: string;
-  planDate?: string;
+  warehouseCode: string;
+  supplierId?: string;
+  supplierName?: string;
+  purchaseOrderId?: string;
+  purchaseOrderNo?: string;
+  productionOrderId?: string;
+  returnOrderId?: string;
+  overReceiptRatio?: number;
+  qualityInspectionRequired?: boolean;
+  remark?: string;
   lines: InboundOrderLineDto[];
 }
 
 export interface InboundOrderLineDto {
   id?: string;
+  inboundOrderId?: string;
+  lineNo: number;
   materialId: string;
-  materialCode?: string;
-  materialName?: string;
-  qty: number;
-  batchNo?: string;
+  materialCode: string;
+  materialName: string;
+  unit?: string;
+  planQuantity: number;
+  receivedQuantity: number;
+  batchNumber?: string;
+  qualityStatusValue?: number;
+  qualityStatusName?: string;
+  putawayWarehouseId?: string;
+  putawayWarehouseCode?: string;
+  putawayAreaId?: string;
+  putawayAreaCode?: string;
+  putawayLocationId?: string;
+  putawayLocationCode?: string;
+  expiryDate?: string;
+  productionDate?: string;
+  remark?: string;
 }
 
 export interface InboundOrderDetailDto extends InboundOrderDto {
@@ -62,8 +97,19 @@ export function deleteInboundOrder(id: string) {
   return del<void>(`/api/v1/inbound/orders/${id}`);
 }
 
-export function confirmInbound(id: string) {
-  return patch<void>(`/api/v1/inbound/orders/${id}/confirm`);
+export interface InboundConfirmLineDto {
+  lineId: string;
+  receivedQuantity: number;
+  batchNumber?: string;
+}
+
+export interface InboundConfirmCommandDto {
+  idempotencyId: string;
+  lines: InboundConfirmLineDto[];
+}
+
+export function confirmInbound(id: string, data: InboundConfirmCommandDto) {
+  return patch<void>(`/api/v1/inbound/orders/${id}/confirm`, data);
 }
 
 export function qualityInspectInbound(id: string, data: { passed: boolean; remark?: string }) {

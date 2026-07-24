@@ -44,22 +44,22 @@
         @page-change="handlePageChange"
         @size-change="handleSizeChange"
       >
-        <el-table-column prop="orderNo" label="入库单号" />
-        <el-table-column prop="orderType" label="入库类型" />
+        <el-table-column prop="inboundOrderNo" label="入库单号" />
+        <el-table-column prop="inboundTypeName" label="入库类型" />
         <el-table-column prop="supplierName" label="供应商" show-overflow-tooltip />
-        <el-table-column prop="warehouseName" label="仓库" />
-        <el-table-column prop="planDate" label="计划日期" />
-        <el-table-column prop="status" label="状态" align="center" width="100">
+        <el-table-column prop="warehouseCode" label="仓库" />
+        <el-table-column prop="creationTime" label="创建时间" />
+        <el-table-column prop="inboundStatusValue" label="状态" align="center" width="100">
           <template #default="{ row }">
-            <WmsStatusTag :status="mapDocumentStatus(row.status)" type="document" />
+            <WmsStatusTag :status="mapDocumentStatus(row.inboundStatusValue)" type="document" />
           </template>
         </el-table-column>
         <el-table-column label="操作" width="220" fixed="right">
           <template #default="{ row }">
             <el-button link type="primary" @click="handleDetail(row as InboundOrderDto)">详情</el-button>
-            <el-button link type="primary" :disabled="(row as InboundOrderDto).status !== 0" @click="handleEdit(row as InboundOrderDto)">编辑</el-button>
-            <el-button link type="success" :disabled="(row as InboundOrderDto).status !== 0" @click="handleConfirm(row as InboundOrderDto)">确认</el-button>
-            <el-button link type="danger" :disabled="(row as InboundOrderDto).status > 2" @click="handleCancel(row as InboundOrderDto)">取消</el-button>
+            <el-button link type="primary" :disabled="(row as InboundOrderDto).inboundStatusValue !== 0" @click="handleEdit(row as InboundOrderDto)">编辑</el-button>
+            <el-button link type="success" :disabled="(row as InboundOrderDto).inboundStatusValue !== 0" @click="handleConfirm(row as InboundOrderDto)">确认</el-button>
+            <el-button link type="danger" :disabled="(row as InboundOrderDto).inboundStatusValue > 2" @click="handleCancel(row as InboundOrderDto)">取消</el-button>
           </template>
         </el-table-column>
       </WmsTable>
@@ -76,7 +76,7 @@ import WmsTable from '@/components/common/WmsTable.vue';
 import WmsStatusTag from '@/components/common/WmsStatusTag.vue';
 import WmsExportButton from '@/components/common/WmsExportButton.vue';
 import { useTable } from '@/hooks/useTable';
-import { confirmInbound, cancelInbound } from '@/api/inbound';
+import { getInboundOrder, confirmInbound, cancelInbound } from '@/api/inbound';
 import type { InboundOrderDto } from '@/api/inbound';
 
 const router = useRouter();
@@ -105,7 +105,16 @@ function handleDetail(row: InboundOrderDto) {
 
 async function handleConfirm(row: InboundOrderDto) {
   try {
-    await confirmInbound(row.id);
+    // 需要先获取订单详情来获取lines
+    const order = await getInboundOrder(row.id);
+    const confirmData = {
+      idempotencyId: Date.now().toString(),
+      lines: (order.lines || []).map(l => ({
+        lineId: l.id || '',
+        receivedQuantity: l.planQuantity,
+      })),
+    };
+    await confirmInbound(row.id, confirmData);
     ElMessage.success('确认成功');
     handleSearch();
   } catch {
