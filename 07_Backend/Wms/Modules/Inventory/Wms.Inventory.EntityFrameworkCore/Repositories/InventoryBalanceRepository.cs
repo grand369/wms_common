@@ -91,7 +91,7 @@ public class InventoryBalanceRepository : EfCoreRepository<WmsInventoryDbContext
         var dbSet = await GetDbSetAsync();
         return await dbSet.Where(b =>
             b.InventoryStatus == InventoryStatus.Available &&
-            b.AvailableQuantity <= 0).ToListAsync();
+            b.AvailableQuantity <= b.SafetyStockQuantity).ToListAsync();
     }
 
     public async Task<List<InventoryBalance>> GetNearExpiryAsync(int alertDays = 30)

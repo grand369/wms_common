@@ -278,11 +278,21 @@ onMounted(() => {
 <style scoped lang="scss">
 .wms-location-selector {
   display: flex;
-  gap: 8px;
+  gap: 4px;
+  flex-wrap: nowrap;
 
   .el-select {
     flex: 1;
-    min-width: 160px;
+    min-width: 100px;
+    max-width: 150px;
+  }
+
+  .el-select__wrapper {
+    padding: 2px 8px;
+  }
+
+  .el-select__input {
+    font-size: 12px;
   }
 }
 </style>

@@ -27,6 +27,15 @@ public class InventoryFreezeOrder : FullAuditedAggregateRoot<Guid>
     /// <summary>Warehouse code — redundant.</summary>
     public string WarehouseCode { get; private set; }
 
+    /// <summary>Material ID — for single balance freeze.</summary>
+    public Guid? MaterialId { get; private set; }
+
+    /// <summary>Material code — redundant for display.</summary>
+    public string? MaterialCode { get; private set; }
+
+    /// <summary>Freeze quantity — for single balance freeze.</summary>
+    public decimal FreezeQuantity { get; private set; }
+
     /// <summary>Whether the freeze order has been approved.</summary>
     public bool IsApproved { get; private set; }
 
@@ -59,6 +68,42 @@ public class InventoryFreezeOrder : FullAuditedAggregateRoot<Guid>
         FreezeStatus = FreezeStatus.Active;
         WarehouseId = warehouseId;
         WarehouseCode = warehouseCode;
+        MaterialId = null;
+        MaterialCode = null;
+        FreezeQuantity = 0m;
+        IsApproved = false;
+        FreezeStartTime = freezeStartTime;
+        FreezeEndTime = freezeEndTime;
+        Remark = remark;
+    }
+
+    /// <summary>
+    /// Constructor for single balance freeze (manual freeze from balance list).
+    /// </summary>
+    public InventoryFreezeOrder(
+        Guid id,
+        string freezeOrderNo,
+        FreezeScope freezeScope,
+        string freezeReason,
+        Guid warehouseId,
+        string warehouseCode,
+        Guid materialId,
+        string materialCode,
+        decimal freezeQuantity,
+        DateTime freezeStartTime,
+        DateTime? freezeEndTime = null,
+        string? remark = null)
+        : base(id)
+    {
+        FreezeOrderNo = freezeOrderNo;
+        FreezeScope = freezeScope;
+        FreezeReason = freezeReason;
+        FreezeStatus = FreezeStatus.Active;
+        WarehouseId = warehouseId;
+        WarehouseCode = warehouseCode;
+        MaterialId = materialId;
+        MaterialCode = materialCode;
+        FreezeQuantity = freezeQuantity;
         IsApproved = false;
         FreezeStartTime = freezeStartTime;
         FreezeEndTime = freezeEndTime;

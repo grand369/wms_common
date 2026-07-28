@@ -104,4 +104,10 @@ public class InboundOrderController : AbpControllerBase
     {
         return _appService.GetStatisticsAsync(query);
     }
+
+    [HttpPatch("{id}/erp-callback")]
+    public Task<InboundOrderOutputDto> ErpCallbackAsync(Guid id, [FromBody] InboundErpCallbackDto dto)
+    {
+        return _appService.ErpCallbackAsync(id, dto);
+    }
 }

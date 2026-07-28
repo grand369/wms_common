@@ -17,6 +17,7 @@ public class WmsInventoryPermissions
         public const string Read = GroupName + ".Read";
         public const string Initialize = GroupName + ".Initialize";
         public const string Snapshot = GroupName + ".Snapshot";
+        public const string Freeze = GroupName + ".Balance.Freeze";
     }
 
     // Adjustment permissions
@@ -57,6 +58,7 @@ public class WmsInventoryPermissionDefinitionProvider : PermissionDefinitionProv
         var balance = group.AddPermission(WmsInventoryPermissions.Balance.Read, L("库存余额"));
         balance.AddChild(WmsInventoryPermissions.Balance.Initialize, L("初始化库存"));
         balance.AddChild(WmsInventoryPermissions.Balance.Snapshot, L("库存快照"));
+        balance.AddChild(WmsInventoryPermissions.Balance.Freeze, L("冻结/解冻库存"));
 
         var adjust = group.AddPermission(WmsInventoryPermissions.Adjust.Create, L("创建调整单"));
         adjust.AddChild(WmsInventoryPermissions.Adjust.Submit, L("提交调整单"));

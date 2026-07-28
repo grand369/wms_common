@@ -51,4 +51,7 @@ public interface IInboundOrderAppService
 
     /// <summary>API-IN-014: Get inbound order statistics.</summary>
     Task<InboundStatisticsDto> GetStatisticsAsync(InboundStatisticsQueryDto query);
+
+    /// <summary>API-IN-015: ERP callback for inbound order.</summary>
+    Task<InboundOrderOutputDto> ErpCallbackAsync(Guid id, InboundErpCallbackDto dto);
 }

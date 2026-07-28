@@ -524,4 +524,20 @@ public class InboundOrder : FullAuditedAggregateRoot<Guid>
         Lines.AddRange(newLines);
         TotalPlanQuantity = Lines.Sum(l => l.PlanQuantity);
     }
+
+    /// <summary>
+    /// Update ERP callback status.
+    /// </summary>
+    public void SetErpCallbackStatus(ErpCallbackStatus status)
+    {
+        ErpCallbackStatus = status;
+    }
+
+    /// <summary>
+    /// Set inbound status directly — used for internal state transitions.
+    /// </summary>
+    public void SetInboundStatus(InboundStatus status)
+    {
+        InboundStatus = status;
+    }
 }

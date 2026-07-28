@@ -280,6 +280,25 @@ public class OutboundOrderAppService : ApplicationService, IOutboundOrderAppServ
         return MapToOutputDto(order);
     }
 
+    [Authorize(WmsOutboundPermissions.Order.Complete)]
+    public async Task<OutboundOrderOutputDto> ErpCallbackAsync(Guid id, OutboundErpCallbackDto dto)
+    {
+        var order = await _outboundOrderRepository.GetAsync(id);
+        
+        var callbackStatus = ErpCallbackStatus.FromValue(dto.CallbackStatus);
+        order.SetErpCallbackStatus(callbackStatus);
+        
+        await _outboundOrderRepository.UpdateAsync(order);
+        return MapToOutputDto(order);
+    }
+
+    [Authorize(WmsOutboundPermissions.Order.Read)]
+    public async Task<OutboundOrderOutputDto> GetPrintDataAsync(Guid id, OutboundPrintDto dto)
+    {
+        var order = await _outboundOrderRepository.GetAsync(id);
+        return MapToOutputDto(order);
+    }
+
     private OutboundOrderOutputDto MapToOutputDto(OutboundOrder order)
     {
         return new OutboundOrderOutputDto

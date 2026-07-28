@@ -7,28 +7,58 @@ export interface InventoryBalanceDto {
   materialCode: string;
   materialName: string;
   warehouseId: string;
+  warehouseCode: string;
   warehouseName: string;
-  locationId?: string;
-  locationName?: string;
-  batchNo?: string;
-  qty: number;
-  availableQty: number;
-  frozenQty: number;
-  status: number;
+  locationId: string;
+  locationCode: string;
+  locationName: string;
+  batchNumber?: string;
+  inventoryStatusValue: number;
+  inventoryStatusName: string;
+  quantity: number;
+  reservedQuantity: number;
+  frozenQuantity: number;
+  inTransitQuantity: number;
+  availableQuantity: number;
 }
 
 export interface InventoryLedgerDto {
   id: string;
-  sourceDocType: string;
-  sourceDocId: string;
+  inventoryBalanceId: string;
+  
+  // Material info
   materialId: string;
   materialCode: string;
+  materialName: string;
+  
+  // Warehouse/Location info
   warehouseId: string;
-  locationId?: string;
-  inQty?: number;
-  outQty?: number;
-  balanceQty: number;
-  transactionTime: string;
+  warehouseCode: string;
+  warehouseName: string;
+  locationId: string;
+  locationCode: string;
+  locationName: string;
+  
+  // Operation info
+  operationTypeValue: number;
+  operationTypeName: string;
+  operationQuantity: number;
+  inQuantity: number;
+  outQuantity: number;
+  balanceQuantity: number;
+  beforeQuantity: number;
+  afterQuantity: number;
+  beforeAvailable: number;
+  afterAvailable: number;
+  operationTime: string;
+  operatorId: string;
+  operatorName: string;
+  
+  // Source order info
+  sourceOrderType: string;
+  sourceOrderId: string;
+  sourceOrderNo: string;
+  remark?: string;
 }
 
 export interface InventoryAlertDto {
@@ -44,11 +74,22 @@ export interface InventoryAlertDto {
 
 export interface InventoryFreezeDto {
   id: string;
-  balanceId: string;
-  materialId: string;
-  materialCode: string;
-  qty: number;
-  reason: string;
+  freezeOrderNo: string;
+  freezeScopeValue: number;
+  freezeScopeName: string;
+  freezeReason: string;
+  freezeStatusValue: number;
+  freezeStatusName: string;
+  warehouseId: string;
+  warehouseCode: string;
+  materialId?: string;
+  materialCode?: string;
+  freezeQuantity: number;
+  isApproved: boolean;
+  freezeStartTime: string;
+  freezeEndTime?: string;
+  remark?: string;
+  creationTime: string;
 }
 
 export interface InventoryAdjustmentDto {
@@ -94,6 +135,18 @@ export function createFreeze(data: InventoryFreezeDto) {
   return post<InventoryFreezeDto>('/api/v1/inventory/freeze-orders', data);
 }
 
+export function getFreezeOrders(params: PagedParams) {
+  return get<PagedResult<InventoryFreezeDto>>('/api/v1/inventory/freeze-orders', { params });
+}
+
+export function releaseFreeze(id: string) {
+  return post<void>(`/api/v1/inventory/freeze-orders/${id}/release`);
+}
+
+export function cancelFreeze(id: string) {
+  return post<void>(`/api/v1/inventory/freeze-orders/${id}/cancel`);
+}
+
 export function deleteFreeze(id: string) {
   return del<void>(`/api/v1/inventory/freeze-orders/${id}`);
 }
@@ -127,11 +180,11 @@ export function createSnapshot(data: { warehouseId: string; remark?: string }) {
 }
 
 export function freezeBalance(id: string, data: { qty: number; reason: string }) {
-  return post<void>('/api/v1/inventory/freeze-orders', { balanceId: id, ...data });
+  return post<InventoryBalanceDto>(`/api/v1/inventory/balances/${id}/freeze`, data);
 }
 
 export function unfreezeBalance(id: string) {
-  return post<void>(`/api/v1/inventory/freeze-orders/${id}/release`);
+  return post<InventoryBalanceDto>(`/api/v1/inventory/balances/${id}/unfreeze`);
 }
 
 export function getInventoryAgeAnalysis(params: PagedParams) {

@@ -62,8 +62,19 @@ export function deleteOutboundOrder(id: string) {
   return del<void>(`/api/v1/outbound/orders/${id}`);
 }
 
-export function allocateOutbound(id: string) {
-  return patch<void>(`/api/v1/outbound/orders/${id}/allocate`);
+export interface OutboundAllocateLineDto {
+  lineId: string;
+  allocatedQuantity: number;
+  locationId?: string;
+  locationCode?: string;
+}
+
+export interface OutboundAllocateCommandDto {
+  lines: OutboundAllocateLineDto[];
+}
+
+export function allocateOutbound(id: string, data?: OutboundAllocateCommandDto) {
+  return patch<void>(`/api/v1/outbound/orders/${id}/allocate`, data);
 }
 
 export function pickOutbound(id: string, data?: { lines?: { lineId: string; pickedQty: number }[] }) {
@@ -88,6 +99,33 @@ export function getOutboundOrderDetails(id: string) {
 
 export function getOutboundStatistics(params?: { startDate?: string; endDate?: string }) {
   return get<OutboundStatisticsDto>('/api/v1/outbound/orders/statistics', { params });
+}
+
+export interface OutboundErpCallbackDto {
+  erpDocumentNo?: string;
+  callbackStatus: number;
+  message?: string;
+  callbackTime?: string;
+}
+
+export function erpCallbackOutbound(id: string, data: OutboundErpCallbackDto) {
+  return patch<void>(`/api/v1/outbound/orders/${id}/erp-callback`, data);
+}
+
+export enum OutboundPrintType {
+  Order = 1,
+  PackingList = 2,
+  AddressLabel = 3
+}
+
+export interface OutboundPrintDto {
+  printType: OutboundPrintType;
+  includeBarcode?: boolean;
+  copies?: number;
+}
+
+export function getOutboundPrintData(id: string, params?: OutboundPrintDto) {
+  return get<OutboundOrderDetailDto>(`/api/v1/outbound/orders/${id}/print-data`, { params });
 }
 
 export function pickOutboundLine(id: string, data: { pickedQty: number }) {

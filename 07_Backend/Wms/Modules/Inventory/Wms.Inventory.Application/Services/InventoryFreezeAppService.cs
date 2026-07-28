@@ -71,10 +71,20 @@ public class InventoryFreezeAppService : ApplicationService, IInventoryFreezeApp
     public async Task<PagedResultDto<InventoryFreezeOutputDto>> GetListAsync(InventoryFreezeQueryDto query)
     {
         var queryable = await _freezeRepository.GetQueryableAsync();
+        
         if (query.WarehouseId.HasValue)
             queryable = queryable.Where(f => f.WarehouseId == query.WarehouseId.Value);
         if (query.FreezeStatusValue.HasValue)
-            queryable = queryable.Where(f => f.FreezeStatus.Value == query.FreezeStatusValue.Value);
+            queryable = queryable.Where(f => f.FreezeStatus == FreezeStatus.FromValue(query.FreezeStatusValue.Value));
+        if (!string.IsNullOrEmpty(query.FreezeOrderNo))
+            queryable = queryable.Where(f => f.FreezeOrderNo.Contains(query.FreezeOrderNo));
+        if (!string.IsNullOrEmpty(query.MaterialCode))
+            queryable = queryable.Where(f => f.MaterialCode != null && f.MaterialCode.Contains(query.MaterialCode));
+        if (!string.IsNullOrEmpty(query.Keyword))
+            queryable = queryable.Where(f => 
+                f.FreezeOrderNo.Contains(query.Keyword) || 
+                (f.MaterialCode != null && f.MaterialCode.Contains(query.Keyword)) ||
+                f.FreezeReason.Contains(query.Keyword));
 
         var totalCount = await AsyncExecuter.CountAsync(queryable);
         var items = await AsyncExecuter.ToListAsync(
@@ -126,6 +136,9 @@ public class InventoryFreezeAppService : ApplicationService, IInventoryFreezeApp
             FreezeStatusName = freeze.FreezeStatus.Description,
             WarehouseId = freeze.WarehouseId,
             WarehouseCode = freeze.WarehouseCode,
+            MaterialId = freeze.MaterialId,
+            MaterialCode = freeze.MaterialCode,
+            FreezeQuantity = freeze.FreezeQuantity,
             IsApproved = freeze.IsApproved,
             FreezeStartTime = freeze.FreezeStartTime,
             FreezeEndTime = freeze.FreezeEndTime,

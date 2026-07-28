@@ -30,20 +30,16 @@
         @page-change="handlePageChange"
         @size-change="handleSizeChange"
       >
-        <el-table-column prop="transactionTime" label="时间" min-width="160" />
+        <el-table-column prop="operationTime" label="时间" min-width="160" />
         <el-table-column prop="materialCode" label="物料编码" />
-        <el-table-column prop="sourceDocType" label="来源单据" />
-        <el-table-column prop="inQty" label="入库数量" align="right">
-          <template #default="{ row }">
-            {{ row.inQty || '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="outQty" label="出库数量" align="right">
-          <template #default="{ row }">
-            {{ row.outQty || '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="balanceQty" label="结余数量" align="right" />
+        <el-table-column prop="materialName" label="物料名称" show-overflow-tooltip />
+        <el-table-column prop="warehouseName" label="仓库" />
+        <el-table-column prop="locationName" label="库位" />
+        <el-table-column prop="sourceOrderType" label="单据来源" />
+        <el-table-column prop="operationTypeName" label="操作类型" />
+        <el-table-column prop="inQuantity" label="入库数量" align="right" />
+        <el-table-column prop="outQuantity" label="出库数量" align="right" />
+        <el-table-column prop="balanceQuantity" label="结余数量" align="right" />
       </WmsTable>
     </el-card>
   </div>

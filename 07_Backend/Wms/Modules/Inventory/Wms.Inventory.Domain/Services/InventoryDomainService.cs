@@ -142,8 +142,14 @@ public class InventoryDomainService : DomainService, IInventoryDomainService
                 var qtyToFreeze = balance.AvailableQuantity;
                 if (qtyToFreeze > 0)
                 {
-                    balance.FreezeQuantity(qtyToFreeze, "InventoryFreezeOrder", freezeOrderId);
+                    var result = balance.ApplyQuantityChange(
+                        InventoryOperationType.Freeze, qtyToFreeze, 
+                        "InventoryFreezeOrder", freezeOrderId);
                     await _balanceRepository.UpdateAsync(balance);
+                    if (result.LedgerEntry != null)
+                    {
+                        await _ledgerRepository.InsertAsync(result.LedgerEntry);
+                    }
                 }
             }
         }
@@ -154,10 +160,30 @@ public class InventoryDomainService : DomainService, IInventoryDomainService
     /// </summary>
     public async Task UnfreezeInventoryAsync(Guid freezeOrderId)
     {
-        // In v1.0, we need to look up all frozen balances related to this freeze order
-        // This would typically be done by querying ledger entries for the freeze order
-        var frozenBalances = await _balanceRepository.GetByStatusAsync(InventoryStatus.Frozen);
-        // This is a simplified implementation - in production, ledger entries would track freeze order associations
+        // Find all ledger entries created by this freeze order
+        var freezeEntries = await _ledgerRepository.GetBySourceOrderAsync("InventoryFreezeOrder", freezeOrderId);
+        
+        // Group by balance and sum the frozen quantities
+        var balanceFreezeMap = freezeEntries
+            .GroupBy(e => e.InventoryBalanceId)
+            .ToDictionary(g => g.Key, g => g.Sum(e => e.OperationQuantity));
+        
+        // Unfreeze each balance
+        foreach (var (balanceId, freezeQty) in balanceFreezeMap)
+        {
+            var balance = await _balanceRepository.GetAsync(balanceId);
+            if (balance != null && balance.FrozenQuantity > 0)
+            {
+                var result = balance.ApplyQuantityChange(
+                    InventoryOperationType.Unfreeze, freezeQty, 
+                    "InventoryFreezeOrder", freezeOrderId);
+                await _balanceRepository.UpdateAsync(balance);
+                if (result.LedgerEntry != null)
+                {
+                    await _ledgerRepository.InsertAsync(result.LedgerEntry);
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -249,7 +275,8 @@ public class InventoryDomainService : DomainService, IInventoryDomainService
     private async Task<InventoryBalance> FindOrCreateBalanceAsync(
         Guid materialId, Guid warehouseId, Guid locationId, string? batchNo,
         string materialCode, string warehouseCode, string locationCode,
-        InventoryStatus status)
+        InventoryStatus status,
+        decimal safetyStockQuantity = 0m)
     {
         var balance = await _balanceRepository.FindAsync(materialId, warehouseId, locationId, batchNo, status);
         if (balance == null)
@@ -259,7 +286,8 @@ public class InventoryDomainService : DomainService, IInventoryDomainService
                 materialId, materialCode,
                 warehouseId, warehouseCode,
                 locationId, locationCode,
-                batchNo, status);
+                batchNo, status,
+                safetyStockQuantity);
             await _balanceRepository.InsertAsync(balance);
         }
         return balance;

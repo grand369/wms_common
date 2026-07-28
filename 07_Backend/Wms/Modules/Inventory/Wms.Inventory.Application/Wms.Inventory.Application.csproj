@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <AssemblyName>Wms.Inventory.Application</AssemblyName>
@@ -19,6 +19,8 @@
     <ProjectReference Include="..\Wms.Inventory.Domain\Wms.Inventory.Domain.csproj" />
     <ProjectReference Include="..\Wms.Inventory.Application.Contracts\Wms.Inventory.Application.Contracts.csproj" />
     <ProjectReference Include="..\..\Warehouse\Wms.Warehouse.Application.Contracts\Wms.Warehouse.Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\Warehouse\Wms.Warehouse.Domain\Wms.Warehouse.Domain.csproj" />
     <ProjectReference Include="..\..\Material\Wms.Material.Application.Contracts\Wms.Material.Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\Material\Wms.Material.Domain\Wms.Material.Domain.csproj" />
   </ItemGroup>
 </Project>

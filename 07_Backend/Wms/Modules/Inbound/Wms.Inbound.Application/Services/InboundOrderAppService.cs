@@ -186,37 +186,147 @@ public class InboundOrderAppService : ApplicationService, IInboundOrderAppServic
     [Authorize(WmsInboundPermissions.Order.QualityInspect)]
     public async Task<InboundOrderOutputDto> QualityInspectAsync(Guid id, InboundQualityInspectCommandDto dto)
     {
-        var order = await _inboundOrderRepository.GetAsync(id);
+        // 获取包含订单行的订单实体
+        var order = await _inboundOrderRepository.GetWithLinesAsync(id);
 
-        // Start inspection if still in Confirmed
+        // 如果仍在已确认状态，先启动质检流程
         if (order.InboundStatus == InboundStatus.Confirmed)
         {
             order.StartQualityInspection();
         }
 
-        foreach (var lineDto in dto.Lines)
+        // 如果已在质检中，处理每行的质检结果
+        if (order.InboundStatus == InboundStatus.Inspecting)
         {
-            var qualityResult = QualityStatus.FromValue(lineDto.QualityResultValue);
-            await _inboundDomainService.ProcessQualityInspectionAsync(id, lineDto.LineId, qualityResult);
+            foreach (var lineDto in dto.Lines)
+            {
+                var line = order.Lines.FirstOrDefault(l => l.Id == lineDto.LineId);
+                if (line == null)
+                {
+                    throw new BusinessException("WMS:Inbound:LineNotFound",
+                        $"Inbound line {lineDto.LineId} not found.");
+                }
+
+                var qualityResult = QualityStatus.FromValue(lineDto.QualityResultValue);
+                line.SetQualityStatus(qualityResult);
+            }
+
+            // 循环完成后，统一判断订单状态
+            bool hasUnqualified = order.Lines.Any(l => l.QualityStatus == QualityStatus.Unqualified);
+            bool allQualifiedOrSkipped = order.Lines.All(l => 
+                l.QualityStatus == QualityStatus.Qualified || 
+                l.QualityStatus == QualityStatus.Skip);
+
+            if (hasUnqualified)
+            {
+                // 存在不通过的行，订单转为隔离状态
+                order.SetInboundStatus(InboundStatus.Isolated);
+            }
+            else if (allQualifiedOrSkipped)
+            {
+                // 所有行都通过或跳过，订单转为上架中状态
+                order.SetInboundStatus(InboundStatus.Putaway);
+            }
+            // 否则保持Inspecting状态不变
         }
 
-        order = await _inboundOrderRepository.GetAsync(id);
+        // 统一更新订单
+        await _inboundOrderRepository.UpdateAsync(order);
         return MapToOutputDto(order);
     }
 
     [Authorize(WmsInboundPermissions.Order.Putaway)]
     public async Task<InboundOrderOutputDto> PutawayAsync(Guid id, InboundPutawayCommandDto dto)
     {
-        var order = await _inboundOrderRepository.GetAsync(id);
+        // 获取包含订单行的订单实体
+        var order = await _inboundOrderRepository.GetWithLinesAsync(id);
 
-        foreach (var lineDto in dto.Lines)
+        // 状态流转处理
+        // 如果仍在已确认状态，先启动质检流程
+        if (order.InboundStatus == InboundStatus.Confirmed)
         {
-            await _inboundDomainService.ConfirmPutawayAsync(
-                id, lineDto.LineId, lineDto.PutawayWarehouseId, lineDto.PutawayWarehouseCode, 
-                lineDto.PutawayAreaId, lineDto.PutawayAreaCode, lineDto.PutawayLocationId, lineDto.PutawayLocationCode, lineDto.Quantity);
+            order.StartQualityInspection();
         }
 
-        order = await _inboundOrderRepository.GetAsync(id);
+        // 如果仍在质检中，检查是否所有行都已质检通过或跳过
+        if (order.InboundStatus == InboundStatus.Inspecting)
+        {
+            bool allQualified = order.Lines.All(l => 
+                l.QualityStatus == QualityStatus.Qualified || 
+                l.QualityStatus == QualityStatus.Skip);
+            
+            if (allQualified)
+            {
+                // 所有行都已通过，自动转为上架中状态
+                order.SetInboundStatus(InboundStatus.Putaway);
+            }
+            else
+            {
+                throw new BusinessException("WMS:Inbound:QualityNotCompleted",
+                    "Cannot put away when quality inspection is not completed. All lines must pass or be skipped.");
+            }
+        }
+
+        // 如果在隔离状态，不能上架
+        if (order.InboundStatus == InboundStatus.Isolated)
+        {
+            throw new BusinessException("WMS:Inbound:IsolatedOrder",
+                "Cannot put away when order is in Isolated status.");
+        }
+
+        // 遍历处理每行的上架操作
+        foreach (var lineDto in dto.Lines)
+        {
+            var line = order.Lines.FirstOrDefault(l => l.Id == lineDto.LineId);
+            if (line == null)
+            {
+                throw new BusinessException("WMS:Inbound:LineNotFound",
+                    $"Inbound line {lineDto.LineId} not found.");
+            }
+
+            // 检查质检状态
+            if (line.QualityStatus == QualityStatus.Unqualified)
+            {
+                throw new BusinessException("WMS:Inbound:UnqualifiedPutaway",
+                    $"Cannot put away unqualified material {line.MaterialCode}. Quality status: {line.QualityStatus.Name}.");
+            }
+
+            // 设置上架库位
+            line.SetPutawayLocation(
+                lineDto.PutawayWarehouseId, 
+                lineDto.PutawayWarehouseCode, 
+                lineDto.PutawayAreaId, 
+                lineDto.PutawayAreaCode, 
+                lineDto.PutawayLocationId, 
+                lineDto.PutawayLocationCode);
+        }
+
+        // 循环完成后，判断是否所有行都已上架
+        bool allPutaway = order.Lines.All(l => l.PutawayLocationId.HasValue);
+        if (allPutaway)
+        {
+            // 所有行都已上架，自动完成入库
+            order.Complete();
+
+            // 同步增加库存（在同一事务中）
+            foreach (var line in order.Lines.Where(l => l.ReceivedQuantity > 0))
+            {
+                await _inventoryDomainService.IncreaseInventoryAsync(
+                    line.MaterialId,
+                    order.WarehouseId,
+                    line.PutawayLocationId ?? Guid.Empty,
+                    line.BatchNumber,
+                    line.ReceivedQuantity,
+                    line.MaterialCode,
+                    order.WarehouseCode,
+                    line.PutawayLocationCode ?? string.Empty,
+                    "InboundOrder",
+                    order.Id);
+            }
+        }
+
+        // 统一更新订单
+        await _inboundOrderRepository.UpdateAsync(order);
         return MapToOutputDto(order);
     }
 
@@ -338,6 +448,18 @@ public class InboundOrderAppService : ApplicationService, IInboundOrderAppServic
             CompletedCount = (int)completedCount,
             TodayCount = (int)todayCount
         };
+    }
+
+    [Authorize(WmsInboundPermissions.Order.Complete)]
+    public async Task<InboundOrderOutputDto> ErpCallbackAsync(Guid id, InboundErpCallbackDto dto)
+    {
+        var order = await _inboundOrderRepository.GetAsync(id);
+        
+        var callbackStatus = ErpCallbackStatus.FromValue(dto.CallbackStatus);
+        order.SetErpCallbackStatus(callbackStatus);
+        
+        await _inboundOrderRepository.UpdateAsync(order);
+        return MapToOutputDto(order);
     }
 
     private InboundOrderOutputDto MapToOutputDto(InboundOrder order)

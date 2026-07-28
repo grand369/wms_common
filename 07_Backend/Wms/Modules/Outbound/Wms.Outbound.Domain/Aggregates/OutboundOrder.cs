@@ -440,4 +440,12 @@ public class OutboundOrder : FullAuditedAggregateRoot<Guid>
         TotalPickedQuantity = Lines.Sum(l => l.PickedQuantity);
         TotalShippedQuantity = Lines.Sum(l => l.ShippedQuantity);
     }
+
+    /// <summary>
+    /// Update ERP callback status.
+    /// </summary>
+    public void SetErpCallbackStatus(ErpCallbackStatus status)
+    {
+        ErpCallbackStatus = status;
+    }
 }

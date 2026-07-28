@@ -146,6 +146,8 @@ public class AuthController : AbpControllerBase
         "Wms.DataDictionary.Dictionaries","Wms.DataDictionary.Dictionaries.Create","Wms.DataDictionary.Dictionaries.Update","Wms.DataDictionary.Dictionaries.Delete",
         "Wms.DataDictionary.Items","Wms.DataDictionary.Items.Create","Wms.DataDictionary.Items.Update","Wms.DataDictionary.Items.Delete",
 
+        "Wms.Supplier.Suppliers","Wms.Supplier.Suppliers.Create","Wms.Supplier.Suppliers.Update","Wms.Supplier.Suppliers.Delete","Wms.Supplier.Suppliers.View","Wms.Supplier.Suppliers.List","Wms.Supplier.Suppliers.Activate","Wms.Supplier.Suppliers.Deactivate",
+
         // ──── System / ABP Identity Module ────
         // Identity — Users (对应前端 /system/users)
         "AbpIdentity.Users",

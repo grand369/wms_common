@@ -37,13 +37,14 @@
         <el-table-column prop="materialName" label="物料名称" show-overflow-tooltip />
         <el-table-column prop="warehouseName" label="仓库" />
         <el-table-column prop="locationName" label="库位" />
-        <el-table-column prop="batchNo" label="批次" />
-        <el-table-column prop="qty" label="总数量" align="right" />
-        <el-table-column prop="availableQty" label="可用数量" align="right" />
-        <el-table-column prop="frozenQty" label="冻结数量" align="right" />
-        <el-table-column prop="status" label="状态" align="center" width="100">
+        <el-table-column prop="batchNumber" label="批次" />
+        <el-table-column prop="quantity" label="总数量" align="right" />
+        <el-table-column prop="availableQuantity" label="可用数量" align="right" />
+        <el-table-column prop="frozenQuantity" label="冻结数量" align="right" />
+        <el-table-column prop="reservedQuantity" label="预留数量" align="right" />
+        <el-table-column prop="inventoryStatusName" label="状态" align="center" width="100">
           <template #default="{ row }">
-            <WmsStatusTag :status="mapInventoryStatus(row.status)" type="inventory" />
+            <WmsStatusTag :status="mapInventoryStatus(row.inventoryStatusValue)" type="inventory" />
           </template>
         </el-table-column>
         <el-table-column label="操作" width="180" fixed="right">
@@ -73,10 +74,10 @@
           <span>{{ currentRow?.locationName || '-' }}</span>
         </el-form-item>
         <el-form-item label="可冻结数量">
-          <span>{{ currentRow?.availableQty }}</span>
+          <span>{{ currentRow?.availableQuantity }}</span>
         </el-form-item>
         <el-form-item label="冻结数量" prop="qty">
-          <el-input-number v-model="freezeForm.qty" :min="0.01" :max="currentRow?.availableQty || 0" :precision="2" />
+          <el-input-number v-model="freezeForm.qty" :min="0.01" :max="currentRow?.availableQuantity || 0" :precision="2" />
         </el-form-item>
         <el-form-item label="冻结原因" prop="reason">
           <el-input v-model="freezeForm.reason" type="textarea" :rows="3" placeholder="请输入冻结原因" />
@@ -123,7 +124,7 @@ function mapInventoryStatus(status: number) {
 }
 
 function handleDetail(row: InventoryBalanceDto) {
-  router.push(`/inventory/balance/detail/${row.id}`);
+  router.push(`/inventory/balance-detail/${row.id}`);
 }
 
 function handleFreeze(row: InventoryBalanceDto) {

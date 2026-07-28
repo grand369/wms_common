@@ -92,4 +92,16 @@ public class OutboundOrderController : AbpControllerBase
     {
         return _appService.GetByNoAsync(orderNo);
     }
+
+    [HttpPatch("{id}/erp-callback")]
+    public Task<OutboundOrderOutputDto> ErpCallbackAsync(Guid id, [FromBody] OutboundErpCallbackDto dto)
+    {
+        return _appService.ErpCallbackAsync(id, dto);
+    }
+
+    [HttpGet("{id}/print-data")]
+    public Task<OutboundOrderOutputDto> GetPrintDataAsync(Guid id, [FromQuery] OutboundPrintDto dto)
+    {
+        return _appService.GetPrintDataAsync(id, dto);
+    }
 }

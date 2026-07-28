@@ -11,10 +11,13 @@ public class InventoryBalanceOutputDto
     public Guid Id { get; set; }
     public Guid MaterialId { get; set; }
     public string MaterialCode { get; set; } = string.Empty;
+    public string MaterialName { get; set; } = string.Empty;
     public Guid WarehouseId { get; set; }
     public string WarehouseCode { get; set; } = string.Empty;
+    public string WarehouseName { get; set; } = string.Empty;
     public Guid LocationId { get; set; }
     public string LocationCode { get; set; } = string.Empty;
+    public string LocationName { get; set; } = string.Empty;
     public string? BatchNumber { get; set; }
     public int InventoryStatusValue { get; set; }
     public string InventoryStatusName { get; set; } = string.Empty;

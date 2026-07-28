@@ -80,4 +80,16 @@ public class InventoryBalanceController : AbpControllerBase
     {
         return _appService.SnapshotAsync();
     }
+
+    [HttpPost("{id}/freeze")]
+    public Task<InventoryBalanceOutputDto> FreezeAsync(Guid id, [FromBody] InventoryBalanceFreezeDto dto)
+    {
+        return _appService.FreezeAsync(id, dto);
+    }
+
+    [HttpPost("{id}/unfreeze")]
+    public Task<InventoryBalanceOutputDto> UnfreezeAsync(Guid id)
+    {
+        return _appService.UnfreezeAsync(id);
+    }
 }

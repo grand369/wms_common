@@ -72,6 +72,9 @@ public class InventoryBalance : FullAuditedAggregateRoot<Guid>
     /// <summary>Unit cost — for inventory value calculation.</summary>
     public decimal? UnitCost { get; private set; }
 
+    /// <summary>Safety stock quantity — synced from Material module for alert threshold.</summary>
+    public decimal SafetyStockQuantity { get; private set; }
+
     /// <summary>Last operation time — tracks when the balance was last modified.</summary>
     public DateTime LastOperationTime { get; private set; }
 
@@ -89,7 +92,8 @@ public class InventoryBalance : FullAuditedAggregateRoot<Guid>
         Guid locationId,
         string locationCode,
         string? batchNumber,
-        InventoryStatus inventoryStatus)
+        InventoryStatus inventoryStatus,
+        decimal safetyStockQuantity = 0m)
         : base(id)
     {
         MaterialId = materialId;
@@ -105,8 +109,23 @@ public class InventoryBalance : FullAuditedAggregateRoot<Guid>
         FrozenQuantity = 0m;
         InTransitQuantity = 0m;
         AvailableQuantity = 0m;
+        SafetyStockQuantity = safetyStockQuantity;
         LastOperationTime = DateTime.UtcNow;
         ConcurrencyVersion = 0;
+    }
+
+    /// <summary>
+    /// Update safety stock quantity — called when material's safety stock config changes.
+    /// Synced from Material module's InventoryAttribute.SafetyStockQuantity.
+    /// </summary>
+    public void UpdateSafetyStockQuantity(decimal safetyStockQuantity)
+    {
+        if (safetyStockQuantity < 0m)
+        {
+            throw new BusinessException("WMS:Inventory:InvalidSafetyStock",
+                "Safety stock quantity cannot be negative.");
+        }
+        SafetyStockQuantity = safetyStockQuantity;
     }
 
     /// <summary>

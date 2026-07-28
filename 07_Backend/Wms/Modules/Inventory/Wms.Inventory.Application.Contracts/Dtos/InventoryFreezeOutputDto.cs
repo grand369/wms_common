@@ -14,6 +14,9 @@ public class InventoryFreezeOutputDto
     public string FreezeStatusName { get; set; } = string.Empty;
     public Guid WarehouseId { get; set; }
     public string WarehouseCode { get; set; } = string.Empty;
+    public Guid? MaterialId { get; set; }
+    public string? MaterialCode { get; set; }
+    public decimal FreezeQuantity { get; set; }
     public bool IsApproved { get; set; }
     public DateTime FreezeStartTime { get; set; }
     public DateTime? FreezeEndTime { get; set; }

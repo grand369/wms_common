@@ -17,4 +17,6 @@ public interface IInventoryBalanceAppService
     Task<InventorySummaryDto> GetSummaryAsync();
     Task<InventoryBalanceOutputDto> InitializeAsync(InventoryBalanceInitializeDto dto);
     Task SnapshotAsync();
+    Task<InventoryBalanceOutputDto> FreezeAsync(Guid id, InventoryBalanceFreezeDto dto);
+    Task<InventoryBalanceOutputDto> UnfreezeAsync(Guid id);
 }

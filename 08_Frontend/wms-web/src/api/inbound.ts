@@ -112,12 +112,38 @@ export function confirmInbound(id: string, data: InboundConfirmCommandDto) {
   return patch<void>(`/api/v1/inbound/orders/${id}/confirm`, data);
 }
 
-export function qualityInspectInbound(id: string, data: { passed: boolean; remark?: string }) {
+export interface InboundQualityInspectLineDto {
+  lineId: string;
+  qualityResultValue: number;
+}
+
+export interface InboundQualityInspectCommandDto {
+  idempotencyId: string;
+  lines: InboundQualityInspectLineDto[];
+}
+
+export function qualityInspectInbound(id: string, data: InboundQualityInspectCommandDto) {
   return patch<void>(`/api/v1/inbound/orders/${id}/quality-inspect`, data);
 }
 
-export function putawayInbound(id: string) {
-  return patch<void>(`/api/v1/inbound/orders/${id}/putaway`);
+export interface InboundPutawayLineDto {
+  lineId: string;
+  putawayWarehouseId: string;
+  putawayWarehouseCode: string;
+  putawayAreaId: string;
+  putawayAreaCode: string;
+  putawayLocationId: string;
+  putawayLocationCode: string;
+  quantity: number;
+}
+
+export interface InboundPutawayCommandDto {
+  idempotencyId: string;
+  lines: InboundPutawayLineDto[];
+}
+
+export function putawayInbound(id: string, data: InboundPutawayCommandDto) {
+  return patch<void>(`/api/v1/inbound/orders/${id}/putaway`, data);
 }
 
 export function completeInbound(id: string) {
@@ -134,6 +160,17 @@ export function getInboundOrderDetails(id: string) {
 
 export function getInboundStatistics(params?: { startDate?: string; endDate?: string }) {
   return get<InboundStatisticsDto>('/api/v1/inbound/orders/statistics', { params });
+}
+
+export interface InboundErpCallbackDto {
+  erpDocumentNo?: string;
+  callbackStatus: number;
+  message?: string;
+  callbackTime?: string;
+}
+
+export function erpCallbackInbound(id: string, data: InboundErpCallbackDto) {
+  return patch<void>(`/api/v1/inbound/orders/${id}/erp-callback`, data);
 }
 
 export function receiveInboundLine(id: string, data: { qty: number }) {

@@ -14,9 +14,12 @@
         <el-select v-model="filters.status" placeholder="请选择状态" clearable>
           <el-option label="草稿" :value="0" />
           <el-option label="已确认" :value="1" />
-          <el-option label="进行中" :value="2" />
-          <el-option label="已完成" :value="3" />
-          <el-option label="已取消" :value="4" />
+          <el-option label="质检中" :value="2" />
+          <el-option label="隔离" :value="3" />
+          <el-option label="上架中" :value="4" />
+          <el-option label="已完成" :value="5" />
+          <el-option label="已关闭" :value="6" />
+          <el-option label="已取消" :value="7" />
         </el-select>
       </el-form-item>
     </WmsSearch>
@@ -59,7 +62,7 @@
             <el-button link type="primary" @click="handleDetail(row as InboundOrderDto)">详情</el-button>
             <el-button link type="primary" :disabled="(row as InboundOrderDto).inboundStatusValue !== 0" @click="handleEdit(row as InboundOrderDto)">编辑</el-button>
             <el-button link type="success" :disabled="(row as InboundOrderDto).inboundStatusValue !== 0" @click="handleConfirm(row as InboundOrderDto)">确认</el-button>
-            <el-button link type="danger" :disabled="(row as InboundOrderDto).inboundStatusValue > 2" @click="handleCancel(row as InboundOrderDto)">取消</el-button>
+            <el-button link type="danger" :disabled="(row as InboundOrderDto).inboundStatusValue > 1" @click="handleCancel(row as InboundOrderDto)">取消</el-button>
           </template>
         </el-table-column>
       </WmsTable>
@@ -87,7 +90,16 @@ const { loading, tableData, total, pagination, filters, handlePageChange, handle
 
 
 function mapDocumentStatus(status: number) {
-  const map: Record<number, string> = { 0: 'Draft', 1: 'Confirmed', 2: 'InProgress', 3: 'Completed', 4: 'Cancelled' };
+  const map: Record<number, string> = { 
+    0: 'Draft', 
+    1: 'Confirmed', 
+    2: 'Inspecting', 
+    3: 'Isolated', 
+    4: 'Putaway', 
+    5: 'Completed', 
+    6: 'Closed', 
+    7: 'Cancelled' 
+  };
   return map[status] || 'Draft';
 }
 

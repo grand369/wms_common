@@ -1,4 +1,4 @@
-﻿using Wms.Outbound.Application.Contracts.Dtos;
+using Wms.Outbound.Application.Contracts.Dtos;
 using Volo.Abp.Application.Dtos;
 
 namespace Wms.Outbound.Application.Contracts.Services;
@@ -45,4 +45,10 @@ public interface IOutboundOrderAppService
 
     /// <summary>API-OB-012: Get outbound order by order number.</summary>
     Task<OutboundOrderOutputDto> GetByNoAsync(string orderNo);
+
+    /// <summary>API-OB-013: ERP callback for outbound order.</summary>
+    Task<OutboundOrderOutputDto> ErpCallbackAsync(Guid id, OutboundErpCallbackDto dto);
+
+    /// <summary>API-OB-014: Get print data for outbound order.</summary>
+    Task<OutboundOrderOutputDto> GetPrintDataAsync(Guid id, OutboundPrintDto dto);
 }

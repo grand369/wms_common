@@ -30,10 +30,13 @@ export type InventoryStatus = 'Available' | 'Frozen' | 'PendingInspection' | 'Qu
 // 单据状态枚举
 export type DocumentStatus = 'Draft' | 'Confirmed' | 'InProgress' | 'Completed' | 'Cancelled'
 
+// 冻结状态枚举
+export type FreezeStatus = 'Active' | 'Released' | 'Cancelled' | '冻结中' | '已释放' | '已取消'
+
 // Props 定义
 const props = withDefaults(defineProps<{
   status: string
-  type: 'inventory' | 'document'
+  type: 'inventory' | 'document' | 'freeze'
   size?: 'large' | 'default' | 'small'
 }>(), {
   size: 'default'
@@ -58,12 +61,24 @@ const documentStatusMap: Record<DocumentStatus, { label: string; type: 'success'
   Cancelled: { label: '已取消', type: 'info' }
 }
 
+// 冻结状态配置映射
+const freezeStatusMap: Record<FreezeStatus, { label: string; type: 'success' | 'warning' | 'info' | 'danger' }> = {
+  Active: { label: '冻结中', type: 'danger' },
+  Released: { label: '已解冻', type: 'success' },
+  Cancelled: { label: '已取消', type: 'info' },
+  '冻结中': { label: '冻结中', type: 'danger' },
+  '已释放': { label: '已解冻', type: 'success' },
+  '已取消': { label: '已取消', type: 'info' }
+}
+
 // 标签类型计算
 const tagType = computed(() => {
   if (props.type === 'inventory') {
     return inventoryStatusMap[props.status as InventoryStatus]?.type || 'info'
-  } else {
+  } else if (props.type === 'document') {
     return documentStatusMap[props.status as DocumentStatus]?.type || 'info'
+  } else {
+    return freezeStatusMap[props.status as FreezeStatus]?.type || 'info'
   }
 })
 
@@ -76,8 +91,10 @@ const tagEffect = computed(() => {
 const statusLabel = computed(() => {
   if (props.type === 'inventory') {
     return inventoryStatusMap[props.status as InventoryStatus]?.label || props.status
-  } else {
+  } else if (props.type === 'document') {
     return documentStatusMap[props.status as DocumentStatus]?.label || props.status
+  } else {
+    return freezeStatusMap[props.status as FreezeStatus]?.label || props.status
   }
 })
 </script>

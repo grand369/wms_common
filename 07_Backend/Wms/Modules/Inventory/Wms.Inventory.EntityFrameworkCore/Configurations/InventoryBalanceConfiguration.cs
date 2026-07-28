@@ -72,6 +72,7 @@ public class InventoryBalanceConfiguration : IEntityTypeConfiguration<InventoryB
         builder.Property(e => e.SupplierId).IsRequired(false);
         builder.Property(e => e.SupplierName).HasMaxLength(100).IsRequired(false);
         builder.Property(e => e.UnitCost).HasColumnType("decimal(18,6)").IsRequired(false);
+        builder.Property(e => e.SafetyStockQuantity).HasColumnType("decimal(18,4)").IsRequired().HasDefaultValue(0);
         builder.Property(e => e.LastOperationTime).IsRequired();
 
         // ⚠️ Optimistic lock — ConcurrencyVersion as concurrency token
