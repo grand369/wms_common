@@ -3,36 +3,75 @@ import type { PagedParams, PagedResult } from '@/api/types';
 
 export interface OutboundOrderDto {
   id: string;
-  orderNo: string;
-  orderType: string;
-  customerId?: string;
-  customerName?: string;
+  outboundOrderNo: string;
+  outboundTypeValue: number;
+  outboundTypeName: string;
+  outboundStatusValue: number;
+  outboundStatusName: string;
   warehouseId: string;
-  warehouseName: string;
-  status: number;
-  planDate?: string;
-  shipDate?: string;
+  warehouseCode: string;
+  materialRequisitionId?: string;
+  salesOrderId?: string;
+  returnMaterialOrderId?: string;
+  overIssueRatio: number;
+  isEmergency: boolean;
+  totalRequiredQuantity: number;
+  totalAllocatedQuantity: number;
+  totalPickedQuantity: number;
+  totalShippedQuantity: number;
+  isCompleted: boolean;
+  completionTime?: string;
+  erpCallbackStatusValue: number;
+  erpCallbackStatusName: string;
+  remark?: string;
+  creationTime?: string;
 }
 
 export interface CreateOrUpdateOutboundOrderDto {
-  orderType: string;
-  customerId?: string;
+  outboundTypeValue: number;
   warehouseId: string;
-  planDate?: string;
+  warehouseCode: string;
+  materialRequisitionId?: string;
+  salesOrderId?: string;
+  returnMaterialOrderId?: string;
+  overIssueRatio?: number;
+  isEmergency?: boolean;
+  remark?: string;
   lines: OutboundOrderLineDto[];
 }
 
 export interface OutboundOrderLineDto {
   id?: string;
   materialId: string;
-  materialCode?: string;
-  materialName?: string;
-  qty: number;
-  batchNo?: string;
+  materialCode: string;
+  materialName: string;
+  requiredQuantity: number;
+  issueStrategyValue?: number;
+  batchNumber?: string;
+  remark?: string;
 }
 
 export interface OutboundOrderDetailDto extends OutboundOrderDto {
-  lines: OutboundOrderLineDto[];
+  lines: OutboundLineOutputDto[];
+}
+
+export interface OutboundLineOutputDto {
+  id: string;
+  outboundOrderId: string;
+  lineNo: number;
+  materialId: string;
+  materialCode: string;
+  materialName: string;
+  requiredQuantity: number;
+  allocatedQuantity: number;
+  pickedQuantity: number;
+  shippedQuantity: number;
+  pickingLocationId?: string;
+  pickingLocationCode?: string;
+  issueStrategyValue: number;
+  issueStrategyName: string;
+  batchNumber?: string;
+  remark?: string;
 }
 
 export interface OutboundStatisticsDto {
@@ -51,11 +90,11 @@ export function getOutboundOrder(id: string) {
 }
 
 export function createOutboundOrder(data: CreateOrUpdateOutboundOrderDto) {
-  return post<OutboundOrderDto>('/api/v1/outbound/orders', data);
+  return post<OutboundOrderOutputDto>('/api/v1/outbound/orders', data);
 }
 
 export function updateOutboundOrder(id: string, data: CreateOrUpdateOutboundOrderDto) {
-  return put<OutboundOrderDto>(`/api/v1/outbound/orders/${id}`, data);
+  return put<OutboundOrderOutputDto>(`/api/v1/outbound/orders/${id}`, data);
 }
 
 export function deleteOutboundOrder(id: string) {
@@ -70,19 +109,43 @@ export interface OutboundAllocateLineDto {
 }
 
 export interface OutboundAllocateCommandDto {
+  idempotencyId: string;
   lines: OutboundAllocateLineDto[];
 }
 
-export function allocateOutbound(id: string, data?: OutboundAllocateCommandDto) {
-  return patch<void>(`/api/v1/outbound/orders/${id}/allocate`, data);
+export interface OutboundOrderOutputDto {
+  id: string;
+  outboundOrderNo: string;
+  outboundTypeValue: number;
+  outboundTypeName: string;
+  outboundStatusValue: number;
+  outboundStatusName: string;
+  warehouseId: string;
+  warehouseCode: string;
+  lines: OutboundLineOutputDto[];
 }
 
-export function pickOutbound(id: string, data?: { lines?: { lineId: string; pickedQty: number }[] }) {
-  return patch<void>(`/api/v1/outbound/orders/${id}/picking`, data);
+export function allocateOutbound(id: string, data: OutboundAllocateCommandDto) {
+  return patch<OutboundOrderOutputDto>(`/api/v1/outbound/orders/${id}/allocate`, data);
 }
 
-export function shipOutbound(id: string, data?: { trackingNo?: string }) {
-  return patch<void>(`/api/v1/outbound/orders/${id}/shipping`, data);
+export interface OutboundPickingCommandDto {
+  idempotencyId: string
+  lines: { lineId: string; pickedQuantity: number }[]
+}
+
+export function pickOutbound(id: string, data: OutboundPickingCommandDto) {
+  return patch<void>(`/api/v1/outbound/orders/${id}/picking`, data)
+}
+
+export interface OutboundShippingCommandDto {
+  idempotencyId: string
+  lines?: { lineId: string; shippedQuantity: number }[]
+  trackingNo?: string
+}
+
+export function shipOutbound(id: string, data: OutboundShippingCommandDto) {
+  return patch<void>(`/api/v1/outbound/orders/${id}/shipping`, data)
 }
 
 export function completeOutbound(id: string) {
@@ -128,6 +191,10 @@ export function getOutboundPrintData(id: string, params?: OutboundPrintDto) {
   return get<OutboundOrderDetailDto>(`/api/v1/outbound/orders/${id}/print-data`, { params });
 }
 
-export function pickOutboundLine(id: string, data: { pickedQty: number }) {
-  return patch<void>(`/api/v1/outbound/orders/${id}/picking`, data);
+export function pickOutboundLine(id: string, lineId: string, pickedQty: number) {
+  const command: OutboundPickingCommandDto = {
+    idempotencyId: `pickline_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    lines: [{ lineId, pickedQty }],
+  };
+  return patch<void>(`/api/v1/outbound/orders/${id}/picking`, command);
 }

@@ -126,11 +126,14 @@ export const asyncRoutes: RouteRecordRaw[] = [
     { title: '出库统计', icon: 'Upload', permission: 'Wms.Outbound.Read' }),
 
   // ========================
-  // BC-10 TaskCenter (3 pages)
+  // BC-10 TaskCenter (4 pages)
   // ========================
   createRoute('task-center/list', 'TaskCenterList',
     () => import('@/views/task-center/List.vue'),
     { title: '任务列表', icon: 'List', permission: 'Wms.TaskCenter.Read' }),
+  createRoute('task-center/create', 'TaskCenterCreate',
+    () => import('@/views/task-center/Create.vue'),
+    { title: '新建任务', icon: 'List', permission: 'Wms.TaskCenter.Create' }),
   createRoute('task-center/detail/:id', 'TaskCenterDetail',
     () => import('@/views/task-center/Detail.vue'),
     { title: '任务详情', icon: 'List', permission: 'Wms.TaskCenter.Read', hidden: true }),

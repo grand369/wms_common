@@ -1,3 +1,4 @@
+using System.Linq;
 using Wms.Outbound.Domain.Aggregates;
 using Wms.Outbound.Domain.Enums;
 using Wms.Outbound.Domain.Events;
@@ -80,15 +81,17 @@ public class OutboundDomainService : DomainService
     /// <summary>
     /// Method 2: AllocateInventory — allocate inventory for outbound lines.
     /// Calls IInventoryDomainService.ReserveInventoryAsync synchronously for each line.
+    /// When locationId is Guid.Empty, automatically finds locations based on issue strategy (FIFO/FEFO/FMFO).
     /// (DS-03, REQ-OB-001, CROSS-002)
     /// </summary>
     public async Task<OutboundOrder> AllocateInventoryAsync(
         Guid orderId,
         List<(Guid lineId, decimal allocatedQty, Guid locationId, string locationCode)> allocationData)
     {
-        var order = await _outboundOrderRepository.GetAsync(orderId);
+        var order = await _outboundOrderRepository.GetWithLinesAsync(orderId);
 
-        // Reserve inventory for each line synchronously (same UoW, CROSS-002)
+        var finalAllocationData = new List<(Guid lineId, decimal allocatedQty, Guid locationId, string locationCode)>();
+
         foreach (var (lineId, allocatedQty, locationId, locationCode) in allocationData)
         {
             var line = order.Lines.FirstOrDefault(l => l.Id == lineId);
@@ -98,27 +101,87 @@ public class OutboundDomainService : DomainService
                     $"Outbound line {lineId} not found.");
             }
 
-            // Call Inventory domain service to reserve — synchronous in same UoW
-            await _inventoryDomainService.ReserveInventoryAsync(
-                line.MaterialId, order.WarehouseId, locationId, line.BatchNumber,
-                InventoryStatus.Available.Value,
-                allocatedQty, "OutboundOrder", order.Id);
-
-            // Publish allocation event (DE-015)
-            await _localEventBus.PublishAsync(new OutboundAllocatedEvent
+            // If locationId is empty, auto-find locations based on issue strategy
+            if (locationId == Guid.Empty)
             {
-                AggregateRootId = order.Id,
-                OrderId = order.Id,
-                LineId = lineId,
-                MaterialId = line.MaterialId,
-                AllocatedQuantity = allocatedQty,
-                LocationId = locationId,
-                SourceModule = "Outbound"
-            });
+                var strategyType = line.IssueStrategy.Name;
+                var availableBalances = await _inventoryDomainService.FindAvailableBalancesAsync(
+                    line.MaterialId, order.WarehouseId, strategyType);
+
+                if (availableBalances.Count == 0)
+                {
+                    throw new BusinessException("WMS:Outbound:InsufficientInventory",
+                        $"No available inventory found for Material={line.MaterialCode}, Warehouse={order.WarehouseCode}, Strategy={strategyType}.");
+                }
+
+                // Allocate from balances in strategy order (FIFO/FEFO/FMFO)
+                decimal remainingQty = allocatedQty;
+                var allocatedLines = new List<(Guid lineId, decimal allocatedQty, Guid locationId, string locationCode)>();
+
+                foreach (var balance in availableBalances)
+                {
+                    if (remainingQty <= 0) break;
+
+                    var allocateFromBalance = Math.Min(remainingQty, balance.AvailableQuantity);
+
+                    // Reserve inventory for this portion
+                    await _inventoryDomainService.ReserveInventoryAsync(
+                        line.MaterialId, order.WarehouseId, balance.LocationId, balance.BatchNumber,
+                        InventoryStatus.Available.Value, allocateFromBalance, "OutboundOrder", order.Id);
+
+                    allocatedLines.Add((lineId, allocateFromBalance, balance.LocationId, balance.LocationCode));
+                    remainingQty -= allocateFromBalance;
+                }
+
+                if (remainingQty > 0)
+                {
+                    throw new BusinessException("WMS:Outbound:InsufficientInventory",
+                        $"Insufficient inventory for Material={line.MaterialCode}. Requested={allocatedQty}, Allocated={allocatedQty - remainingQty}.");
+                }
+
+                finalAllocationData.AddRange(allocatedLines);
+
+                // Publish allocation event for each allocated portion
+                foreach (var allocLine in allocatedLines)
+                {
+                    await _localEventBus.PublishAsync(new OutboundAllocatedEvent
+                    {
+                        AggregateRootId = order.Id,
+                        OrderId = order.Id,
+                        LineId = allocLine.lineId,
+                        MaterialId = line.MaterialId,
+                        AllocatedQuantity = allocLine.allocatedQty,
+                        LocationId = allocLine.locationId,
+                        SourceModule = "Outbound"
+                    });
+                }
+            }
+            else
+            {
+                // Use the specified location directly
+                await _inventoryDomainService.ReserveInventoryAsync(
+                    line.MaterialId, order.WarehouseId, locationId, line.BatchNumber,
+                    InventoryStatus.Available.Value,
+                    allocatedQty, "OutboundOrder", order.Id);
+
+                finalAllocationData.Add((lineId, allocatedQty, locationId, locationCode));
+
+                // Publish allocation event
+                await _localEventBus.PublishAsync(new OutboundAllocatedEvent
+                {
+                    AggregateRootId = order.Id,
+                    OrderId = order.Id,
+                    LineId = lineId,
+                    MaterialId = line.MaterialId,
+                    AllocatedQuantity = allocatedQty,
+                    LocationId = locationId,
+                    SourceModule = "Outbound"
+                });
+            }
         }
 
-        // Transition order status
-        order.Allocate(allocationData.Select(a => (a.lineId, a.allocatedQty, (Guid?)a.locationId, (string?)a.locationCode)).ToList());
+        // Transition order status with final allocation data
+        order.Allocate(finalAllocationData.Select(a => (a.lineId, a.allocatedQty, (Guid?)a.locationId, (string?)a.locationCode)).ToList());
 
         await _outboundOrderRepository.UpdateAsync(order);
         return order;
@@ -132,7 +195,7 @@ public class OutboundDomainService : DomainService
         Guid orderId,
         List<(Guid lineId, decimal pickedQty)> pickingData)
     {
-        var order = await _outboundOrderRepository.GetAsync(orderId);
+        var order = await _outboundOrderRepository.GetWithLinesAsync(orderId);
         order.ConfirmPicking(pickingData);
 
         await _outboundOrderRepository.UpdateAsync(order);

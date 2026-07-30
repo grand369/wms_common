@@ -45,4 +45,26 @@ public interface IInventoryDomainService
     Task ReleaseReservationAsync(
         Guid materialId, Guid warehouseId, Guid locationId, string? batchNo,
         int inventoryStatusValue, decimal qty, string srcOrderType, Guid srcOrderId);
+
+    /// <summary>
+    /// Find available balances for picking — returns balances sorted by issue strategy.
+    /// Used by Outbound module to auto-allocate inventory based on FIFO/FEFO/FMFO strategy.
+    /// </summary>
+    Task<List<AvailableBalanceInfo>> FindAvailableBalancesAsync(
+        Guid materialId, Guid warehouseId, string strategyType = "FIFO");
+}
+
+/// <summary>
+/// AvailableBalanceInfo — simplified DTO for cross-module available balance lookup.
+/// </summary>
+public class AvailableBalanceInfo
+{
+    public Guid BalanceId { get; set; }
+    public Guid LocationId { get; set; }
+    public string LocationCode { get; set; } = string.Empty;
+    public decimal AvailableQuantity { get; set; }
+    public string? BatchNumber { get; set; }
+    public DateTime? ExpiryDate { get; set; }
+    public DateTime? ProductionDate { get; set; }
+    public DateTime CreationTime { get; set; }
 }

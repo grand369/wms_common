@@ -2,6 +2,7 @@ import axios from 'axios';
 import type { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import { ElMessage } from 'element-plus';
 import { getToken, removeToken } from '@/utils/auth';
+import { getFriendlyErrorMessage, parseAxiosError } from '@/utils/errorHandler';
 
 const baseURL: string = import.meta.env.VITE_API_BASE_URL || '/api';
 const service: AxiosInstance = axios.create({
@@ -32,40 +33,52 @@ service.interceptors.response.use(
     const res = response.data;
     // ABP error response format check
     if (res.error) {
-      ElMessage.error(res.error.message || 'Request failed');
-      if (res.error.code === 401) {
+      const err = res.error
+      // Special handling for non-critical validation warnings
+      if (err.code === 401) {
         removeToken();
         window.location.href = '/login';
       }
-      return Promise.reject(new Error(res.error.message || 'Request failed'));
+      const friendlyMsg = getFriendlyErrorMessage({
+        code: err.code,
+        message: err.message,
+        details: err.details,
+      })
+      ElMessage.error(friendlyMsg)
+      return Promise.reject(new Error(friendlyMsg))
     }
     return res;
   },
   (error) => {
     const status = error.response?.status;
-    const responseData = error.response?.data;
+    const parsedError = parseAxiosError(error);
+    const friendlyMsg = getFriendlyErrorMessage(parsedError)
     
-    // Handle ABP BusinessException (returns 403 Forbidden with error details)
-    if (responseData?.error?.message) {
-      ElMessage.error(responseData.error.message);
-      if (responseData.error.code === 401 || status === 401) {
-        removeToken();
-        window.location.href = '/login';
+    // Handle ABP BusinessException
+    if (parsedError.code || parsedError.details) {
+      ElMessage.error(friendlyMsg)
+      if (parsedError.code === '401' || status === 401) {
+        removeToken()
+        window.location.href = '/login'
       }
-      return Promise.reject(error);
+      return Promise.reject(error)
     }
     
+    // Generic HTTP error handling
     if (status === 401) {
-      removeToken();
-      window.location.href = '/login';
+      removeToken()
+      window.location.href = '/login'
+      ElMessage.error('登录已过期，请重新登录')
     } else if (status === 403) {
-      ElMessage.error('No permission to access this resource');
+      ElMessage.error('没有权限执行此操作')
+    } else if (status === 404) {
+      ElMessage.error('请求的资源不存在')
     } else if (status === 500) {
-      ElMessage.error('Server internal error');
+      ElMessage.error('服务器内部错误，请稍后重试')
     } else {
-      ElMessage.error(error.message || 'Network error');
+      ElMessage.error(friendlyMsg)
     }
-    return Promise.reject(error);
+    return Promise.reject(error)
   }
 );
 

@@ -1,5 +1,20 @@
 <template>
   <div class="page-container">
+    <WmsSearch @search="handleSearch" @reset="resetFilters">
+      <el-form-item label="仓库">
+        <WmsWarehouseSelector v-model="filters.warehouseId" placeholder="请选择仓库" clearable />
+      </el-form-item>
+      <el-form-item label="状态">
+        <el-select v-model="filters.status" placeholder="请选择状态" clearable>
+          <el-option label="待确认" :value="0" />
+          <el-option label="已完成" :value="1" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="关键字">
+        <el-input v-model="filters.keyword" placeholder="快照编号/仓库编码" clearable />
+      </el-form-item>
+    </WmsSearch>
+
     <el-card shadow="hover">
       <template #header>
         <div class="card-header">
@@ -23,16 +38,30 @@
         @page-change="handlePageChange"
         @size-change="handleSizeChange"
       >
-        <el-table-column prop="snapshotNo" label="快照编号" />
-        <el-table-column prop="warehouseId" label="仓库" />
-        <el-table-column prop="snapshotTime" label="快照时间" />
-        <el-table-column prop="totalQty" label="总数量" align="right" />
-        <el-table-column prop="status" label="状态" align="center">
+        <el-table-column prop="snapshotNo" label="快照编号" width="180" />
+        <el-table-column prop="warehouseCode" label="仓库编码" width="120" />
+        <el-table-column prop="snapshotTime" label="快照时间" width="180" />
+        <el-table-column prop="totalQty" label="总数量" align="right" width="120">
+          <template #default="{ row }">
+            <span class="wms-number">{{ row.totalQty.toFixed(2) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="totalFrozenQty" label="冻结数量" align="right" width="120">
+          <template #default="{ row }">
+            <span class="wms-number status-frozen">{{ row.totalFrozenQty.toFixed(2) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="totalAvailableQty" label="可用数量" align="right" width="120">
+          <template #default="{ row }">
+            <span class="wms-number">{{ row.totalAvailableQty.toFixed(2) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="status" label="状态" width="100" align="center">
           <template #default="{ row }">
             <el-tag :type="row.status === 0 ? 'warning' : 'success'">{{ row.status === 0 ? '待确认' : '已完成' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="120" fixed="right">
+        <el-table-column label="操作" width="100" fixed="right">
           <template #default="{ row }">
             <el-button link type="primary" @click="handleDetail(row as InventorySnapshotDto)">查看</el-button>
           </template>
@@ -51,9 +80,17 @@
     >
       <el-descriptions :column="1" border v-loading="detailLoading">
         <el-descriptions-item label="快照编号">{{ currentSnapshot?.snapshotNo }}</el-descriptions-item>
-        <el-descriptions-item label="仓库">{{ currentSnapshot?.warehouseId }}</el-descriptions-item>
+        <el-descriptions-item label="仓库编码">{{ currentSnapshot?.warehouseCode }}</el-descriptions-item>
         <el-descriptions-item label="快照时间">{{ currentSnapshot?.snapshotTime }}</el-descriptions-item>
-        <el-descriptions-item label="总数量">{{ currentSnapshot?.totalQty }}</el-descriptions-item>
+        <el-descriptions-item label="总数量">
+          <span class="wms-number">{{ currentSnapshot?.totalQty?.toFixed(2) }}</span>
+        </el-descriptions-item>
+        <el-descriptions-item label="冻结数量">
+          <span class="wms-number status-frozen">{{ currentSnapshot?.totalFrozenQty?.toFixed(2) }}</span>
+        </el-descriptions-item>
+        <el-descriptions-item label="可用数量">
+          <span class="wms-number">{{ currentSnapshot?.totalAvailableQty?.toFixed(2) }}</span>
+        </el-descriptions-item>
         <el-descriptions-item label="状态">{{ currentSnapshot?.status === 0 ? '待确认' : '已完成' }}</el-descriptions-item>
       </el-descriptions>
     </WmsDialog>
@@ -66,13 +103,15 @@ import { Plus } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import WmsTable from '@/components/common/WmsTable.vue';
 import WmsDialog from '@/components/common/WmsDialog.vue';
+import WmsSearch from '@/components/common/WmsSearch.vue';
 import WmsWarehouseSelector from '@/components/common/WmsWarehouseSelector.vue';
 import { useTable } from '@/hooks/useTable';
-import { createSnapshot, getSnapshot } from '@/api/inventory';
+import { getSnapshot, createSnapshot } from '@/api/inventory';
 import type { InventorySnapshotDto } from '@/api/inventory';
+import { getFriendlyErrorMessage, parseAxiosError } from '@/utils/errorHandler';
 
-const { loading, tableData, total, pagination, handlePageChange, handleSizeChange, handleSearch } =
-  useTable<InventorySnapshotDto>('/api/v1/inventory/snapshot');
+const { loading, tableData, total, pagination, filters, handlePageChange, handleSizeChange, handleSearch, resetFilters } =
+  useTable<InventorySnapshotDto>('/api/v1/inventory/snapshots');
 
 const createWarehouseId = ref('');
 const currentSnapshot = ref<InventorySnapshotDto | null>(null);
@@ -89,8 +128,9 @@ async function handleCreateSnapshot() {
     ElMessage.success('快照生成成功');
     createWarehouseId.value = '';
     handleSearch();
-  } catch {
-    ElMessage.error('快照生成失败');
+  } catch (err) {
+    const friendlyMsg = getFriendlyErrorMessage(parseAxiosError(err))
+    ElMessage.error(friendlyMsg);
   }
 }
 
@@ -100,8 +140,9 @@ async function handleDetail(row: InventorySnapshotDto) {
   detailLoading.value = true;
   try {
     currentSnapshot.value = await getSnapshot(row.id);
-  } catch {
-    ElMessage.error('加载快照详情失败');
+  } catch (err) {
+    const friendlyMsg = getFriendlyErrorMessage(parseAxiosError(err))
+    ElMessage.error(friendlyMsg);
   } finally {
     detailLoading.value = false;
   }

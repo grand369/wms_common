@@ -12,7 +12,7 @@ using Wms.TaskCenter.Application.Contracts.Services;
 namespace Wms.TaskCenter.HttpApi.Controllers;
 
 /// <summary>
-/// WarehouseTaskController �?API-TC-001~014
+/// WarehouseTaskController �?API-TC-001~014
 /// 14 REST API endpoints for TaskCenter module.
 /// Route prefix: /api/v1/task-center
 /// </summary>
@@ -59,7 +59,7 @@ public class WarehouseTaskController : AbpControllerBase
     // API-TC-003: Create task
     [HttpPost]
     [Authorize(WmsTaskCenterPermissions.Create)]
-    public Task<WarehouseTaskOutputDto> CreateAsync(WarehouseTaskCreateDto input)
+    public Task<WarehouseTaskOutputDto> CreateAsync([FromBody] WarehouseTaskCreateDto input)
         => _appService.CreateAsync(input);
 
     // ── State Transitions ──
@@ -67,7 +67,7 @@ public class WarehouseTaskController : AbpControllerBase
     // API-TC-004: Assign
     [HttpPatch("{id}/assign")]
     [Authorize(WmsTaskCenterPermissions.AssignSingle)]
-    public Task<WarehouseTaskOutputDto> AssignAsync(Guid id, TaskAssignCommandDto input)
+    public Task<WarehouseTaskOutputDto> AssignAsync(Guid id, [FromBody] TaskAssignCommandDto input)
         => _appService.AssignAsync(id, input);
 
     // API-TC-005: Start
@@ -79,13 +79,13 @@ public class WarehouseTaskController : AbpControllerBase
     // API-TC-006: Complete
     [HttpPatch("{id}/complete")]
     [Authorize(WmsTaskCenterPermissions.ExecuteComplete)]
-    public Task<WarehouseTaskOutputDto> CompleteAsync(Guid id, TaskCompleteCommandDto? input = null)
+    public Task<WarehouseTaskOutputDto> CompleteAsync(Guid id, [FromBody] TaskCompleteCommandDto? input = null)
         => _appService.CompleteAsync(id, input);
 
     // API-TC-007: Suspend
     [HttpPatch("{id}/suspend")]
     [Authorize(WmsTaskCenterPermissions.SuspendTask)]
-    public Task<WarehouseTaskOutputDto> SuspendAsync(Guid id, TaskSuspendCommandDto input)
+    public Task<WarehouseTaskOutputDto> SuspendAsync(Guid id, [FromBody] TaskSuspendCommandDto input)
         => _appService.SuspendAsync(id, input);
 
     // API-TC-008: Resume
@@ -97,7 +97,7 @@ public class WarehouseTaskController : AbpControllerBase
     // API-TC-009: Cancel
     [HttpPatch("{id}/cancel")]
     [Authorize(WmsTaskCenterPermissions.Cancel)]
-    public Task<WarehouseTaskOutputDto> CancelAsync(Guid id, TaskCancelCommandDto? input = null)
+    public Task<WarehouseTaskOutputDto> CancelAsync(Guid id, [FromBody] TaskCancelCommandDto? input = null)
         => _appService.CancelAsync(id, input);
 
     // ── Batch & Auto ──
@@ -105,18 +105,24 @@ public class WarehouseTaskController : AbpControllerBase
     // API-TC-012: Batch assign
     [HttpPost("batch-assign")]
     [Authorize(WmsTaskCenterPermissions.AssignBatch)]
-    public Task<List<WarehouseTaskOutputDto>> BatchAssignAsync(TaskBatchAssignCommandDto input)
+    public Task<List<WarehouseTaskOutputDto>> BatchAssignAsync([FromBody] TaskBatchAssignCommandDto input)
         => _appService.BatchAssignAsync(input);
 
     // API-TC-013: Update progress
     [HttpPatch("{id}/update-progress")]
     [Authorize(WmsTaskCenterPermissions.ExecuteUpdateProgress)]
-    public Task<WarehouseTaskOutputDto> UpdateProgressAsync(Guid id, TaskUpdateProgressCommandDto input)
+    public Task<WarehouseTaskOutputDto> UpdateProgressAsync(Guid id, [FromBody] TaskUpdateProgressCommandDto input)
         => _appService.UpdateProgressAsync(id, input);
 
     // API-TC-014: Auto-assign
     [HttpPost("auto-assign")]
     [Authorize(WmsTaskCenterPermissions.AssignAuto)]
-    public Task<List<WarehouseTaskOutputDto>> AutoAssignAsync(TaskAutoAssignCommandDto input)
+    public Task<List<WarehouseTaskOutputDto>> AutoAssignAsync([FromBody] TaskAutoAssignCommandDto input)
         => _appService.AutoAssignAsync(input);
+
+    // API-TC-015: Task monitor statistics
+    [HttpGet("monitor")]
+    [Authorize(WmsTaskCenterPermissions.Read)]
+    public Task<TaskMonitorDto> GetTaskMonitorAsync()
+        => _appService.GetTaskMonitorAsync();
 }

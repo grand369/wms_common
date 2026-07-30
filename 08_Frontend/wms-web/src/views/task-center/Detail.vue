@@ -2,61 +2,103 @@
   <div class="page-container">
     <el-page-header title="返回" content="任务详情" @back="goBack" />
 
-    <el-card shadow="hover" class="detail-card">
-      <template #header>
+    <el-card shadow="hover" class="detail-card" v-loading="loading">
+      <template #header v-if="task">
         <div class="card-header">
-          <span>任务号：{{ task?.taskNo }}</span>
+          <span>任务号：{{ task.taskNo }}</span>
           <div class="header-actions">
-            <WmsStatusTag v-if="task" :status="mapTaskStatus(task.status)" type="document" />
-            <el-button v-if="task?.status === 0" type="primary" @click="assignVisible = true">分配</el-button>
-            <el-button v-if="task?.status === 0" type="success" @click="handleStart">开始</el-button>
-            <el-button v-if="task?.status === 1" type="warning" @click="handleSuspend">挂起</el-button>
-            <el-button v-if="task?.status === 1" type="primary" @click="completeVisible = true">完成</el-button>
-            <el-button v-if="task?.status === 3" type="success" @click="handleResume">恢复</el-button>
-            <el-button v-if="task?.status === 1 || task?.status === 3" type="danger" @click="exceptionVisible = true">异常</el-button>
+            <WmsStatusTag :status="mapTaskStatus(task.taskStatusValue)" type="document" />
+            <el-button 
+              v-if="task.taskStatusValue === 0 || task.taskStatusValue === 1" 
+              type="primary" 
+              @click="assignVisible = true"
+            >分配</el-button>
+            <el-button 
+              v-if="task.taskStatusValue === 1" 
+              type="success" 
+              @click="handleStart"
+            >开始</el-button>
+            <el-button 
+              v-if="task.taskStatusValue === 2" 
+              type="warning" 
+              @click="handleSuspend"
+            >挂起</el-button>
+            <el-button 
+              v-if="task.taskStatusValue === 2" 
+              type="primary" 
+              @click="completeVisible = true"
+            >完成</el-button>
+            <el-button 
+              v-if="task.taskStatusValue === 3" 
+              type="success" 
+              @click="handleResume"
+            >恢复</el-button>
+            <el-button 
+              v-if="task.taskStatusValue === 0 || task.taskStatusValue === 1 || task.taskStatusValue === 3" 
+              type="danger" 
+              @click="handleCancel"
+            >取消</el-button>
           </div>
         </div>
       </template>
 
-      <el-descriptions :column="3" border>
-        <el-descriptions-item label="任务类型">{{ task?.taskType }}</el-descriptions-item>
-        <el-descriptions-item label="来源单据">{{ task?.sourceDocType }}</el-descriptions-item>
-        <el-descriptions-item label="来源单号">{{ task?.sourceDocId }}</el-descriptions-item>
-        <el-descriptions-item label="优先级">{{ task?.priority }}</el-descriptions-item>
-        <el-descriptions-item label="执行人">{{ task?.assigneeName || '-' }}</el-descriptions-item>
-        <el-descriptions-item label="截止时间">{{ task?.dueTime || '-' }}</el-descriptions-item>
-        <el-descriptions-item label="完成时间">{{ task?.completedTime || '-' }}</el-descriptions-item>
+      <el-descriptions v-if="task" :column="3" border>
+        <el-descriptions-item label="任务类型">
+          {{ getTaskTypeText(task.taskTypeValue) }}
+        </el-descriptions-item>
+        <el-descriptions-item label="优先级">
+          <el-tag :type="getPriorityTagType(task.taskPriorityValue)">
+            {{ getPriorityText(task.taskPriorityValue) }}
+          </el-tag>
+        </el-descriptions-item>
+        <el-descriptions-item label="状态">
+          <WmsStatusTag :status="mapTaskStatus(task.taskStatusValue)" type="document" />
+        </el-descriptions-item>
+        <el-descriptions-item label="来源单据类型">
+          {{ getSourceOrderTypeText(task.sourceOrderType) }}
+        </el-descriptions-item>
+        <el-descriptions-item label="来源单据号">
+          {{ task.sourceOrderNo }}
+        </el-descriptions-item>
+        <el-descriptions-item label="仓库">{{ task.warehouseCode }}</el-descriptions-item>
+        <el-descriptions-item label="执行人">
+          {{ task.assignedUserName || '-' }}
+        </el-descriptions-item>
+        <el-descriptions-item label="分配策略">
+          {{ getAssignmentStrategyText(task.assignmentStrategyValue) }}
+        </el-descriptions-item>
+        <el-descriptions-item label="进度">{{ task.taskProgress }}%</el-descriptions-item>
+        <el-descriptions-item label="截止时间">
+          {{ task.expectedCompletionTime ? formatTime(task.expectedCompletionTime) : '-' }}
+        </el-descriptions-item>
+        <el-descriptions-item label="开始时间">
+          {{ task.actualStartTime ? formatTime(task.actualStartTime) : '-' }}
+        </el-descriptions-item>
+        <el-descriptions-item label="完成时间">
+          {{ task.actualCompletionTime ? formatTime(task.actualCompletionTime) : '-' }}
+        </el-descriptions-item>
+        <el-descriptions-item label="创建时间" :span="2">
+          {{ formatTime(task.creationTime) }}
+        </el-descriptions-item>
+        <el-descriptions-item label="挂起原因" v-if="task.suspendedReason">
+          {{ task.suspendedReason }}
+        </el-descriptions-item>
+        <el-descriptions-item label="备注" :span="3">
+          {{ task.remark || '-' }}
+        </el-descriptions-item>
       </el-descriptions>
 
-      <el-divider content-position="left">任务评论</el-divider>
-      <div class="comment-input">
-        <el-input v-model="newComment" type="textarea" :rows="2" placeholder="请输入评论" />
-        <el-button type="primary" @click="handleAddComment">发表评论</el-button>
-      </div>
-      <el-timeline>
-        <el-timeline-item v-for="(comment, index) in comments" :key="index" :timestamp="comment.creationTime">
-          <p>{{ comment.content }}</p>
-          <p class="comment-author">— {{ comment.creatorName }}</p>
-        </el-timeline-item>
-      </el-timeline>
+      <template v-if="task">
+        <el-divider content-position="left">任务进度</el-divider>
+        <el-progress :percentage="task.taskProgress" :status="getProgressStatus(task.taskStatusValue)" />
+      </template>
     </el-card>
 
-    <WmsDialog
-      title="分配任务"
-      :visible="assignVisible"
-      show-footer
-      width="400px"
-      :confirm-loading="submitting"
-      @close="assignVisible = false"
-      @cancel="assignVisible = false"
-      @confirm="handleAssignSubmit"
-    >
-      <el-form ref="assignFormRef" :model="assignForm" :rules="assignRules" label-width="100px">
-        <el-form-item label="执行人" prop="assigneeId">
-          <el-input v-model="assignForm.assigneeId" placeholder="请输入执行人ID" />
-        </el-form-item>
-      </el-form>
-    </WmsDialog>
+    <WmsUserSelector
+      v-model="assignVisible"
+      title="分配任务 - 选择执行人"
+      @select="handleAssignSubmit"
+    />
 
     <WmsDialog
       title="完成任务"
@@ -69,33 +111,8 @@
       @confirm="handleCompleteSubmit"
     >
       <el-form ref="completeFormRef" :model="completeForm" label-width="100px">
-        <el-form-item label="完成结果">
-          <el-input v-model="completeForm.result" type="textarea" :rows="3" placeholder="请输入完成结果" />
-        </el-form-item>
-      </el-form>
-    </WmsDialog>
-
-    <WmsDialog
-      title="上报异常"
-      :visible="exceptionVisible"
-      show-footer
-      width="500px"
-      :confirm-loading="submitting"
-      @close="exceptionVisible = false"
-      @cancel="exceptionVisible = false"
-      @confirm="handleExceptionSubmit"
-    >
-      <el-form ref="exceptionFormRef" :model="exceptionForm" :rules="exceptionRules" label-width="100px">
-        <el-form-item label="异常类型" prop="exceptionType">
-          <el-select v-model="exceptionForm.exceptionType" placeholder="请选择异常类型" style="width: 100%">
-            <el-option label="物料缺失" value="MissingMaterial" />
-            <el-option label="库位异常" value="LocationError" />
-            <el-option label="设备故障" value="EquipmentFailure" />
-            <el-option label="其他" value="Other" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="异常描述" prop="description">
-          <el-input v-model="exceptionForm.description" type="textarea" :rows="3" placeholder="请输入异常描述" />
+        <el-form-item label="完成备注">
+          <el-input v-model="completeForm.remark" type="textarea" :rows="3" placeholder="请输入完成备注（可选）" />
         </el-form-item>
       </el-form>
     </WmsDialog>
@@ -105,55 +122,90 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import type { FormInstance, FormRules } from 'element-plus';
 import WmsStatusTag from '@/components/common/WmsStatusTag.vue';
 import WmsDialog from '@/components/common/WmsDialog.vue';
-import { getTask, assignTask, startTask, completeTask, suspendTask, resumeTask, reportException, addTaskComment } from '@/api/taskCenter';
-import type { TaskDto, TaskCommentDto } from '@/api/taskCenter';
+import WmsUserSelector, { type WmsUser } from '@/components/common/WmsUserSelector.vue';
+import { getTask, assignTask, startTask, completeTask, suspendTask, resumeTask, cancelTask, TaskStatusEnum } from '@/api/taskCenter';
+import type { TaskDto } from '@/api/taskCenter';
 
 const route = useRoute();
 const router = useRouter();
 const taskId = route.params.id as string;
 
 const task = ref<TaskDto | null>(null);
-const comments = ref<TaskCommentDto[]>([]);
-const newComment = ref('');
 const loading = ref(false);
 const submitting = ref(false);
 
 const assignVisible = ref(false);
 const completeVisible = ref(false);
-const exceptionVisible = ref(false);
-const assignFormRef = ref<FormInstance>();
 const completeFormRef = ref<FormInstance>();
-const exceptionFormRef = ref<FormInstance>();
-const assignForm = ref({ assigneeId: '' });
-const completeForm = ref({ result: '' });
-const exceptionForm = ref({ exceptionType: '', description: '' });
+const completeForm = ref({ remark: '' });
 
-const assignRules: FormRules = {
-  assigneeId: [{ required: true, message: '请输入执行人ID', trigger: 'blur' }],
-};
-const exceptionRules: FormRules = {
-  exceptionType: [{ required: true, message: '请选择异常类型', trigger: 'change' }],
-  description: [{ required: true, message: '请输入异常描述', trigger: 'blur' }],
-};
+function getTaskTypeText(typeValue: number): string {
+  const map: Record<number, string> = { 1: '拣货任务', 2: '发货任务', 3: '移库任务', 4: '盘点任务', 5: '收货任务' };
+  return map[typeValue] || '未知';
+}
+
+function getPriorityText(priorityValue: number): string {
+  const map: Record<number, string> = { 1: '低', 2: '中', 3: '高', 4: '紧急' };
+  return map[priorityValue] || '未知';
+}
+
+function getPriorityTagType(priorityValue: number): 'info' | 'warning' | 'danger' | 'success' {
+  const map: Record<number, 'info' | 'warning' | 'danger' | 'success'> = { 1: 'info', 2: 'success', 3: 'warning', 4: 'danger' };
+  return map[priorityValue] || 'info';
+}
+
+function getSourceOrderTypeText(type: string): string {
+  const map: Record<string, string> = { 
+    'OutboundOrder': '出库单', 
+    'InboundOrder': '入库单', 
+    'TransferOrder': '调拨单', 
+    'CycleCountPlan': '盘点单' 
+  };
+  return map[type] || type;
+}
+
+function getAssignmentStrategyText(strategyValue: number): string {
+  const map: Record<number, string> = { 0: '手动分配', 1: '区域优先', 2: '技能匹配', 3: '负载均衡' };
+  return map[strategyValue] || '未知';
+}
+
+function mapTaskStatus(status: number): string {
+  const map: Record<number, string> = { 
+    [TaskStatusEnum.Created]: 'Draft', 
+    [TaskStatusEnum.Assigned]: 'Assigned', 
+    [TaskStatusEnum.InProgress]: 'InProgress', 
+    [TaskStatusEnum.Suspended]: 'Suspended', 
+    [TaskStatusEnum.Completed]: 'Completed', 
+    [TaskStatusEnum.Cancelled]: 'Cancelled' 
+  };
+  return map[status] || 'Draft';
+}
+
+function getProgressStatus(status: number): 'success' | 'warning' | 'exception' | undefined {
+  if (status === TaskStatusEnum.Completed) return 'success';
+  if (status === TaskStatusEnum.Suspended) return 'warning';
+  if (status === TaskStatusEnum.Cancelled) return 'exception';
+  return undefined;
+}
+
+function formatTime(time: string): string {
+  if (!time) return '-';
+  return new Date(time).toLocaleString('zh-CN');
+}
 
 async function loadTask() {
   loading.value = true;
   try {
     task.value = await getTask(taskId);
   } catch {
-    ElMessage.error('加载任务失败');
+    // Error handled by interceptor
   } finally {
     loading.value = false;
   }
-}
-
-function mapTaskStatus(status: number) {
-  const map: Record<number, string> = { 0: 'Draft', 1: 'InProgress', 2: 'Completed', 3: 'Cancelled', 4: 'InProgress' };
-  return map[status] || 'Draft';
 }
 
 function goBack() {
@@ -166,17 +218,26 @@ async function handleStart() {
     ElMessage.success('任务已开始');
     loadTask();
   } catch {
-    ElMessage.error('开始失败');
+    // Error handled by interceptor
   }
 }
 
 async function handleSuspend() {
   try {
-    await suspendTask(taskId, { reason: '手动挂起' });
+    const { value: reason } = await ElMessageBox.prompt('请输入挂起原因', '挂起任务', { 
+      inputValue: '',
+      inputValidator: (val: string) => {
+        if (!val || !val.trim()) return '挂起原因不能为空';
+        return true;
+      }
+    });
+    await suspendTask(taskId, { reason: reason.trim() });
     ElMessage.success('任务已挂起');
     loadTask();
-  } catch {
-    ElMessage.error('挂起失败');
+  } catch (err) {
+    if (err !== undefined && err !== 'cancel') {
+      // Error handled by interceptor
+    }
   }
 }
 
@@ -186,27 +247,41 @@ async function handleResume() {
     ElMessage.success('任务已恢复');
     loadTask();
   } catch {
-    ElMessage.error('恢复失败');
+    // Error handled by interceptor
   }
 }
 
-async function handleAssignSubmit() {
-  if (!assignFormRef.value) return;
+async function handleCancel() {
   try {
-    await assignFormRef.value.validate();
-  } catch {
-    return;
+    await ElMessageBox.confirm('确认取消该任务？取消后无法恢复。', '取消任务', { type: 'warning' });
+    const { value: reason } = await ElMessageBox.prompt('请输入取消原因', '取消任务', { 
+      inputValue: '',
+      inputValidator: (val: string) => {
+        if (!val || !val.trim()) return '取消原因不能为空';
+        return true;
+      }
+    });
+    await cancelTask(taskId, { reason: reason.trim() });
+    ElMessage.success('任务已取消');
+    loadTask();
+  } catch (err) {
+    if (err !== undefined && err !== 'cancel') {
+      // Error handled by interceptor
+    }
   }
-  submitting.value = true;
+}
+
+async function handleAssignSubmit(user: WmsUser) {
   try {
-    await assignTask(taskId, { assigneeId: assignForm.value.assigneeId });
-    ElMessage.success('分配成功');
+    await assignTask(taskId, { 
+      userId: user.id, 
+      userName: user.name || user.userName 
+    });
+    ElMessage.success(`已分配给用户：${user.name || user.userName}`);
     assignVisible.value = false;
     loadTask();
   } catch {
-    ElMessage.error('分配失败');
-  } finally {
-    submitting.value = false;
+    // Error handled by interceptor
   }
 }
 
@@ -214,49 +289,14 @@ async function handleCompleteSubmit() {
   if (!completeFormRef.value) return;
   submitting.value = true;
   try {
-    await completeTask(taskId, { result: completeForm.value.result });
+    await completeTask(taskId, { remark: completeForm.value.remark || undefined });
     ElMessage.success('任务已完成');
     completeVisible.value = false;
     loadTask();
   } catch {
-    ElMessage.error('完成失败');
+    // Error handled by interceptor
   } finally {
     submitting.value = false;
-  }
-}
-
-async function handleExceptionSubmit() {
-  if (!exceptionFormRef.value) return;
-  try {
-    await exceptionFormRef.value.validate();
-  } catch {
-    return;
-  }
-  submitting.value = true;
-  try {
-    await reportException(taskId, { exceptionType: exceptionForm.value.exceptionType, description: exceptionForm.value.description });
-    ElMessage.success('异常已上报');
-    exceptionVisible.value = false;
-    loadTask();
-  } catch {
-    ElMessage.error('上报失败');
-  } finally {
-    submitting.value = false;
-  }
-}
-
-async function handleAddComment() {
-  if (!newComment.value.trim()) {
-    ElMessage.warning('请输入评论内容');
-    return;
-  }
-  try {
-    const comment = await addTaskComment(taskId, { content: newComment.value });
-    comments.value.unshift(comment);
-    newComment.value = '';
-    ElMessage.success('评论已发表');
-  } catch {
-    ElMessage.error('发表失败');
   }
 }
 
@@ -281,18 +321,5 @@ onMounted(() => {
   display: flex;
   gap: 8px;
   align-items: center;
-}
-.comment-input {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
-  .el-button {
-    flex-shrink: 0;
-  }
-}
-.comment-author {
-  color: #909399;
-  font-size: 12px;
-  margin-top: 4px;
 }
 </style>

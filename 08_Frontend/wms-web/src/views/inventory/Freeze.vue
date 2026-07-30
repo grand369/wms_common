@@ -97,13 +97,14 @@
 import { ref } from 'vue';
 import { Plus } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import { getFriendlyErrorMessage, parseAxiosError } from '@/utils/errorHandler';
 import type { FormInstance, FormRules } from 'element-plus';
 import WmsSearch from '@/components/common/WmsSearch.vue';
 import WmsTable from '@/components/common/WmsTable.vue';
 import WmsDialog from '@/components/common/WmsDialog.vue';
 import WmsStatusTag from '@/components/common/WmsStatusTag.vue';
 import { useTable } from '@/hooks/useTable';
-import { getBalances, freezeBalance, getFreezeOrders, releaseFreeze, cancelFreeze } from '@/api/inventory';
+import { getBalances, freezeBalance, releaseFreeze, cancelFreeze } from '@/api/inventory';
 import type { InventoryFreezeDto, InventoryBalanceDto } from '@/api/inventory';
 
 const statusMap: Record<number, string> = { 0: '冻结中', 1: '已解冻', 2: '已取消' };
@@ -134,14 +135,10 @@ async function loadBalances() {
   try {
     const res = await getBalances({ maxResultCount: 1000 });
     balanceList.value = res.items.filter((i) => i.availableQuantity > 0);
-  } catch {
-    ElMessage.error('加载库存余额失败');
+  } catch (err) {
+    const friendlyMsg = getFriendlyErrorMessage(parseAxiosError(err))
+    ElMessage.error(friendlyMsg);
   }
-}
-
-function mapFreezeStatus(status: number) {
-  const map: Record<number, string> = { 0: 'Active', 1: 'Released', 2: 'Cancelled' };
-  return map[status] || 'Active';
 }
 
 function openCreateDialog() {
@@ -175,8 +172,9 @@ async function handleCreateSubmit() {
     ElMessage.success('冻结成功');
     createVisible.value = false;
     handleSearch();
-  } catch {
-    ElMessage.error('冻结失败');
+  } catch (err) {
+    const friendlyMsg = getFriendlyErrorMessage(parseAxiosError(err))
+    ElMessage.error(friendlyMsg);
   } finally {
     createSubmitting.value = false;
   }
@@ -188,8 +186,11 @@ async function handleRelease(row: InventoryFreezeDto) {
     await releaseFreeze(row.id);
     ElMessage.success('解冻成功');
     handleSearch();
-  } catch {
-    // Cancel
+  } catch (err) {
+    if (err !== undefined) {
+      const friendlyMsg = getFriendlyErrorMessage(parseAxiosError(err))
+      ElMessage.error(friendlyMsg);
+    }
   }
 }
 
@@ -199,8 +200,11 @@ async function handleCancel(row: InventoryFreezeDto) {
     await cancelFreeze(row.id);
     ElMessage.success('取消成功');
     handleSearch();
-  } catch {
-    // Cancel
+  } catch (err) {
+    if (err !== undefined) {
+      const friendlyMsg = getFriendlyErrorMessage(parseAxiosError(err))
+      ElMessage.error(friendlyMsg);
+    }
   }
 }
 

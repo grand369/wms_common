@@ -68,6 +68,12 @@ public class SupplierAppService : ApplicationService, ISupplierAppService
                 .WithData("SupplierCode", input.SupplierCode);
         }
 
+        // Validate email format only when the field has a value
+        if (!string.IsNullOrWhiteSpace(input.ContactEmail) && !EmailValidator.IsValid(input.ContactEmail))
+        {
+            throw new BusinessException("InvalidEmailFormat");
+        }
+
         var supplier = new SupplierAgg(GuidGenerator.Create(), input.SupplierCode, input.SupplierName);
 
         supplier.Update(
@@ -97,6 +103,12 @@ public class SupplierAppService : ApplicationService, ISupplierAppService
     [Authorize(WmsSupplierPermissions.Suppliers.Update)]
     public async Task<SupplierOutputDto> UpdateAsync(Guid id, SupplierUpdateDto input)
     {
+        // Validate email format only when the field has a value
+        if (!string.IsNullOrWhiteSpace(input.ContactEmail) && !EmailValidator.IsValid(input.ContactEmail))
+        {
+            throw new BusinessException("InvalidEmailFormat");
+        }
+
         var supplier = await _supplierRepository.GetAsync(id);
 
         supplier.Update(

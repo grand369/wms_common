@@ -106,9 +106,15 @@ export interface InventorySnapshotDto {
   id: string;
   snapshotNo: string;
   warehouseId: string;
+  warehouseCode: string;
+  warehouseName?: string;
   snapshotTime: string;
   totalQty: number;
+  totalFrozenQty: number;
+  totalAvailableQty: number;
   status: number;
+  remark?: string;
+  creationTime: string;
 }
 
 export function getBalances(params: PagedParams) {
@@ -168,15 +174,15 @@ export function confirmAdjustment(id: string) {
 }
 
 export function getSnapshots(params: PagedParams) {
-  return get<PagedResult<InventorySnapshotDto>>('/api/v1/inventory/balances/snapshot', { params });
+  return get<PagedResult<InventorySnapshotDto>>('/api/v1/inventory/snapshots', { params });
 }
 
 export function getSnapshot(id: string) {
-  return get<InventorySnapshotDto>(`/api/v1/inventory/balances/${id}`);
+  return get<InventorySnapshotDto>(`/api/v1/inventory/snapshots/${id}`);
 }
 
 export function createSnapshot(data: { warehouseId: string; remark?: string }) {
-  return post<InventorySnapshotDto>('/api/v1/inventory/balances/snapshot', data);
+  return post<InventorySnapshotDto>('/api/v1/inventory/snapshots', data);
 }
 
 export function freezeBalance(id: string, data: { qty: number; reason: string }) {

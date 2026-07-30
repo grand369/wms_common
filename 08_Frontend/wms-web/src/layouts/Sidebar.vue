@@ -97,6 +97,7 @@ import {
   Share,
   Operation,
   Bell,
+  UserFilled,
   Setting,
   Notebook,
 } from '@element-plus/icons-vue';
@@ -276,6 +277,15 @@ const menuGroups: MenuGroup[] = [
     children: [
       { label: '通知列表', path: '/notification/logs' },
       { label: '通知配置', path: '/notification/config' },
+    ],
+  },
+  {
+    moduleKey: 'supplier',
+    label: '供应商管理',
+    icon: UserFilled,
+    permission: 'Wms.Supplier',
+    children: [
+      { label: '供应商列表', path: '/supplier/list' },
     ],
   },
   {

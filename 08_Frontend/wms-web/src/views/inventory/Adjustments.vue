@@ -53,7 +53,7 @@
             <el-option
               v-for="item in balanceList"
               :key="item.id"
-              :label="`${item.materialCode} - ${item.warehouseName} - ${item.locationName || '无库位'} (可用: ${item.availableQty})`"
+              :label="`${item.materialCode} - ${item.warehouseName} - ${item.locationName || '无库位'} (可用: ${item.availableQuantity})`"
               :value="item.id"
             />
           </el-select>
@@ -82,6 +82,7 @@ import WmsDialog from '@/components/common/WmsDialog.vue';
 import { useTable } from '@/hooks/useTable';
 import { createAdjustment, confirmAdjustment, getBalances } from '@/api/inventory';
 import type { InventoryAdjustmentDto, InventoryBalanceDto } from '@/api/inventory';
+import { getFriendlyErrorMessage, parseAxiosError } from '@/utils/errorHandler';
 
 const { loading, tableData, total, pagination, handlePageChange, handleSizeChange, handleSearch } =
   useTable<InventoryAdjustmentDto>('/api/v1/inventory/adjustments');
@@ -109,8 +110,9 @@ async function loadBalances() {
   try {
     const res = await getBalances({ maxResultCount: 1000 });
     balanceList.value = res.items;
-  } catch {
-    ElMessage.error('加载库存余额失败');
+  } catch (err) {
+    const friendlyMsg = getFriendlyErrorMessage(parseAxiosError(err))
+    ElMessage.error(friendlyMsg);
   }
 }
 
@@ -147,8 +149,9 @@ async function handleCreateSubmit() {
     ElMessage.success('创建调整成功');
     createVisible.value = false;
     handleSearch();
-  } catch {
-    ElMessage.error('创建调整失败');
+  } catch (err) {
+    const friendlyMsg = getFriendlyErrorMessage(parseAxiosError(err))
+    ElMessage.error(friendlyMsg);
   } finally {
     createSubmitting.value = false;
   }
@@ -159,8 +162,9 @@ async function handleConfirm(row: InventoryAdjustmentDto) {
     await confirmAdjustment(row.id);
     ElMessage.success('确认成功');
     handleSearch();
-  } catch {
-    ElMessage.error('确认失败');
+  } catch (err) {
+    const friendlyMsg = getFriendlyErrorMessage(parseAxiosError(err))
+    ElMessage.error(friendlyMsg);
   }
 }
 
@@ -169,8 +173,11 @@ async function handleDelete(_row: InventoryAdjustmentDto) {
     await ElMessageBox.confirm('确认删除该调整单？', '提示', { type: 'warning' });
     // 目前 API 未提供删除接口，仅作提示
     ElMessage.info('删除功能待后端支持');
-  } catch {
-    // Cancel
+  } catch (err) {
+    if (err !== undefined) {
+      const friendlyMsg = getFriendlyErrorMessage(parseAxiosError(err))
+      ElMessage.error(friendlyMsg);
+    }
   }
 }
 

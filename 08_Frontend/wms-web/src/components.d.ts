@@ -86,6 +86,7 @@ declare module 'vue' {
     WmsSteps: typeof import('./components/common/WmsSteps.vue')['default']
     WmsTable: typeof import('./components/common/WmsTable.vue')['default']
     WmsTimeline: typeof import('./components/common/WmsTimeline.vue')['default']
+    WmsUserSelector: typeof import('./components/common/WmsUserSelector.vue')['default']
     WmsWarehouseSelector: typeof import('./components/common/WmsWarehouseSelector.vue')['default']
   }
   export interface ComponentCustomProperties {

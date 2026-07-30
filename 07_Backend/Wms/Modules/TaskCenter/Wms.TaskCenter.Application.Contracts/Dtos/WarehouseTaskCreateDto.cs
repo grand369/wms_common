@@ -9,9 +9,11 @@ namespace Wms.TaskCenter.Application.Contracts.Dtos;
 /// </summary>
 public class WarehouseTaskCreateDto
 {
-    [Required]
+    /// <summary>
+    /// Task number — auto-generated if empty.
+    /// </summary>
     [StringLength(50)]
-    public string TaskNo { get; set; }
+    public string? TaskNo { get; set; }
 
     [Required]
     public int TaskTypeValue { get; set; }

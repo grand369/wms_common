@@ -34,13 +34,13 @@ public class OutboundOrderController : AbpControllerBase
     }
 
     [HttpPost]
-    public Task<OutboundOrderOutputDto> CreateAsync(OutboundOrderCreateDto dto)
+    public Task<OutboundOrderOutputDto> CreateAsync([FromBody]OutboundOrderCreateDto dto)
     {
         return _appService.CreateAsync(dto);
     }
 
     [HttpPut("{id}")]
-    public Task<OutboundOrderOutputDto> UpdateAsync(Guid id, OutboundOrderUpdateDto dto)
+    public Task<OutboundOrderOutputDto> UpdateAsync(Guid id, [FromBody] OutboundOrderUpdateDto dto)
     {
         return _appService.UpdateAsync(id, dto);
     }
@@ -52,19 +52,19 @@ public class OutboundOrderController : AbpControllerBase
     }
 
     [HttpPatch("{id}/allocate")]
-    public Task<OutboundOrderOutputDto> AllocateAsync(Guid id, OutboundAllocateCommandDto dto)
+    public Task<OutboundOrderOutputDto> AllocateAsync(Guid id, [FromBody] OutboundAllocateCommandDto dto)
     {
         return _appService.AllocateAsync(id, dto);
     }
 
     [HttpPatch("{id}/picking")]
-    public Task<OutboundOrderOutputDto> PickingAsync(Guid id, OutboundPickingCommandDto dto)
+    public Task<OutboundOrderOutputDto> PickingAsync(Guid id, [FromBody] OutboundPickingCommandDto dto)
     {
         return _appService.PickingAsync(id, dto);
     }
 
     [HttpPatch("{id}/shipping")]
-    public Task<OutboundOrderOutputDto> ShippingAsync(Guid id, OutboundShippingCommandDto dto)
+    public Task<OutboundOrderOutputDto> ShippingAsync(Guid id, [FromBody] OutboundShippingCommandDto dto)
     {
         return _appService.ShippingAsync(id, dto);
     }
@@ -103,5 +103,11 @@ public class OutboundOrderController : AbpControllerBase
     public Task<OutboundOrderOutputDto> GetPrintDataAsync(Guid id, [FromQuery] OutboundPrintDto dto)
     {
         return _appService.GetPrintDataAsync(id, dto);
+    }
+
+    [HttpGet("statistics")]
+    public Task<OutboundStatisticsDto> GetStatisticsAsync([FromQuery] OutboundStatisticsQueryDto query)
+    {
+        return _appService.GetStatisticsAsync(query);
     }
 }

@@ -318,6 +318,8 @@ public class WmsWebHostModule : AbpModule
         {
             endpoints.MapControllers();
             endpoints.MapHub<WmsNotificationHub>("/signalr/notification");
+            endpoints.MapHub<WmsInventoryHub>("/signalr/inventory");
+            endpoints.MapHub<WmsTaskHub>("/signalr/task");
         });
     }
 }

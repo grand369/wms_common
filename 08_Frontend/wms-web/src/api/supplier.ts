@@ -87,7 +87,7 @@ export function getSupplierByCode(supplierCode: string) {
 }
 
 export function getActiveSuppliers() {
-  return get<ListResultDto<SupplierDto>>('/api/v1/supplier/suppliers/active');
+  return get<SupplierDto[] | ListResultDto<SupplierDto>>('/api/v1/supplier/suppliers/active');
 }
 
 export function createSupplier(data: CreateSupplierDto) {

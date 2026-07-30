@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <AssemblyName>Wms.TaskCenter.Application</AssemblyName>
@@ -18,5 +18,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Wms.TaskCenter.Domain\Wms.TaskCenter.Domain.csproj" />
     <ProjectReference Include="..\Wms.TaskCenter.Application.Contracts\Wms.TaskCenter.Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\Outbound\Wms.Outbound.Application.Contracts\Wms.Outbound.Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\Inbound\Wms.Inbound.Application.Contracts\Wms.Inbound.Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\Transfer\Wms.Transfer.Application.Contracts\Wms.Transfer.Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\CycleCount\Wms.CycleCount.Application.Contracts\Wms.CycleCount.Application.Contracts.csproj" />
   </ItemGroup>
 </Project>

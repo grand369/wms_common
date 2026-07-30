@@ -176,7 +176,8 @@ function onWarehouseChange(warehouse: any) {
 async function loadSuppliers() {
   try {
     const res = await getActiveSuppliers();
-    supplierOptions.value = res.items || [];
+    // Backend returns a plain array, not a ListResultDto
+    supplierOptions.value = Array.isArray(res) ? res : (res as any)?.items || [];
   } catch {
     ElMessage.error('加载供应商列表失败');
   }

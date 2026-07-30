@@ -28,7 +28,7 @@ import { computed } from 'vue'
 export type InventoryStatus = 'Available' | 'Frozen' | 'PendingInspection' | 'Quarantined' | 'InTransit' | 'Outsourced'
 
 // 单据状态枚举
-export type DocumentStatus = 'Draft' | 'Confirmed' | 'InProgress' | 'Completed' | 'Cancelled'
+export type DocumentStatus = 'Draft' | 'Confirmed' | 'Assigned' | 'InProgress' | 'Suspended' | 'Completed' | 'Cancelled'
 
 // 冻结状态枚举
 export type FreezeStatus = 'Active' | 'Released' | 'Cancelled' | '冻结中' | '已释放' | '已取消'
@@ -56,9 +56,11 @@ const inventoryStatusMap: Record<InventoryStatus, { label: string; type: 'succes
 const documentStatusMap: Record<DocumentStatus, { label: string; type: 'success' | 'warning' | 'info' | 'danger' }> = {
   Draft: { label: '草稿', type: 'info' },
   Confirmed: { label: '已确认', type: 'info' },
+  Assigned: { label: '已分配', type: 'info' },
   InProgress: { label: '进行中', type: 'warning' },
+  Suspended: { label: '已挂起', type: 'warning' },
   Completed: { label: '已完成', type: 'success' },
-  Cancelled: { label: '已取消', type: 'info' }
+  Cancelled: { label: '已取消', type: 'danger' }
 }
 
 // 冻结状态配置映射

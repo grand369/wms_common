@@ -128,8 +128,16 @@ public class WarehouseTask : FullAuditedAggregateRoot<Guid>
         ActualCompletionTime = DateTime.UtcNow;
         TaskProgress = 100;
 
-        // DE-031: TaskCompletedEvent
-        AddLocalEvent(new TaskCompletedEvent(Id, ActualCompletionTime!.Value));
+        // DE-031: TaskCompletedEvent — include full context for downstream processing
+        AddLocalEvent(new TaskCompletedEvent(
+            Id,
+            TaskType.Value,
+            SourceOrderType,
+            SourceOrderId,
+            ActualCompletionTime!.Value,
+            AssignedUserId,
+            AssignedUserName,
+            Remark));
     }
 
     // ── SM-03: Suspend ── InProgress → Suspended (reason required)

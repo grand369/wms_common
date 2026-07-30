@@ -13,7 +13,6 @@ public class WarehouseTaskCreateDtoValidator : AbstractValidator<WarehouseTaskCr
     public WarehouseTaskCreateDtoValidator()
     {
         RuleFor(x => x.TaskNo)
-            .NotEmpty().WithMessage("任务编号不能为空")
             .MaximumLength(50).WithMessage("任务编号最长50字符");
 
         RuleFor(x => x.TaskTypeValue)

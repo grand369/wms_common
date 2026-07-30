@@ -79,7 +79,8 @@ public class OutboundOrderAppService : ApplicationService, IOutboundOrderAppServ
     [Authorize(WmsOutboundPermissions.Order.Read)]
     public async Task<OutboundOrderOutputDto> GetAsync(Guid id)
     {
-        var order = await _outboundOrderRepository.GetAsync(id);
+        var order = await _outboundOrderRepository.GetWithLinesAsync(id);
+
         return MapToOutputDto(order);
     }
 
@@ -182,8 +183,27 @@ public class OutboundOrderAppService : ApplicationService, IOutboundOrderAppServ
     [Authorize(WmsOutboundPermissions.Order.Shipping)]
     public async Task<OutboundOrderOutputDto> ShippingAsync(Guid id, OutboundShippingCommandDto dto)
     {
-        var shippingData = dto.Lines.Select(l => (l.LineId, l.ShippedQuantity)).ToList();
-        var order = await _outboundDomainService.ConfirmShippingAsync(id, shippingData);
+        var order = await _outboundOrderRepository.GetWithLinesAsync(id);
+
+        var shippingData = dto.Lines != null && dto.Lines.Any()
+            ? dto.Lines.Select(l => (l.LineId, l.ShippedQuantity)).ToList()
+            : order.Lines
+                .Where(l => l.PickedQuantity > 0)
+                .Select(l => (l.Id, l.PickedQuantity))
+                .ToList();
+
+        if (shippingData.Count == 0)
+        {
+            throw new BusinessException("WMS:Outbound:NoPickedQuantity",
+                "No picked quantity to ship. Please pick goods first.");
+        }
+
+        if (!string.IsNullOrEmpty(dto.TrackingNo))
+        {
+            order.SetRemark(dto.TrackingNo);
+        }
+
+        order = await _outboundDomainService.ConfirmShippingAsync(id, shippingData);
         return MapToOutputDto(order);
     }
 
@@ -297,6 +317,46 @@ public class OutboundOrderAppService : ApplicationService, IOutboundOrderAppServ
     {
         var order = await _outboundOrderRepository.GetAsync(id);
         return MapToOutputDto(order);
+    }
+
+    [Authorize(WmsOutboundPermissions.Order.Read)]
+    public async Task<OutboundStatisticsDto> GetStatisticsAsync(OutboundStatisticsQueryDto query)
+    {
+        var queryable = await _outboundOrderRepository.GetQueryableAsync();
+
+        if (query.StartDate.HasValue)
+            queryable = queryable.Where(o => o.CreationTime >= query.StartDate.Value);
+        if (query.EndDate.HasValue)
+            queryable = queryable.Where(o => o.CreationTime <= query.EndDate.Value);
+
+        var today = DateTime.UtcNow.Date;
+        var todayCount = await AsyncExecuter.CountAsync(
+            queryable.Where(o => o.CreationTime >= today));
+
+        var completedStatus = OutboundStatus.Completed;
+        var completedCount = await AsyncExecuter.CountAsync(
+            queryable.Where(o => o.OutboundStatus == completedStatus));
+
+        var pendingStatuses = new[]
+        {
+            OutboundStatus.Draft,
+            OutboundStatus.Allocated,
+            OutboundStatus.Picking,
+            OutboundStatus.Shipped
+        };
+
+        var pendingCount = await AsyncExecuter.CountAsync(
+            queryable.Where(o => pendingStatuses.Contains(o.OutboundStatus)));
+
+        var totalCount = await AsyncExecuter.CountAsync(queryable);
+
+        return new OutboundStatisticsDto
+        {
+            TotalCount = totalCount,
+            PendingCount = pendingCount,
+            CompletedCount = completedCount,
+            TodayCount = todayCount
+        };
     }
 
     private OutboundOrderOutputDto MapToOutputDto(OutboundOrder order)

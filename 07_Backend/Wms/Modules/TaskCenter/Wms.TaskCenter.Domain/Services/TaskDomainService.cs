@@ -42,7 +42,8 @@ public class TaskDomainService : DomainService, ITaskDomainService
         string warehouseCode,
         TaskPriority priority,
         AssignmentStrategy strategy,
-        DateTime? expectedCompletionTime = null)
+        DateTime? expectedCompletionTime = null,
+        string? taskNo = null)
     {
         // Check if tasks already exist for this source order
         var existingTasks = await _taskRepository.GetBySourceOrderAsync(sourceOrderType, sourceOrderId);
@@ -55,10 +56,10 @@ public class TaskDomainService : DomainService, ITaskDomainService
                 $"来源单据 {sourceOrderNo} 已存在活跃任务，不能重复创建。");
         }
 
-        var taskNo = $"TC-{taskType.Name}-{sourceOrderNo}-{Clock.Now:yyyyMMddHHmmss}";
+        var generatedTaskNo = taskNo ?? $"TC-{taskType.Name}-{sourceOrderNo}-{Clock.Now:yyyyMMddHHmmss}";
         var task = new WarehouseTask(
             GuidGenerator.Create(),
-            taskNo,
+            generatedTaskNo,
             taskType,
             priority,
             sourceOrderType,

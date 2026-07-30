@@ -1,3 +1,4 @@
+using System.Linq;
 using Wms.Inventory.Domain.Aggregates;
 using Wms.Inventory.Domain.Enums;
 using Wms.Inventory.Domain.Events;
@@ -269,6 +270,31 @@ public class InventoryDomainService : DomainService, IInventoryDomainService
                 SourceModule = "Inventory"
             });
         }
+    }
+
+    /// <summary>
+    /// IInventoryDomainService.FindAvailableBalancesAsync — finds balances sorted by issue strategy.
+    /// Called by Outbound module to auto-allocate inventory based on FIFO/FEFO/FMFO (CROSS-002).
+    /// </summary>
+    public async Task<List<AvailableBalanceInfo>> FindAvailableBalancesAsync(
+        Guid materialId, Guid warehouseId, string strategyType = "FIFO")
+    {
+        var balances = await _balanceRepository.GetAvailableForPickingAsync(materialId, warehouseId, strategyType);
+
+        return balances
+            .Where(b => b.AvailableQuantity > 0)
+            .Select(b => new AvailableBalanceInfo
+            {
+                BalanceId = b.Id,
+                LocationId = b.LocationId,
+                LocationCode = b.LocationCode,
+                AvailableQuantity = b.AvailableQuantity,
+                BatchNumber = b.BatchNumber,
+                ExpiryDate = b.ExpiryDate,
+                ProductionDate = b.ProductionDate,
+                CreationTime = b.CreationTime
+            })
+            .ToList();
     }
 
     // Private helper: Find or create balance by unique key

@@ -33,7 +33,7 @@ public class WarehouseTaskRepository : EfCoreRepository<WmsTaskCenterDbContext, 
     {
         var dbSet = await GetDbSetAsync();
         return await dbSet.Where(t => t.WarehouseId == warehouseId && !t.IsDeleted)
-                          .OrderByDescending(t => t.TaskPriority.Value)
+                          .OrderByDescending(t => t.TaskPriority)
                           .ThenBy(t => t.CreationTime)
                           .ToListAsync();
     }
@@ -42,7 +42,7 @@ public class WarehouseTaskRepository : EfCoreRepository<WmsTaskCenterDbContext, 
     {
         var dbSet = await GetDbSetAsync();
         return await dbSet.Where(t => t.AssignedUserId == userId && !t.IsDeleted)
-                          .OrderByDescending(t => t.TaskPriority.Value)
+                          .OrderByDescending(t => t.TaskPriority)
                           .ThenBy(t => t.CreationTime)
                           .ToListAsync();
     }
@@ -51,7 +51,7 @@ public class WarehouseTaskRepository : EfCoreRepository<WmsTaskCenterDbContext, 
     {
         var dbSet = await GetDbSetAsync();
         return await dbSet.Where(t => t.TaskStatus == status && !t.IsDeleted)
-                          .OrderByDescending(t => t.TaskPriority.Value)
+                          .OrderByDescending(t => t.TaskPriority)
                           .ThenBy(t => t.CreationTime)
                           .ToListAsync();
     }
@@ -70,7 +70,7 @@ public class WarehouseTaskRepository : EfCoreRepository<WmsTaskCenterDbContext, 
         return await dbSet.Where(t => t.WarehouseId == warehouseId
                                     && t.TaskStatus == TaskStatus.Created
                                     && !t.IsDeleted)
-                          .OrderByDescending(t => t.TaskPriority.Value)
+                          .OrderByDescending(t => t.TaskPriority)
                           .ThenBy(t => t.CreationTime)
                           .ToListAsync();
     }

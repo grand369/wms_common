@@ -69,7 +69,7 @@ public class WarehouseTaskAppService :
 
         var totalCount = await AsyncExecuter.CountAsync(query);
 
-        query = query.OrderByDescending(t => t.TaskPriority.Value)
+        query = query.OrderByDescending(t => t.TaskPriority)
                       .ThenBy(t => t.CreationTime);
 
         var items = await AsyncExecuter.ToListAsync(
@@ -103,7 +103,7 @@ public class WarehouseTaskAppService :
 
         var totalCount = filtered.Count();
         var items = filtered
-            .OrderByDescending(t => t.TaskPriority.Value)
+            .OrderByDescending(t => t.TaskPriority)
             .ThenBy(t => t.CreationTime)
             .Skip(input.SkipCount)
             .Take(input.MaxResultCount)
@@ -139,7 +139,8 @@ public class WarehouseTaskAppService :
             input.WarehouseCode,
             priority,
             strategy,
-            input.ExpectedCompletionTime);
+            input.ExpectedCompletionTime,
+            input.TaskNo);
 
         return MapToOutputDto(task);
     }
@@ -250,6 +251,40 @@ public class WarehouseTaskAppService :
         var strategy = AssignmentStrategy.FromValue(input.AssignmentStrategyValue);
         var tasks = await _taskDomainService.AutoAssignTasksAsync(input.WarehouseId, strategy);
         return tasks.Select(MapToOutputDto).ToList();
+    }
+
+    // API-TC-015: Task monitor statistics
+    [Authorize(WmsTaskCenterPermissions.Read)]
+    public async Task<TaskMonitorDto> GetTaskMonitorAsync()
+    {
+        var query = await _taskRepository.GetQueryableAsync();
+        query = query.Where(t => !t.IsDeleted);
+
+        var totalCount = await AsyncExecuter.CountAsync(query);
+
+        var pendingStatuses = new[] { TaskStatus.Created, TaskStatus.Assigned };
+        var inProgressStatuses = new[] { TaskStatus.InProgress, TaskStatus.Suspended };
+
+        var pendingCount = await AsyncExecuter.CountAsync(
+            query.Where(t => pendingStatuses.Contains(t.TaskStatus)));
+
+        var inProgressCount = await AsyncExecuter.CountAsync(
+            query.Where(t => inProgressStatuses.Contains(t.TaskStatus)));
+
+        var completedCount = await AsyncExecuter.CountAsync(
+            query.Where(t => t.TaskStatus == TaskStatus.Completed));
+
+        var exceptionCount = await AsyncExecuter.CountAsync(
+            query.Where(t => t.TaskStatus == TaskStatus.Cancelled));
+
+        return new TaskMonitorDto
+        {
+            TotalCount = totalCount,
+            PendingCount = pendingCount,
+            InProgressCount = inProgressCount,
+            CompletedCount = completedCount,
+            ExceptionCount = exceptionCount
+        };
     }
 
     // ── Mapping ──

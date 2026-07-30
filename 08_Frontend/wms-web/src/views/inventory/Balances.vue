@@ -101,6 +101,7 @@ import { useTable } from '@/hooks/useTable';
 import { useSignalR } from '@/utils/signalr';
 import { freezeBalance } from '@/api/inventory';
 import type { InventoryBalanceDto } from '@/api/inventory';
+import { getFriendlyErrorMessage, parseAxiosError } from '@/utils/errorHandler';
 
 const router = useRouter();
 const { connected } = useSignalR('/signalr/inventory');
@@ -146,8 +147,9 @@ async function handleFreezeSubmit() {
     ElMessage.success('冻结成功');
     freezeVisible.value = false;
     handleSearch();
-  } catch {
-    ElMessage.error('冻结失败');
+  } catch (err) {
+    const friendlyMsg = getFriendlyErrorMessage(parseAxiosError(err))
+    ElMessage.error(friendlyMsg);
   } finally {
     freezeSubmitting.value = false;
   }

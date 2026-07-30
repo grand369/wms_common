@@ -57,4 +57,7 @@ public interface IWarehouseTaskAppService : IApplicationService
 
     // API-TC-014: Auto-assign by strategy
     Task<List<WarehouseTaskOutputDto>> AutoAssignAsync(TaskAutoAssignCommandDto input);
+
+    // API-TC-015: Task monitor statistics
+    Task<TaskMonitorDto> GetTaskMonitorAsync();
 }

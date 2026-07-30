@@ -63,4 +63,7 @@
     <ProjectReference Include="..\..\Modules\Notification\Wms.Notification.Application\Wms.Notification.Application.csproj" />
     <ProjectReference Include="..\..\Modules\Notification\Wms.Notification.EntityFrameworkCore\Wms.Notification.EntityFrameworkCore.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
 </Project>

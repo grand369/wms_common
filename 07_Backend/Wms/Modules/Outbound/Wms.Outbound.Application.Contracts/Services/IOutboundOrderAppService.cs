@@ -51,4 +51,7 @@ public interface IOutboundOrderAppService
 
     /// <summary>API-OB-014: Get print data for outbound order.</summary>
     Task<OutboundOrderOutputDto> GetPrintDataAsync(Guid id, OutboundPrintDto dto);
+
+    /// <summary>API-OB-015: Get outbound statistics.</summary>
+    Task<OutboundStatisticsDto> GetStatisticsAsync(OutboundStatisticsQueryDto query);
 }

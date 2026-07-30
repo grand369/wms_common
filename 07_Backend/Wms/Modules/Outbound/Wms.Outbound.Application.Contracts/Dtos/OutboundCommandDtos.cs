@@ -74,6 +74,7 @@ public class OutboundPickingLineDto
 
 /// <summary>
 /// OutboundShippingCommandDto — API-OB-007 confirm shipping request DTO.
+/// Lines is optional: when not provided, all picked quantities are shipped by default.
 /// </summary>
 public class OutboundShippingCommandDto
 {
@@ -82,10 +83,12 @@ public class OutboundShippingCommandDto
     [StringLength(100)]
     public string IdempotencyId { get; set; } = string.Empty;
 
-    /// <summary>Line-level shipping details.</summary>
-    [Required]
-    [MinLength(1)]
-    public List<OutboundShippingLineDto> Lines { get; set; } = new();
+    /// <summary>Line-level shipping details. Optional — if null, all picked quantities are shipped.</summary>
+    public List<OutboundShippingLineDto>? Lines { get; set; }
+
+    /// <summary>Tracking number for the shipment.</summary>
+    [StringLength(100)]
+    public string? TrackingNo { get; set; }
 }
 
 /// <summary>

@@ -27,7 +27,6 @@ public class SupplierCreateDto
     [StringLength(50)]
     public string? ContactPhone { get; set; }
 
-    [EmailAddress]
     [StringLength(100)]
     public string? ContactEmail { get; set; }
 

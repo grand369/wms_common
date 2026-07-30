@@ -56,11 +56,13 @@
             </template>
           </el-table-column>
         <el-table-column label="操作" width="240" fixed="right">
-          <el-button link type="primary" @click="handleEdit(row as SupplierDto)">编辑</el-button>
-          <el-button link :type="(row as SupplierDto).isActive ? 'danger' : 'success'" @click="handleToggleStatus(row as SupplierDto)">
-            {{ (row as SupplierDto).isActive ? '停用' : '启用' }}
-          </el-button>
-          <el-button link type="danger" @click="handleDelete(row as SupplierDto)">删除</el-button>
+          <template #default="{ row }">
+            <el-button link type="primary" @click="handleEdit(row as SupplierDto)">编辑</el-button>
+            <el-button link :type="row.isActive ? 'danger' : 'success'" @click="handleToggleStatus(row as SupplierDto)">
+              {{ row.isActive ? '停用' : '启用' }}
+            </el-button>
+            <el-button link type="danger" @click="handleDelete(row as SupplierDto)">删除</el-button>
+          </template>
         </el-table-column>
       </WmsTable>
     </el-card>
@@ -259,7 +261,7 @@ async function loadData() {
     };
     const res = await getSuppliers(params);
     tableData.value = res.items;
-    total.value = res.total;
+    total.value = res.totalCount;
   } catch {
     ElMessage.error('加载失败');
   } finally {
@@ -338,6 +340,22 @@ function handleEdit(row: SupplierDto) {
   visible.value = true;
 }
 
+function prepareFormData() {
+  const data: any = { ...formData };
+  // Convert empty strings to null for optional fields
+  const optionalFields = [
+    'contactEmail', 'contactPhone', 'contactName', 'shortName',
+    'address', 'city', 'province', 'postalCode', 'taxId',
+    'bankName', 'bankAccount', 'remark', 'erpSupplierCode'
+  ];
+  optionalFields.forEach(field => {
+    if (data[field] === '' || data[field] === undefined) {
+      data[field] = null;
+    }
+  });
+  return data;
+}
+
 async function handleSubmit() {
   if (!formRef.value) return;
   try {
@@ -347,10 +365,11 @@ async function handleSubmit() {
   }
   submitting.value = true;
   try {
+    const data = prepareFormData();
     if (formData.id) {
-      await updateSupplier(formData.id, formData as UpdateSupplierDto);
+      await updateSupplier(formData.id, data as UpdateSupplierDto);
     } else {
-      await createSupplier(formData as CreateSupplierDto);
+      await createSupplier(data as CreateSupplierDto);
     }
     ElMessage.success('保存成功');
     visible.value = false;

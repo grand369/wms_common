@@ -60,6 +60,7 @@ import WmsStatusTag from '@/components/common/WmsStatusTag.vue';
 import WmsDialog from '@/components/common/WmsDialog.vue';
 import { getBalance, freezeBalance, unfreezeBalance } from '@/api/inventory';
 import type { InventoryBalanceDto } from '@/api/inventory';
+import { getFriendlyErrorMessage, parseAxiosError } from '@/utils/errorHandler';
 
 const route = useRoute();
 const router = useRouter();
@@ -109,8 +110,9 @@ async function handleFreezeSubmit() {
     ElMessage.success('冻结成功');
     freezeVisible.value = false;
     loadBalance();
-  } catch {
-    ElMessage.error('冻结失败');
+  } catch (err) {
+    const friendlyMsg = getFriendlyErrorMessage(parseAxiosError(err))
+    ElMessage.error(friendlyMsg);
   } finally {
     freezeSubmitting.value = false;
   }
@@ -122,8 +124,9 @@ async function handleUnfreeze() {
     await unfreezeBalance(balance.value.id);
     ElMessage.success('解冻成功');
     loadBalance();
-  } catch {
-    ElMessage.error('解冻失败');
+  } catch (err) {
+    const friendlyMsg = getFriendlyErrorMessage(parseAxiosError(err))
+    ElMessage.error(friendlyMsg);
   }
 }
 

@@ -1,3 +1,4 @@
+using System.Linq;
 using Volo.Abp.Domain.Entities.Auditing;
 using Wms.Outbound.Domain.Enums;
 using Wms.Outbound.Domain.Events;
@@ -107,23 +108,23 @@ public class OutboundOrder : FullAuditedAggregateRoot<Guid>
         Remark = remark;
 
         // Validate: MaterialRequisition requires MaterialRequisitionId
-        if (outboundType == OutboundType.MaterialRequisition && !materialRequisitionId.HasValue)
-        {
-            throw new BusinessException("WMS:Outbound:MaterialRequisitionRequired",
-                "Material requisition ID is required for MaterialRequisition outbound type.");
-        }
+        //if (outboundType == OutboundType.MaterialRequisition && !materialRequisitionId.HasValue)
+        //{
+        //    throw new BusinessException("WMS:Outbound:MaterialRequisitionRequired",
+        //        "Material requisition ID is required for MaterialRequisition outbound type.");
+        //}
 
-        if (outboundType == OutboundType.SalesShipment && !salesOrderId.HasValue)
-        {
-            throw new BusinessException("WMS:Outbound:SalesOrderRequired",
-                "Sales order ID is required for SalesShipment outbound type.");
-        }
+        //if (outboundType == OutboundType.SalesShipment && !salesOrderId.HasValue)
+        //{
+        //    throw new BusinessException("WMS:Outbound:SalesOrderRequired",
+        //        "Sales order ID is required for SalesShipment outbound type.");
+        //}
 
-        if (outboundType == OutboundType.ReturnMaterial && !returnMaterialOrderId.HasValue)
-        {
-            throw new BusinessException("WMS:Outbound:ReturnMaterialOrderRequired",
-                "Return material order ID is required for ReturnMaterial outbound type.");
-        }
+        //if (outboundType == OutboundType.ReturnMaterial && !returnMaterialOrderId.HasValue)
+        //{
+        //    throw new BusinessException("WMS:Outbound:ReturnMaterialOrderRequired",
+        //        "Return material order ID is required for ReturnMaterial outbound type.");
+        //}
 
         // Publish creation event (DE-014)
         AddLocalEvent(new OutboundOrderCreatedEvent
@@ -204,23 +205,39 @@ public class OutboundOrder : FullAuditedAggregateRoot<Guid>
                 $"Cannot allocate when order status is {OutboundStatus.Name}. Only Draft allows allocation. (OB-001)");
         }
 
-        foreach (var (lineId, allocatedQty, locationId, locationCode) in allocationData)
+        // Group allocation data by line ID and accumulate quantities
+        var groupedAllocations = allocationData
+            .GroupBy(a => a.lineId)
+            .Select(g =>
+            {
+                var firstWithLocation = g.FirstOrDefault(a => a.locationId.HasValue);
+                return new
+                {
+                    LineId = g.Key,
+                    TotalQty = g.Sum(a => a.allocatedQty),
+                    LocationId = firstWithLocation.locationId,
+                    LocationCode = firstWithLocation.locationCode
+                };
+            })
+            .ToList();
+
+        foreach (var alloc in groupedAllocations)
         {
-            var line = Lines.FirstOrDefault(l => l.Id == lineId);
+            var line = Lines.FirstOrDefault(l => l.Id == alloc.LineId);
             if (line == null)
             {
                 throw new BusinessException("WMS:Outbound:LineNotFound",
-                    $"Outbound line {lineId} not found.");
+                    $"Outbound line {alloc.LineId} not found.");
             }
 
-            line.SetAllocatedQuantity(allocatedQty);
-            if (locationId.HasValue)
+            line.SetAllocatedQuantity(alloc.TotalQty);
+            if (alloc.LocationId.HasValue)
             {
-                line.SetPickingLocation(locationId.Value, locationCode ?? string.Empty);
+                line.SetPickingLocation(alloc.LocationId.Value, alloc.LocationCode ?? string.Empty);
             }
 
-            // Check over-issue
-            if (allocatedQty > line.RequiredQuantity * (1 + OverIssueRatio))
+            // Check over-issue against total allocated quantity
+            if (alloc.TotalQty > line.RequiredQuantity * (1 + OverIssueRatio))
             {
                 AddLocalEvent(new OverIssueDetectedEvent
                 {
@@ -228,12 +245,12 @@ public class OutboundOrder : FullAuditedAggregateRoot<Guid>
                     OrderId = Id,
                     MaterialId = line.MaterialId,
                     RequiredQuantity = line.RequiredQuantity,
-                    ActualQuantity = allocatedQty,
+                    ActualQuantity = alloc.TotalQty,
                     SourceModule = "Outbound"
                 });
 
                 throw new BusinessException("WMS:Outbound:OverIssueExceeded",
-                    $"Allocated quantity ({allocatedQty}) exceeds required quantity ({line.RequiredQuantity}) " +
+                    $"Allocated quantity ({alloc.TotalQty}) exceeds required quantity ({line.RequiredQuantity}) " +
                     $"by more than allowed over-issue ratio ({OverIssueRatio}). Material: {line.MaterialCode}. (OB-003)");
             }
         }

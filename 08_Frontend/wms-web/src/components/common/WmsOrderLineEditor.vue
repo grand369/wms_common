@@ -68,8 +68,8 @@
             </el-select>
           </div>
 
-          <!-- 库位选择（入库/出库模式） -->
-          <div v-if="mode !== 'transfer'" class="line-field">
+          <!-- 库位选择（仅入库模式，出库模式由分配策略自动分配） -->
+          <div v-if="mode === 'inbound'" class="line-field">
             <wms-location-selector
               v-model="line.locationId"
               :warehouse-id="line.warehouseId"
@@ -323,11 +323,11 @@ function validateLine(index: number) {
     errors.push('数量必须大于0')
   }
 
-  if (props.mode !== 'transfer') {
+  if (props.mode === 'inbound') {
     if (!line.locationId) {
       errors.push('请选择库位')
     }
-  } else {
+  } else if (props.mode === 'transfer') {
     if (!line.fromLocationId) {
       errors.push('请选择源库位')
     }
@@ -335,6 +335,7 @@ function validateLine(index: number) {
       errors.push('请选择目标库位')
     }
   }
+  // outbound mode: location is auto-allocated, no validation needed
 
   if (errors.length > 0) {
     lineErrors.value[index] = errors.join('; ')

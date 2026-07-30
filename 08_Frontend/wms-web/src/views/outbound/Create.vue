@@ -10,30 +10,54 @@
       <el-form ref="formRef" :model="formData" :rules="formRules" label-width="120px">
         <el-row :gutter="16">
           <el-col :span="12">
-            <el-form-item label="出库类型" prop="orderType">
-              <el-select v-model="formData.orderType" placeholder="请选择出库类型" style="width: 100%">
-                <el-option label="销售出库" value="Sales" />
-                <el-option label="生产出库" value="Production" />
-                <el-option label="调拨出库" value="Transfer" />
-                <el-option label="退货出库" value="Return" />
+            <el-form-item label="出库类型" prop="outboundTypeValue">
+              <el-select v-model="formData.outboundTypeValue" placeholder="请选择出库类型" style="width: 100%">
+                <el-option label="生产出库" :value="1" />
+                <el-option label="销售出库" :value="2" />
+                <el-option label="退货出库" :value="3" />
+                <el-option label="调拨出库" :value="4" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="仓库" prop="warehouseId">
-              <WmsWarehouseSelector v-model="formData.warehouseId" />
+              <WmsWarehouseSelector
+                v-model="formData.warehouseId"
+                @change="onWarehouseChange"
+              />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="16">
           <el-col :span="12">
-            <el-form-item label="客户">
-              <el-input v-model="formData.customerId" placeholder="请输入客户ID" />
+            <el-form-item label="紧急出库">
+              <el-switch v-model="formData.isEmergency" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="计划日期">
-              <el-date-picker v-model="formData.planDate" type="date" placeholder="请选择计划日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD" style="width: 100%" />
+            <el-form-item label="超发比例">
+              <el-input-number
+                v-model="formData.overIssueRatio"
+                :min="0"
+                :max="1"
+                :step="0.1"
+                :precision="2"
+                style="width: 100%"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="16">
+          <el-col :span="24">
+            <el-form-item label="备注">
+              <el-input
+                v-model="formData.remark"
+                type="textarea"
+                :rows="2"
+                placeholder="请输入备注"
+                maxlength="1000"
+                show-word-limit
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -58,9 +82,21 @@ import { ElMessage } from 'element-plus';
 import type { FormInstance, FormRules } from 'element-plus';
 import WmsWarehouseSelector from '@/components/common/WmsWarehouseSelector.vue';
 import WmsOrderLineEditor from '@/components/common/WmsOrderLineEditor.vue';
-import { createOutboundOrder, updateOutboundOrder, getOutboundOrder, allocateOutbound } from '@/api/outbound';
-import type { CreateOrUpdateOutboundOrderDto, OutboundOrderLineDto } from '@/api/outbound';
+import {
+  createOutboundOrder,
+  updateOutboundOrder,
+  getOutboundOrder,
+  allocateOutbound
+} from '@/api/outbound';
+import type {
+  CreateOrUpdateOutboundOrderDto,
+  OutboundOrderLineDto,
+  OutboundAllocateCommandDto,
+  OutboundOrderOutputDto
+} from '@/api/outbound';
 import type { WmsOrderLine } from '@/components/common/WmsOrderLineEditor.vue';
+import type { WmsWarehouse } from '@/components/common/WmsWarehouseSelector.vue';
+import { getFriendlyErrorMessage, parseAxiosError } from '@/utils/errorHandler';
 
 const router = useRouter();
 const route = useRoute();
@@ -68,39 +104,53 @@ const editingId = route.query.id as string | undefined;
 
 const formRef = ref<FormInstance>();
 const formData = ref<CreateOrUpdateOutboundOrderDto>({
-  orderType: '',
+  outboundTypeValue: 0,
   warehouseId: '',
-  customerId: '',
-  planDate: '',
+  warehouseCode: '',
+  overIssueRatio: 0,
+  isEmergency: false,
+  remark: '',
   lines: [],
 });
+
 const formRules: FormRules = {
-  orderType: [{ required: true, message: '请选择出库类型', trigger: 'change' }],
+  outboundTypeValue: [{ required: true, message: '请选择出库类型', trigger: 'change' }],
   warehouseId: [{ required: true, message: '请选择仓库', trigger: 'change' }],
 };
 
 const lines = ref<WmsOrderLine[]>([]);
 const submitting = ref(false);
 
+function onWarehouseChange(warehouse: WmsWarehouse | WmsWarehouse[] | null) {
+  if (warehouse && !Array.isArray(warehouse)) {
+    formData.value.warehouseCode = warehouse.code;
+  } else {
+    formData.value.warehouseCode = '';
+  }
+}
+
 async function loadOrder() {
   if (!editingId) return;
   try {
     const order = await getOutboundOrder(editingId);
     formData.value = {
-      orderType: order.orderType,
+      outboundTypeValue: order.outboundTypeValue,
       warehouseId: order.warehouseId,
-      customerId: order.customerId,
-      planDate: order.planDate,
-      lines: order.lines || [],
+      warehouseCode: order.warehouseCode,
+      overIssueRatio: 0,
+      isEmergency: false,
+      remark: order.remark,
+      lines: [],
     };
     lines.value = (order.lines || []).map((l) => ({
+      _id: l.id,
       materialId: l.materialId,
       materialCode: l.materialCode,
       materialName: l.materialName,
-      quantity: l.qty,
+      quantity: l.requiredQuantity,
       unit: '',
       locationId: '',
-      remarks: '',
+      remarks: l.remark,
     }));
   } catch {
     ElMessage.error('加载出库单失败');
@@ -115,12 +165,27 @@ function buildLines(): OutboundOrderLineDto[] {
   return lines.value
     .filter((l) => l.materialId && l.quantity > 0)
     .map((l) => ({
+      id: l._id,
       materialId: l.materialId,
-      materialCode: l.materialCode,
-      materialName: l.materialName,
-      qty: l.quantity,
-      batchNo: l.remarks || undefined,
+      materialCode: l.materialCode || '',
+      materialName: l.materialName || '',
+      requiredQuantity: l.quantity,
+      issueStrategyValue: 0,
+      batchNumber: l.batchNumber,
+      remark: l.remarks,
     }));
+}
+
+function buildAllocateCommand(orderResult: OutboundOrderOutputDto): OutboundAllocateCommandDto {
+  const idempotencyId = `alloc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const allocateLines = orderResult.lines.map((line) => ({
+    lineId: line.id,
+    allocatedQuantity: line.requiredQuantity,
+  }));
+  return {
+    idempotencyId,
+    lines: allocateLines,
+  };
 }
 
 async function doSubmit(allocate: boolean) {
@@ -130,29 +195,47 @@ async function doSubmit(allocate: boolean) {
   } catch {
     return;
   }
+
+  if (!formData.value.warehouseCode) {
+    ElMessage.warning('请先选择仓库');
+    return;
+  }
+
   const payload: CreateOrUpdateOutboundOrderDto = {
     ...formData.value,
     lines: buildLines(),
   };
+
   if (payload.lines.length === 0) {
     ElMessage.warning('请至少添加一行出库明细');
     return;
   }
+
   submitting.value = true;
   try {
-    let result: any;
+    let result: OutboundOrderOutputDto;
     if (editingId) {
       result = await updateOutboundOrder(editingId, payload);
+      ElMessage.success('更新成功');
     } else {
       result = await createOutboundOrder(payload);
+      ElMessage.success('保存成功');
     }
+
     if (allocate) {
-      await allocateOutbound(result.id);
+      if (result.lines && result.lines.length > 0) {
+        const allocateCommand = buildAllocateCommand(result);
+        await allocateOutbound(result.id, allocateCommand);
+        ElMessage.success('分配成功');
+      } else {
+        ElMessage.warning('出库单明细为空，无法分配');
+      }
     }
-    ElMessage.success('保存成功');
+
     router.push('/outbound/list');
-  } catch {
-    ElMessage.error('保存失败');
+  } catch (err: any) {
+    const friendlyMsg = getFriendlyErrorMessage(parseAxiosError(err))
+    ElMessage.error(friendlyMsg);
   } finally {
     submitting.value = false;
   }
